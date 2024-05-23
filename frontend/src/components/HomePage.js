@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import {render} from "react-dom";
 import ReactDOM from 'react-dom';
 import { StrictMode } from 'react';
+import Room from './Room';
+
 import CreateRoomPage from './CreateRoomPage';
 import { 
     BrowserRouter as Router, 
@@ -24,6 +26,7 @@ export default class HomePage extends Component {
                 <Route exact path = "/"></Route>
                 <Route path = "/join" element = {<RoomJoinPage/>}/>
                 <Route path = "/create" element = {<CreateRoomPage/>}/>
+                <Route path = "/room/:roomCode" element = {<Room/>}/>
             </Routes>
 
     
