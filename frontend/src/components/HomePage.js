@@ -4,10 +4,12 @@ import ReactDOM from 'react-dom';
 import { StrictMode } from 'react';
 import CreateAccountPage from './CreateAccountPage';
 import Helper from './Helper';
+import Profile from './Profile';
+import NavBar from './Navbar';
 
 import { 
     BrowserRouter as Router, 
-    Routes,
+    Switch,
     Route,
     Link, 
     Redirect 
@@ -21,13 +23,14 @@ export default class HomePage extends Component {
 //path should have exact so anything that matches / will result in at least that rendering
     render() {
         return (
-        <>
-            <Routes>
-                <Route exact path = "/" element = {<Helper/>}></Route>
-                <Route path = "/create" element = {<CreateAccountPage/>}/>
-            </Routes>
+        <div className="content">
+            <Switch>
+                <Route exact path = "/" component = {Helper}></Route>
+                <Route path = "/create" component = {CreateAccountPage}/>
+                <Route path = "/profile/:code" component = {Profile}/>
+            </Switch>
     
-        </>
+        </div>
         );
     }
 }

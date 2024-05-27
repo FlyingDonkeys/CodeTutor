@@ -1,17 +1,18 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
-import { Link } from "react-router-dom";
+import { Link } from "@material-ui/core";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 const CreateAccountPage = () => {
+    const navigate = useHistory();
     const [userName, setuserName] = useState("");
     const [password, setpassword] = useState("");
     const handleUserNameChanges = (e) => {
@@ -24,6 +25,24 @@ const CreateAccountPage = () => {
     };
 
     const handleAccountButtonPressed = () =>{
+        if(!(/^[a-zA-Z]+$/.test(userName))|| (/\s/g.test(userName))) {
+            alert("Username should only contain alphabets");
+            return;
+        }
+
+        if(userName.length <8){
+            alert("Username should be at least 8 letters long!");
+            return;
+        }
+        if(password.length < 8){
+            alert("password should be at least 8 letters long!");
+            return;
+        }
+
+        if( (/\s/g.test(password))) {
+            alert("password cannot contain white space!");
+            return;
+        }
         const requestOptions = {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -35,16 +54,20 @@ const CreateAccountPage = () => {
           fetch("/api/create-student", requestOptions)
             .then((response) => {
                 if(!response.ok){
-                    alert("wrong username or password!");
+                    alert("Username has been taken!");
+                    return;
                 }else {
                     const data = response.json();
                     console.log(data);
+                    console.log(data.code);
+                    data.then((s) => {navigate("/profile/" + s.code);});
                 }
             })
             //.then((data) => navigate("/profile/" + data.code));
     };
     return (
-        <Grid container spacing = {1}>
+        
+        <Grid container spacing = {1} className="center">
             <Grid item xs={12} align="center">
                 <Typography component="h4" variant="h4">
                     Create An Account
@@ -55,6 +78,7 @@ const CreateAccountPage = () => {
             <FormControl>
                 <TextField
                 required
+                variant = "outlined"
                 onChange={(e) => handleUserNameChanges(e)}
                 defaultValue={""}
                 inputProps={{
@@ -71,6 +95,7 @@ const CreateAccountPage = () => {
             <FormControl>
                 <TextField
                 required
+                variant = "outlined"
                 //type="string"
                 onChange={(e) => handlePassWordChanges(e)}
                 defaultValue={""}
@@ -89,7 +114,7 @@ const CreateAccountPage = () => {
           variant="contained"
           onClick={handleAccountButtonPressed}
         >
-          Create A Room
+          Create An Account
         </Button>
       </Grid>
       <Grid item xs={12} align="center">

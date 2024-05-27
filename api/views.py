@@ -24,7 +24,7 @@ class CreateStudentView(APIView):
             queryset = Student.objects.filter(username = username)
             if queryset.exists():
                 student = queryset[0]
-                return Response(StudentSerializer(student).data, status = status.HTTP_400_BAD_REQUEST)
+                return Response({'Bad Request':'Username already exists!'}, status = status.HTTP_400_BAD_REQUEST)
             else:
                 student = Student(username = username, password = password)
                 student.save()
