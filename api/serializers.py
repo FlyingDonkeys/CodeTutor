@@ -1,14 +1,24 @@
 from rest_framework import serializers
-from .models import Room
+from .models import Student, Tutor
 
-
-class RoomSerializer(serializers.ModelSerializer):
+##################STUDENT SERIALIZERS##############
+class StudentSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Room
-        fields = ('id', 'host', 'guest_can_pause',
-                  'votes_to_skip', 'created_at','code')
-        
-class CreateRoomSerializer(serializers.ModelSerializer):
-    class Meta: 
-        model = Room
-        fields = ('guest_can_pause', 'votes_to_skip')
+        model = Student
+        fields = ('username','password','code')
+
+class CreateStudentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = ('username','password')
+##################TUTOR SERIALIZERS##############
+class TutorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tutor
+        fields = ('username','password','code')
+
+class CreateTutorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = ('username','password')
+

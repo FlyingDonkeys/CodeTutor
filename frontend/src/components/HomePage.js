@@ -2,9 +2,9 @@ import React, {Component} from 'react';
 import {render} from "react-dom";
 import ReactDOM from 'react-dom';
 import { StrictMode } from 'react';
-import Room from './Room';
+import CreateAccountPage from './CreateAccountPage';
+import Helper from './Helper';
 
-import CreateRoomPage from './CreateRoomPage';
 import { 
     BrowserRouter as Router, 
     Routes,
@@ -12,7 +12,7 @@ import {
     Link, 
     Redirect 
 } from 'react-router-dom';
-import RoomJoinPage from './RoomJoinPage';
+
 
 export default class HomePage extends Component {
     constructor(props) {
@@ -23,15 +23,11 @@ export default class HomePage extends Component {
         return (
         <>
             <Routes>
-                <Route exact path = "/"></Route>
-                <Route path = "/join" element = {<RoomJoinPage/>}/>
-                <Route path = "/create" element = {<CreateRoomPage/>}/>
-                <Route path = "/room/:roomCode" element = {<Room/>}/>
+                <Route exact path = "/" element = {<Helper/>}></Route>
+                <Route path = "/create" element = {<CreateAccountPage/>}/>
             </Routes>
-
     
         </>
         );
     }
 }
-
