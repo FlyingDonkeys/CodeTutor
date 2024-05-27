@@ -40,6 +40,10 @@ class Student(CommonUser):
     location = models.CharField(choices=location_choices, max_length=64)
     subjects_required = models.ManyToManyField(Subject, related_name="students")
 
+    class Meta:
+        verbose_name = "Student"
+
+
 
 class Tutor(CommonUser):
     subjects_taught = models.ManyToManyField(Subject, related_name="tutors")
@@ -52,4 +56,5 @@ class Tutor(CommonUser):
     tutor_score = models.IntegerField(default=0)
     students_taught = models.IntegerField(default=0)
 
-
+    class Meta:
+        verbose_name = "Tutor"
