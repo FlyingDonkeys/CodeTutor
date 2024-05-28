@@ -1,37 +1,50 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>CodeTutor</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+      .background {
+        background-color: gray;
+      }
+
+    </style>
     {% block head %}
     {% endblock %}
 </head>
-<body>
+<body class="background">
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">CodeTutor</a>
+        <img src="{% static 'CodeTutor/images/CodeTutors.jpg' %}" style="height: 100px; width: auto" class="navbar-brand" alt="Logo">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="{% url 'register' %}?type=student">Register as Student</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="{% url 'register' %}?type=tutor">Register as Tutor</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Login</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Log Out</a>
-            </li>
+          <ul class="navbar-nav ms-auto">
+            {% if not request.user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'register' 'student' %}">Register as Student</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'register' 'tutor' %}">Register as Tutor</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" href="{% url 'login_function' %}">Login</a>
+              </li>
+            {% endif %}
+            {% if request.user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link active" href="{% url 'logout_function' %}">Log Out</a>
+              </li>
+            {% endif %}
           </ul>
         </div>
       </div>
     </nav>
+    {% block messages %}
+    {% endblock %}
     {% block body %}
     {% endblock %}
 </body>
