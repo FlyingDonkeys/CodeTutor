@@ -1,19 +1,24 @@
 import React from 'react';
 //import '../../static/css/navbar.css'; // You can add custom styling in this CSS file
 
-const NavBar = () => {
+const NavBar = (props) => {
   return (
     <nav className="navbar shadow">
       <div className="logo">
-        <img  style={{height:'50px'}} src="../../static/images/Favicon.ico" alt="Code Tutor Logo" />
+        <a href = "/">
+        <img  style={{height:'50px'}} src="../../static/images/Favicon.ico" alt="Code Tutor Logo"/>
+        </a>
       </div>
+      {props.isHome ? 
       <ul className="nav-links" >
         <li><a href="#find-tutor">Find a tutor</a></li>
         <li><a href="#become-tutor">Become a tutor</a></li>
         <li><a href="#how-it-works">How it works</a></li>
-        <li><a style={{verticalAlign:'middle',fontSize:'large'}} href="/create">Sign Up</a></li>
-        <li><a style={{verticalAlign:'middle',fontSize:'large'}} href="/login">Log In</a></li>
+        <li><a style={{verticalAlign:'middle',fontSize:'large'}} href="/sign-up">Sign Up</a></li>
+        <li><a style={{verticalAlign:'middle',fontSize:'large'}} href="/sign-in">Log In</a></li>
       </ul>
+      : <div style = {{color:'white',transform:'translate(-50%, 0)'}}><h1>{props.text}</h1></div>
+      }
     </nav>
   );
 };

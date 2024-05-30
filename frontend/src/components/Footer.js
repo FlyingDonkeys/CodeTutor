@@ -19,7 +19,7 @@ export default function Footer() {
             <li className="nav-item me-auto footer-item">
       
               <Link href="mailto:contact@codeTutor.org" className="nav-link px-2 text-muted">
-                <i className="material-icons inline-icon">mail</i>&nbsp;
+                <i className="material-icons inline-icon">mail</i> &nbsp;
                 <span>contact@codeTutor.org</span>
               </Link>
             </li>

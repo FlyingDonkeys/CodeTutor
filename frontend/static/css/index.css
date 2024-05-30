@@ -4,6 +4,18 @@ html, body, #main, #app {
   padding: 0;
 }
 
+.deco {
+  background-image: url("../images/Hero.png");
+  background-size: cover;
+    /* Set a specific height */
+  min-height: 100vh;
+    /* Create the parallax scrolling effect */
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  color:white;
+}
+
 .bg-gray {
   background: black;
 }

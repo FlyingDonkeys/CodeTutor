@@ -10,7 +10,7 @@ const Helper = () => {
   return (
     <>
     <div className="parallax">
-    <NavBar/>
+    <NavBar isHome = {true} text = {""}/>
        <div style={{display: 'flex', justifyContent: 'center' }}>
         <h1 style = {{alignSelf: 'center', color:'white',display:'flex'}}>
             Finding a tutor? Find Code-Tutor!
@@ -35,13 +35,13 @@ const Helper = () => {
       <div style={{ backgroundColor: "#fffefa" }}>
         <Grid container spacing = {1}>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"} />
+              <InfoCard header = {"placeHolder"} description={"Description"}  path = {""}/>
             </Grid>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"}/>
+              <InfoCard header = {"placeHolder"} description={"Description"} path = {""}/>
             </Grid>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"}/>
+              <InfoCard header = {"placeHolder"} description={"Description"} path = {""}/>
             </Grid>
         </Grid>
       </div>
@@ -63,13 +63,13 @@ const Helper = () => {
       <div style={{ backgroundColor: "#fffefa" }}>
         <Grid container spacing = {1}>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"} />
+              <InfoCard header = {"placeHolder"} description={"Description"} path = {""} />
             </Grid>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"}/>
+              <InfoCard header = {"placeHolder"} description={"Description"} path = {""}/>
             </Grid>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"}/>
+              <InfoCard header = {"placeHolder"} description={"Description"} path = {""}/>
             </Grid>
         </Grid>
       </div>
@@ -91,13 +91,13 @@ const Helper = () => {
       <div style={{ backgroundColor: "#fffefa" }}>
         <Grid container spacing = {1}>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"} />
+              <InfoCard header = {"Sign Up Now!"} description={"Click link below to sign up as a tutor! "} path = {"/sign-up-tutor"}/>
             </Grid>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"}/>
+              <InfoCard header = {"placeHolder"} description={"Description"} path = {""}/>
             </Grid>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"}/>
+              <InfoCard header = {"placeHolder"} description={"Description"} path = {""}/>
             </Grid>
         </Grid>
       </div>
@@ -119,13 +119,13 @@ const Helper = () => {
       <div style={{ backgroundColor: "#fffefa" }}>
         <Grid container spacing = {1}>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"} />
+              <InfoCard header = {"placeHolder"} description={"Description"} path = {""}/>
             </Grid>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"}/>
+              <InfoCard header = {"placeHolder"} description={"Description"} path = {""}/>
             </Grid>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"}/>
+              <InfoCard header = {"placeHolder"} description={"Description"} path = {""}/>
             </Grid>
         </Grid>
       </div>
