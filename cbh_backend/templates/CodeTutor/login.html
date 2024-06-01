@@ -1,0 +1,44 @@
+{% extends "CodeTutor/layout.html" %}
+
+{% block body %}
+    <div class="container" style="background: white">
+        <div class="row">
+            <div class="col-2">
+                <!-- To centralise -->
+            </div>
+            <h3>Login</h3>
+        </div>
+        <form action="{% url 'login_function' %}" method="post">
+            {% csrf_token %}
+            <div class="row mb-3">
+                <div class="col-4">
+                    <!-- To centralise -->
+                </div>
+                <div class="col-4">
+                    {% if message %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endif %}
+                    <div class="input-group mb-3">
+                      <span class="input-group-text" id="basic-addon1">Username</span>
+                      <input type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1" name="username">
+                    </div>
+                    <div class="input-group mb-3">
+                      <span class="input-group-text" id="basic-addon1">Password</span>
+                      <input type="password" class="form-control" aria-label="Password" aria-describedby="basic-addon1" name="password">
+                    </div>
+                </div>
+            </div>
+            <!-- Submit Button -->
+            <div class="row mb-3">
+                <div class="col-5">
+                    <!-- To centralise -->
+                </div>
+                <div class="col-4">
+                        <input type="submit">
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
