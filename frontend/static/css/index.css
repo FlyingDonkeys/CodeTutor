@@ -1,21 +1,89 @@
-
-html,
-body {
+html, body, #main, #app {
   height: 100%;
   margin: 0;
   padding: 0;
 }
 
-#main {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
+.deco {
+  background-image: url("../images/Hero.png");
+  background-size: cover;
+    /* Set a specific height */
+  min-height: 100vh;
+    /* Create the parallax scrolling effect */
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  color:white;
 }
 
-#app {
-  width: 100%;
-  height: 100%;
+.bg-gray {
+  background: black;
+}
+
+.footer-container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.footer {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  margin-top: 1.5rem;
+}
+
+.nav {
   display: flex;
+  flex-wrap: wrap;
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
+}
+
+.justify-content-center {
+  justify-content: center;
+}
+
+.border-bottom {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.pb-3 {
+  padding-bottom: 1rem;
+}
+
+.mb-3 {
+  margin-bottom: 1rem;
+}
+
+.nav-item {
+  margin-left: auto;
+}
+
+.footer-item {
+  list-style: none;
+}
+
+.nav-link {
+  display: inline-block;
+  padding: .5rem 1rem;
+  color: #6c757d;
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+.text-muted {
+  color: white !important;
+}
+
+.inline-icon {
+  vertical-align: middle;
+}
+
+.text-center {
+  text-align: center !important;
 }
