@@ -1,6 +1,5 @@
-
-
-    <h1>CodeTutors</h1>
+#CodeTutors
+<h1>CodeTutors</h1>
 
     <h2>Motivation</h2>
     <p>The quest for quality education is universal, yet the challenge often lies in finding the right match between students and tutors. Our project, CodeTutors, seeks to revolutionize this search by leveraging technology to closely align educational support with students' specific needs and learning outcomes. Recognizing the role of tangible academic achievements in evaluating teaching effectiveness and tutors’ actual teaching abilities, we propose an innovative approach to enhance the matchmaking process on our platform. We envision a platform where students can find credible tutors that match their various requirements and where tutors can earn an income, using their skills, and eventually develop into better tutors using our unique TutorScore system.</p>
@@ -98,10 +97,10 @@
   </ol>
 </div>
 
-    <h2>Contributing</h2>
-    <p>Please read our <a href="CONTRIBUTING.md">CONTRIBUTING.md</a> for the process for submitting pull requests.</p>
+<h2>Contributing</h2>
+<p>Please read our <a href="CONTRIBUTING.md">CONTRIBUTING.md</a> for the process for submitting pull requests.</p>
 
-    <h2>Acknowledgments</h2>
-    <p>Thanks to everyone who has contributed to this project.</p>
+<h2>Acknowledgments</h2>
+<p>Thanks to everyone who has contributed to this project.</p>
 
 
