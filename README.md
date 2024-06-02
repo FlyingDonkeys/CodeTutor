@@ -43,7 +43,7 @@
     <li><strong>Years of Experience:</strong> Students can filter tutors by their number of years of experience.</li>
 </ul>
 
-    <h3>UI/UX</h3>
+<h3>UI/UX</h3>
     <ul>
         <li><strong>Display:</strong>
             <ul>
@@ -71,7 +71,7 @@
 </ul>
 
 <h2>Milestone 1 Report</h2>
-<p>Insert detailed text for Milestone 1 Report here.</p>
+    <p>Insert detailed text for Milestone 1 Report here.</p>
 
 <h2>Installation</h2>
 <p>Instructions for setting up the development environment.</p>
@@ -82,7 +82,7 @@
     <li>Run the server: <code>python manage.py runserver</code></li>
 </ol>
 
-    <h1>Dependencies </h1>
+<h1>Dependencies </h1>
 <div>
   <ol>
     <li>python3 for virtual env</li>
