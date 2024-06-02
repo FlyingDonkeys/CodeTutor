@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory,matchPath} from 'react-router-dom';
 import NavBar from './Navbar';
 import { Button, FormControl, Select, MenuItem, Checkbox, ListItemText } from '@material-ui/core';
 
@@ -10,14 +10,16 @@ const CreateTutorProfilePage = (props) => {
     const [username, setuserName] = useState('');
     const [password, setpassword] = useState('');
     const [address, setAddress] = useState('');
+    const [hourlyRate, setHourlyRate] = useState('');
+    const [tutorDescription, setTutorDescription] = useState('');
+    const [qualification, setQualification] = useState('');
     const [stuSubjects, setstuSubjects] = useState([]);
     const [subjects, setSubjects] = useState([]);
+    const location = useHistory();
 
     useEffect(() => {
         const getSubjects = async() => {
-      
             const response = await fetch("/api/subjects");
-   
             if (!response.ok) {
                 console.error("Failed to fetch subjects");
                 return;
@@ -67,29 +69,58 @@ const CreateTutorProfilePage = (props) => {
             return;
         }
 
+        if (!hourlyRate) {
+            alert("Hourly rate is required!");
+            return;
+        }
+
+        if (!tutorDescription) {
+            alert("Tutor description is required!");
+            return;
+        }
+
+        if (!qualification) {
+            alert("Qualification is required!");
+            return;
+        }
+
         let formField = new FormData();
         formField.append('username', username);
         formField.append('password', password);
         formField.append('location', address);
+        formField.append('hourly_rate', hourlyRate);
+        formField.append('tutor_description', tutorDescription);
+        //const qualification = qualification == null? "": qualification;
+        formField.append('tutor_qualification', qualification);
     
         stuSubjects.forEach(subject => formField.append('subjects_taught', subject.subject_name));
 
         if (image !== null) {
             formField.append('image', image);
-        }
+        }else formField.append('image', "");
 
         const requestOptions = {
             method: "POST",
             body: formField,
         };
+
         if(!props.update){
-        fetch("/api/create-tutor", requestOptions)
-            .then((response) => response.json())
-            .then((data) => history.push("/profile-tutor/" + data.code));
-        }else {
-        fetch("/api/update-tutor", requestOptions)
-            .then((response) => response.json())
-            .then((data) => history.push("/profile-tutor/" + data.code));
+            fetch("/api/create-tutor", requestOptions)
+                .then((response) => response.json()).catch(e => {alert("Invalid Username"); return;})
+                .then((data) => history.push("/profile-tutor/" + data.code));
+        } else {
+            
+            
+            const match = matchPath(location.location.pathname, {
+                path: "/update-tutor/:param",
+                exact: true,
+                strict: false,
+            });
+        
+            const code = match === null ? " " : match.params.param;
+            fetch("/api/update-tutor?code="+code, requestOptions)
+                .then((response) => response.json()).catch(e => {alert("Invalid Username"); return;})
+                .then((data) => history.push("/profile-tutor/" + data.code));
         }
     };
 
@@ -102,7 +133,7 @@ const CreateTutorProfilePage = (props) => {
                         <label>Profile Image (Optional)</label>
                         <input type="file" className="form-control" onChange={(e) => setImage(e.target.files[0])} />
                     </div>
-
+                
                     <div className="form-group">
                         <label>Username</label>
                         <input
@@ -154,6 +185,49 @@ const CreateTutorProfilePage = (props) => {
                     </div>
 
                     <div className="form-group">
+                        <label>Hourly Rate</label>
+                        <input
+                            type="number"
+                            className="form-control form-control-lg"
+                            placeholder="Enter Your Hourly Rate"
+                            name="hourly_rate"
+                            value={hourlyRate}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                setHourlyRate(value);
+                            }}
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Tutor Description</label>
+                        <textarea
+                            className="form-control form-control-lg"
+                            placeholder="Enter a Description"
+                            name="tutor_description"
+                            value={tutorDescription}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                setTutorDescription(value);
+                            }}
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Qualification</label>
+                        <select
+                            className="form-control form-control-lg"
+                            value={qualification}
+                            onChange={(e) =>{ console.log(e.target.value);setQualification(e.target.value);}}
+                        >
+                            <option value="IB">IB</option>
+                            <option value="diploma">Diploma</option>
+                            <option value="undergraduate">Undergraduate</option>
+                            <option value="Masters">Masters</option>
+                        </select>
+                    </div>
+
+                    <div className="form-group">
                         <label id="subject-select-label">Subjects</label>
                         <FormControl className="form-control form-control-lg">
                             <Select
@@ -175,8 +249,7 @@ const CreateTutorProfilePage = (props) => {
                             </Select>
                         </FormControl>
                     </div>
-
-                    <Button className="btn btn-primary btn-block" onClick={addNewTutor}>Add Tutor</Button>
+                    <Button className="btn btn-primary btn-block" onClick={addNewTutor}>Submit</Button>
                 </div>
             </div>
         </>

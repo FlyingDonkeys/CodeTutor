@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, matchPath} from 'react-router-dom';
 import NavBar from './Navbar';
 import { Button, FormControl, Select, MenuItem, Checkbox, ListItemText } from '@material-ui/core';
 
@@ -12,6 +12,7 @@ const CreateProfilePage = (props) => {
     const [address, setAddress] = useState('');
     const [stuSubjects, setstuSubjects] = useState([]);
     const [subjects, setSubjects] = useState([]);
+    const location = useHistory();
 
     useEffect(() => {
         const getSubjects = async() => {
@@ -83,11 +84,20 @@ const CreateProfilePage = (props) => {
         };
         if(!props.update){
         fetch("/api/create-student", requestOptions)
-            .then((response) => response.json())
+            .then((response) => response.json()).catch(e => {alert("Invalid Username"); return;})
             .then((data) => history.push("/profile/" + data.code));
         }else {
-        fetch("/api/update-student", requestOptions)
-            .then((response) => response.json())
+            
+            
+            const match = matchPath(location.location.pathname, {
+                path: "/update/:param",
+                exact: true,
+                strict: false,
+            });
+        
+            const code = match === null ? " " : match.params.param;
+        fetch("/api/update-student?code="+code, requestOptions)
+            .then((response) => response.json()).catch(e => {alert("Invalid Username"); return;})
             .then((data) => history.push("/profile/" + data.code));
         }
     };
@@ -175,7 +185,7 @@ const CreateProfilePage = (props) => {
                         </FormControl>
                     </div>
 
-                    <Button className="btn btn-primary btn-block" onClick={addNewStudent}>Add Student</Button>
+                    <Button className="btn btn-primary btn-block" onClick={addNewStudent}>Submit</Button>
                 </div>
             </div>
         </>

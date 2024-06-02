@@ -13,7 +13,7 @@ export default function InfoCard(props) {
         <CardMedia
           component="img"
           height="140"
-          image="../../static/images/codeTutor.png"
+          image={props.link || "../../static/images/codeTutor.png"}
           alt="placeholder"
         />
         <CardContent>

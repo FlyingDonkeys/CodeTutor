@@ -5,6 +5,8 @@ import { Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import {Typography} from '@material-ui/core';
 
+
+
 const useStyles = makeStyles((theme) => ({
     container: {
         maxWidth: '1200px',
@@ -68,6 +70,7 @@ const Profile = (props) => {
     const [profileImage, setProfileImage] = useState("");
     const location = useHistory();
     const [success, setSuccess] = useState(true);
+    
 
     const match = matchPath(location.location.pathname, {
         path: "/profile/:param",
@@ -78,6 +81,7 @@ const Profile = (props) => {
     const code = match === null ? " " : match.params.param;
 
     useEffect(() => {
+
         const getPersonDetails = async () => {
             try {
                 const response = await fetch("/api/get-student?code=" + code);
@@ -86,13 +90,14 @@ const Profile = (props) => {
                     setSuccess(false);
                 }
                 const data = await response.json();
-
+                console.log(data);
                 setusername(data.username);
                 setisStudent(true);
                 setjoinedDate(data.date_joined);
                 setstuLocation(data.location);
-                console.log(data.profileImage);
-                setProfileImage("../../static/images/Hero.png"); // Assuming profile_image is the key for the profile picture URL
+                console.log("../../.."+data.image);
+                //const t = "../../.."+data.image
+                setProfileImage(data.image); // Assuming profile_image is the key for the profile picture URL
             } catch (error) {
                 console.error("Error fetching user details:", error);
                 setSuccess(false);
@@ -109,7 +114,7 @@ const Profile = (props) => {
                 <div className={classes.container}>
                     <div className={classes.profileSection}>
                         <img
-                            src={profileImage || 'default-profile-image.png'} // Use a default image if profileImage is empty
+                            src={"../../.."+profileImage|| "../../static/images/Hero.png"} // Use a default image if profileImage is empty
                             alt="Profile"
                             className={classes.profileImage}
                         />
@@ -117,7 +122,7 @@ const Profile = (props) => {
                         <Button
                             variant="contained"
                             className={classes.profileButton}
-                            href="/update"
+                            href={`/update/${code}`}
                         >
                             Edit my Profile
                         </Button>

@@ -35,13 +35,13 @@ const Helper = () => {
       <div style={{ backgroundColor: "#fffefa" }}>
         <Grid container spacing = {1}>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"}  path = {""}/>
+              <InfoCard header = {"placeHolder"} description={"Description"}  path = {""} link = {"../../static/images/img10.png"}/>
             </Grid>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"} path = {""}/>
+              <InfoCard header = {"placeHolder"} description={"Description"} path = {""} link = {"../../static/images/img11.png"}/>
             </Grid>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"} path = {""}/>
+              <InfoCard header = {"placeHolder"} description={"Description"} path = {""} link = {"../../static/images/img12.png"}/>
             </Grid>
         </Grid>
       </div>
@@ -63,13 +63,13 @@ const Helper = () => {
       <div style={{ backgroundColor: "#fffefa" }}>
         <Grid container spacing = {1}>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"} path = {""} />
+              <InfoCard header = {"placeHolder"} description={"Description"} path = {""} link = {"../../static/images/img1.png"} />
             </Grid>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"} path = {""}/>
+              <InfoCard header = {"placeHolder"} description={"Description"} path = {""} link = {"../../static/images/img2.png"}/>
             </Grid>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"} path = {""}/>
+              <InfoCard header = {"placeHolder"} description={"Description"} path = {""} link = {"../../static/images/img3.png"}/>
             </Grid>
         </Grid>
       </div>
@@ -91,13 +91,13 @@ const Helper = () => {
       <div style={{ backgroundColor: "#fffefa" }}>
         <Grid container spacing = {1}>
             <Grid item xs = {4}>
-              <InfoCard header = {"Sign Up Now!"} description={"Click link below to sign up as a tutor! "} path = {"/sign-up-tutor"}/>
+              <InfoCard header = {"Sign Up Now!"} description={"Click link below to sign up as a tutor! "} path = {"/sign-up-tutor"}  link = {"../../static/images/img4.png"}/>
             </Grid>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"} path = {""}/>
+              <InfoCard header = {"placeHolder"} description={"Description"} path = {""} link = {"../../static/images/img5.png"}/>
             </Grid>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"} path = {""}/>
+              <InfoCard header = {"placeHolder"} description={"Description"} path = {""} link = {"../../static/images/img6.png"}/>
             </Grid>
         </Grid>
       </div>
@@ -119,13 +119,13 @@ const Helper = () => {
       <div style={{ backgroundColor: "#fffefa" }}>
         <Grid container spacing = {1}>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"} path = {""}/>
+              <InfoCard header = {"placeHolder"} description={"Description"} path = {""} link = {"../../static/images/img7.png"}/>
             </Grid>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"} path = {""}/>
+              <InfoCard header = {"placeHolder"} description={"Description"} path = {""} link = {"../../static/images/img8.png"}/>
             </Grid>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"} path = {""}/>
+              <InfoCard header = {"placeHolder"} description={"Description"} path = {""} link = {"../../static/images/img9.png"}/>
             </Grid>
         </Grid>
       </div>

@@ -17,7 +17,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Person from "@mui/icons-material/Person";
 
 import NavBar from "./Navbar";
-const SignInPage = () => {
+const SignInPage = (props) => {
     const navigate = useHistory();
     const [userName, setuserName] = useState("");
     const [password, setpassword] = useState("");
@@ -26,6 +26,7 @@ const handleClickShowPassword = () => setShowPassword(!showPassword);
 const handleMouseDownPassword = () => setShowPassword(!showPassword);
     const handleUserNameChanges = (e) => {
         setuserName(e.target.value);
+        console.log(props);
         console.log("username:" + e.target.value);
     };
     const handlePassWordChanges = (e) => {
@@ -60,7 +61,16 @@ const handleMouseDownPassword = () => setShowPassword(!showPassword);
                 password: password,
             }),
           };
-          fetch("/api/get-student-username?username="+userName)
+
+            let path = "";
+
+            if(props.isStudent) {
+                path ="/api/get-student-username?username="; 
+            }else {
+                path ="/api/get-tutor-username?username=";
+            }
+
+          fetch(path+userName)
 
             .then((response) => {
                 if(!response.ok) {
@@ -81,7 +91,14 @@ const handleMouseDownPassword = () => setShowPassword(!showPassword);
                         console.log(s.code); 
                         if(password == s.password){
                         
-                        navigate.push("/profile/" + s.code);
+                            let next = "";
+
+                            if(props.isStudent) {
+                                next ="/profile/"; 
+                            }else {
+                                next ="/profile-tutor/";
+                            }
+                        navigate.push(next + s.code);
                         return;
                         }
                         alert("Incorrect password!");
@@ -90,6 +107,8 @@ const handleMouseDownPassword = () => setShowPassword(!showPassword);
             })
             //.then((data) => navigate("/profile/" + data.code));
     };
+    console.log("Is student");
+    console.log(props.isStudent);
     return (
       <>
         <NavBar isHome = {false} text = {"Log In"}/>
@@ -166,8 +185,18 @@ const handleMouseDownPassword = () => setShowPassword(!showPassword);
         </Button>
       </Grid>
       <Grid item xs={12} align="left" style = {{paddingTop:'5px'}}>
-        <Button color="secondary" variant="contained" onClick={() => {navigate.push("/sign-in-tutor");}}>
-          Log in as tutor
+        <Button color="secondary" variant="contained" onClick={() => {
+            console.log("CLICKED");
+            console.log(props.isStudent);
+            if(props.isStudent){
+                navigate.push("/sign-in-tutor");
+                return;
+            }else {
+                navigate.push("/sign-in");
+                return;
+            }
+            }}>
+          {props.isStudent? "Log in as tutor": "Log in as Student" }
         </Button>
       </Grid>
     </Grid>

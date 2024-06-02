@@ -5,6 +5,8 @@ import { Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import {Typography} from '@material-ui/core';
 
+
+
 const useStyles = makeStyles((theme) => ({
     container: {
         maxWidth: '1200px',
@@ -86,13 +88,14 @@ const ProfileTutor = (props) => {
                     setSuccess(false);
                 }
                 const data = await response.json();
-
+                console.log(data);
                 setusername(data.username);
                 setisStudent(true);
                 setjoinedDate(data.date_joined);
                 setstuLocation(data.location);
-                console.log(data.profileImage);
-                setProfileImage("../../static/images/Hero.png"); // Assuming profile_image is the key for the profile picture URL
+                console.log(data.image);
+
+                setProfileImage(data.image); // Assuming profile_image is the key for the profile picture URL
             } catch (error) {
                 console.error("Error fetching user details:", error);
                 setSuccess(false);
@@ -104,12 +107,12 @@ const ProfileTutor = (props) => {
 
     return (
         <>
-            <NavBar isHome={false} text={"Profile Page Tutor"} isLoggedIn={true} />
+            <NavBar isHome={false} text={"Tutor Profile Page"} isLoggedIn={true} />
             {success ? (
                 <div className={classes.container}>
                     <div className={classes.profileSection}>
                         <img
-                            src={profileImage || 'default-profile-image.png'} // Use a default image if profileImage is empty
+                            src={"../../.."+profileImage || 'default-profile-image.png'} // Use a default image if profileImage is empty
                             alt="Profile"
                             className={classes.profileImage}
                         />
@@ -117,7 +120,7 @@ const ProfileTutor = (props) => {
                         <Button
                             variant="contained"
                             className={classes.profileButton}
-                            href="/update-tutor"
+                             href={`/update-tutor/${code}`}
                         >
                             Edit my Profile
                         </Button>
