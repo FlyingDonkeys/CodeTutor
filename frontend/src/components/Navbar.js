@@ -20,6 +20,11 @@ const NavBar = (props) => {
       </ul>
       : <div style = {{color:'white',transform:'translate(-50%, 0)'}}><h1>{props.text}</h1></div>
       }
+      {props.loggedIn? 
+      <div className="user-info">
+      <p>Jason Student</p>
+      <button className="logout-button">Log Out</button>
+      </div>:<></>}
     </nav>
   );
 };

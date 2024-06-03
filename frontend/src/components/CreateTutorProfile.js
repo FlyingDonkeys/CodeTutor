@@ -99,8 +99,25 @@ const CreateTutorProfilePage = (props) => {
             formField.append('image', image);
         }else formField.append('image', "");
 
+        let cookieValue = null;
+        console.log("HELLO HELLO COOKIES");
+        console.log(cookieValue);
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, "csrftoken".length + 1) === ("csrftoken" + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring("csrftoken".length + 1));
+                    console.log("csrftoken!")
+                    console.log(cookieValue);
+                    break;
+                }
+            }
+        }
+        console.log(cookieValue);
         const requestOptions = {
             method: "POST",
+            headers: {'X-CSRFToken': cookieValue },
             body: formField,
         };
 

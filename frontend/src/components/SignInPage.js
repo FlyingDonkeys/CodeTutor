@@ -53,15 +53,28 @@ const handleMouseDownPassword = () => setShowPassword(!showPassword);
             alert("password cannot contain white space!");
             return;
         }
+
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, "csrftoken".length + 1) === ("csrftoken" + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring("csrftoken".length + 1));
+                    break;
+                }
+            }
+        }
+
         const requestOptions = {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json", 'X-CSRFToken': cookieValue },
             body: JSON.stringify({
                 username: userName,
                 password: password,
             }),
           };
-
+            
             let path = "";
 
             if(props.isStudent) {
@@ -70,7 +83,7 @@ const handleMouseDownPassword = () => setShowPassword(!showPassword);
                 path ="/api/get-tutor-username?username=";
             }
 
-          fetch(path+userName)
+          fetch(path+userName, requestOptions)
 
             .then((response) => {
                 if(!response.ok) {
@@ -89,7 +102,6 @@ const handleMouseDownPassword = () => setShowPassword(!showPassword);
                         console.log(s);
                         console.log(s.username); 
                         console.log(s.code); 
-                        if(password == s.password){
                         
                             let next = "";
 
@@ -100,8 +112,7 @@ const handleMouseDownPassword = () => setShowPassword(!showPassword);
                             }
                         navigate.push(next + s.code);
                         return;
-                        }
-                        alert("Incorrect password!");
+                    
                     });
                 }
             })

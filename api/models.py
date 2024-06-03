@@ -3,6 +3,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 import uuid 
 import datetime
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 class Subject(models.Model):
 
@@ -47,11 +48,12 @@ class Person(models.Model):
 
         return code
     
+    
     image = models.ImageField(upload_to='./uploads/images', null=True, blank=True)
 
     date_joined = models.DateTimeField(default=timezone.now)
 
-    password = models.CharField(null= False, max_length=20)
+    #password = models.CharField(null= False, max_length=20)
 
     code = models.CharField(null = False, max_length=10, default= uuid.uuid4().hex[:6].upper(), unique=True)
 
@@ -72,16 +74,17 @@ class Student(Person):
         "NW": "North West",
         "C": "Central"
     }
+    user_info = models.OneToOneField(User, on_delete=models.CASCADE, null = True)
     isStudent = models.BooleanField(default=True)
-    username = models.CharField(null= False, max_length=20, unique=True)
+    #username = models.CharField(null= False, max_length=20, unique=True)
     location = models.CharField(default='N', choices=location_choices, max_length=64)
     subjects_required = models.ManyToManyField(Subject, related_name="students")
-    class Meta:
-        ordering = ['username']
+   
 
 
 class Tutor(Person):
-    username = models.CharField(null= False, max_length=20, unique=True)
+    user_info = models.OneToOneField(User, on_delete=models.CASCADE, null= True)
+    #username = models.CharField(null= False, max_length=20, unique=True)
     isStudent = models.BooleanField(default=False)
     subjects_taught = models.ManyToManyField(Subject, related_name="tutors")
     tutor_qualification = models.CharField(default="", unique=False, max_length=100)
@@ -93,6 +96,5 @@ class Tutor(Person):
     tutor_description = models.TextField(blank=True)
     tutor_score = models.IntegerField(default=0)
     students_taught = models.IntegerField(default=0)
-    class Meta:
-        ordering = ['username']
+    
   
