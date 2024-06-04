@@ -104,7 +104,7 @@ const CreateProfilePage = (props) => {
         if(!props.update){
         fetch("/api/create-student", requestOptions)
             .then((response) => response.json()).catch(e => {alert("Invalid Username"); return;})
-            .then((data) => history.push("/profile/" + data.code));
+            .then((data) =>  {localStorage.setItem('token', data.token); history.push("/sign-in");});
         }else {
             
             
@@ -117,7 +117,7 @@ const CreateProfilePage = (props) => {
             const code = match === null ? " " : match.params.param;
         fetch("/api/update-student?code="+code, requestOptions)
             .then((response) => response.json()).catch(e => {alert("Invalid Username"); return;})
-            .then((data) => history.push("/profile/" + data.code));
+            .then((data) => { localStorage.setItem('token', data.token);  history.push("/profile/" + data.code);});
         }
     };
 

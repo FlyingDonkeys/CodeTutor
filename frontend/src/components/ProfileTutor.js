@@ -134,7 +134,7 @@ const ProfileTutor = (props) => {
                     </div>
                 </div>
             ) : (
-                <h1>Failed to load profile</h1>
+                <p>⚠︎Dear tutor, please login first before updating your profile ⚠︎</p>
             )}
         </>
     );

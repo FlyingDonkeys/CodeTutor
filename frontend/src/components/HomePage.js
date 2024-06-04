@@ -8,6 +8,8 @@ import Profile from './Profile';
 import CreateProfilePage from './CreateAccountPage';
 import CreateTutorProfilePage from './CreateTutorProfile';
 import ProfileTutor from './ProfileTutor';
+import LandingPage from './LandingPage';
+import SearchFilterPage from './SearchPage';
 
 import { 
     BrowserRouter as Router, 
@@ -61,6 +63,16 @@ export default class HomePage extends Component {
                     <Route 
                         path="/update-tutor" 
                         render={(props) => <CreateTutorProfilePage {...props} update={true} />}
+                    />
+
+                    <Route 
+                        path="/dashboard" 
+                        render={(props) => <LandingPage {...props} update={true} />}
+                    />
+
+                    <Route 
+                        path="/request" 
+                        render={(props) => <SearchFilterPage {...props} update={true} />}
                     />
                 </Switch>
             </div>

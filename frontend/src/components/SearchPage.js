@@ -1,27 +1,12 @@
 
 import React from 'react';
-import './SearchFilterPage.css';
+import NavBar from './Navbar';
 
-const SearchFilterPage = () => {
+const SearchFilterPage = (props) => {
   return (
     <div className="search-filter-page">
-      <header className="header">
-        <div className="logo">
-          <img src="path_to_logo_image" alt="Code Tutor Logo" />
-        </div>
-        <nav className="navbar">
-          <ul>
-            <li>Dashboard</li>
-            <li>Find a tutor</li>
-            <li>How it works</li>
-          </ul>
-        </nav>
-        <div className="user-info">
-          <p>Jason Student</p>
-          <button className="logout-button">Log Out</button>
-        </div>
-      </header>
-      <main className="main-content">
+     <NavBar isHome = {false}/>
+      <div className="main-content">
         <div className="search-bar">
           <input type="text" placeholder="Search" />
           <button className="search-button">Search</button>
@@ -44,7 +29,7 @@ const SearchFilterPage = () => {
           </div>
           {/* Repeat the above block for each tutor result */}
         </div>
-      </main>
+      </div>
     </div>
   );
 };

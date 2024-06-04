@@ -28,7 +28,7 @@ class TutorSerializer(serializers.ModelSerializer):
     subjects_taught = SubjectSerializer(many=True, read_only=True)
     class Meta:
         model = Tutor
-        fields = ('username','password','code','isStudent','date_joined','image','subjects_taught')
+        fields = ('username','password','code','isStudent','date_joined','image','subjects_taught','tutor_description')
 
 
 

@@ -14,5 +14,7 @@ urlpatterns = [
     path('sign-in-tutor',index),
     path('sign-up-tutor',index),
     path('update-tutor/<str:code>',index),
+    path('dashboard',index),
+    path('request',index)
 
 ]

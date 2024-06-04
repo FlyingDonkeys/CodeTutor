@@ -40,7 +40,8 @@ class CreateStudentView(APIView):
         username = data['username']
         location = data['location']
         password = data['password']
-        subjects_arr = data['subjects_required']
+        subjects_arr = data.getlist('subjects_required')
+        
         image = data['image']
 
         queryset = Student.objects.filter(user_info__username=username)
@@ -53,18 +54,28 @@ class CreateStudentView(APIView):
             student.save()
             
             # Map subjects_arr to Subject instances and set the many-to-many relationship
-            subjects_required = Subject.objects.filter(subject_name__in=subjects_arr)
-            student.subjects_required.set(subjects_required)
+            #student.subjects_required.filter(lambda x: True).delete()
+            print("Student chose the following subjects: ")
+            print(subjects_arr)
+            subjects = Subject.objects.filter(subject_name__in=subjects_arr)
+            print("subjects objects filtered out:")
+            print(subjects)
+            for subject in subjects:
+                print("in for loop")
+                print(subject)
+                student.subjects_required.add(subject)
+
             
             student.save()
             # Use the serializer to convert the student instance into JSON-friendly format
             serialized_student = StudentSerializer(student)
-            auth.authenticate(username=username, password=password)
+            auth.login(request,user)
+
             return Response(serialized_student.data, status=status.HTTP_201_CREATED)
 
 class UpdateStudentView(APIView):
     #permission_classes = [IsAuthenticated]
-    #permission_classes = (permissions.IsAuthenticated, )
+    permission_classes = (permissions.IsAuthenticated, )
     
     lookup_url_kwarg = 'code'
     print("at Update")
@@ -78,7 +89,7 @@ class UpdateStudentView(APIView):
         username = data['username']
         location = data['location']
         password = data['password']
-        subjects_arr = data['subjects_required']
+        subjects_arr = data.getlist('subjects_required')
         image = data['image']
 
         queryset = Student.objects.filter(code=code)
@@ -98,22 +109,30 @@ class UpdateStudentView(APIView):
             student.save()
             
             # Map subjects_arr to Subject instances and set the many-to-many relationship
-            subjects_required = Subject.objects.filter(subject_name__in=subjects_arr)
-            student.subjects_required.set(subjects_required)
+            temp = student.subjects_required.all()
+            for t in temp:
+                student.subjects_required.remove(t)
+            print(subjects_arr)
+            subjects = Subject.objects.filter(subject_name__in=subjects_arr)
+            for subject in subjects:
+                print(subject)
+                student.subjects_required.add(subject)
             student.image = image
             
             student.save()
             # Use the serializer to convert the student instance into JSON-friendly format
             serialized_student = StudentSerializer(student)
-            
+            auth.login(request,user)
             return Response(serialized_student.data, status=status.HTTP_201_CREATED)
 
 class GetStudentView(APIView):
-    #permission_classes = (permissions.IsAuthenticated, )
+    permission_classes = (permissions.IsAuthenticated, )
     serializer_class = StudentSerializer
     lookup_url_kwarg = 'code'
 
     def get(self, request, format = None):
+        if request.user.is_authenticated:
+            print("authenticated")
         code = request.GET.get(self.lookup_url_kwarg)
         if code != None:
             student = Student.objects.filter(code = code)
@@ -124,10 +143,12 @@ class GetStudentView(APIView):
         return Response({'Bad Request':'Username not found in request'}, status = status.HTTP_400_BAD_REQUEST)
     
 class GetStudentViewUsername(APIView):
+    permission_classes = (permissions.AllowAny, )
     serializer_class = StudentSerializer
     lookup_url_kwarg = 'username'
 
     def post(self, request, format = None):
+
         username = request.GET.get(self.lookup_url_kwarg)
         if username != None:
             student = Student.objects.filter(user_info__username=username)
@@ -149,11 +170,13 @@ class GetStudentViewUsername(APIView):
 #TutorAPI
 
 class TutorView(generics.ListAPIView):
+    permission_classes = (permissions.AllowAny, )
     queryset = Tutor.objects.all()
     serializer_class = TutorSerializer
 
 
 class CreateTutorView(APIView):
+    permission_classes = (permissions.AllowAny, )
     
     def post(self, request, format=None):
         if not self.request.session.exists(self.request.session.session_key):
@@ -162,7 +185,7 @@ class CreateTutorView(APIView):
         
         username = data['username']
         password = data['password']
-        subjects_arr = data['subjects_taught']
+        subjects_arr = data.getlist('subjects_taught')
         image = data['image']
         print(image)
         qual = data['tutor_qualification']
@@ -179,16 +202,17 @@ class CreateTutorView(APIView):
             tutor.save()
             
             subjects_taught = Subject.objects.filter(subject_name__in=subjects_arr)
-            tutor.subjects_taught.set(subjects_taught)
+            for subject in subjects_taught:
+                tutor.subjects_taught.add(subject)
             tutor.save()
             serialized_tutor = TutorSerializer(tutor)
-            auth.authenticate(username=username, password=password)
+            auth.login(request,user)
             return Response(serialized_tutor.data, status=status.HTTP_201_CREATED)
 
 
 class UpdateTutorView(APIView):
     #permission_classes = [IsAuthenticated]
-    #permission_classes = (permissions.IsAuthenticated, )
+    permission_classes = (permissions.IsAuthenticated, )
     lookup_url_kwarg = 'code'
 
     def post(self, request, format=None):
@@ -198,7 +222,7 @@ class UpdateTutorView(APIView):
         code = request.GET.get(self.lookup_url_kwarg)
         username = data['username']
         password = data['password']
-        subjects_arr = data['subjects_taught']
+        subjects_arr = data.getlist('subjects_taught')
         qual = data['tutor_qualification']
         hourly_rate = data['hourly_rate']
         tutor_description = data['tutor_description']
@@ -219,24 +243,30 @@ class UpdateTutorView(APIView):
             tutor.tutor_description = tutor_description
             tutor.save()
             
+            temp = tutor.subjects_taught.all()
+            for t in temp:
+                tutor.subjects_taught.remove(t)
             subjects_taught = Subject.objects.filter(subject_name__in=subjects_arr)
-            tutor.subjects_taught.set(subjects_taught)
+
+            for subject in subjects_taught:
+                tutor.subjects_taught.add(subject)
+
             tutor.tutor_qualification = qual
             tutor.image = image
             tutor.save()
-
             serialized_tutor = TutorSerializer(tutor)
+            auth.login(request,user)
             return Response(serialized_tutor.data, status=status.HTTP_200_OK)
 
 
 class GetTutorView(APIView):
     #permission_classes = [IsAuthenticated]
-    #permission_classes = (permissions.IsAuthenticated, )
+    permission_classes = (permissions.IsAuthenticated, )
     serializer_class = TutorSerializer
     lookup_url_kwarg = 'code'
     print("hello")
     def get(self, request, format=None):
-        print("halo")
+
         code = request.GET.get(self.lookup_url_kwarg)
         if code is not None:
             print(code)
@@ -295,6 +325,7 @@ class GetCSRFToken(APIView):
 #Delete account
 @csrf_exempt
 class DeleteAccountView(APIView):
+    permission_classes = (permissions.IsAuthenticated, )
     def delete(self, request, format=None):
         user = self.request.user
 

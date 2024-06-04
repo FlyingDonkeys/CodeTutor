@@ -124,7 +124,7 @@ const CreateTutorProfilePage = (props) => {
         if(!props.update){
             fetch("/api/create-tutor", requestOptions)
                 .then((response) => response.json()).catch(e => {alert("Invalid Username"); return;})
-                .then((data) => history.push("/profile-tutor/" + data.code));
+                .then((data) => { localStorage.setItem('token', data.token);  history.push("/sign-in-tutor");});
         } else {
             
             
@@ -137,7 +137,7 @@ const CreateTutorProfilePage = (props) => {
             const code = match === null ? " " : match.params.param;
             fetch("/api/update-tutor?code="+code, requestOptions)
                 .then((response) => response.json()).catch(e => {alert("Invalid Username"); return;})
-                .then((data) => history.push("/profile-tutor/" + data.code));
+                .then((data) => { localStorage.setItem('token', data.token);history.push("/profile-tutor/" + data.code);});
         }
     };
 
