@@ -290,7 +290,7 @@ class GetTutorViewUsername(APIView):
     def post(self, request, format=None):
         username = request.GET.get(self.lookup_url_kwarg)
         if username is not None:
-            tutor = Tutor.objects.filter(user__username=username)
+            tutor = Tutor.objects.filter(user_info__username=username)
             data = request.data
             if tutor.exists():
                 user = auth.authenticate(username=username, password=data['password'])

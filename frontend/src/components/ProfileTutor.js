@@ -3,7 +3,7 @@ import { useHistory, matchPath } from 'react-router-dom';
 import NavBar from './Navbar';
 import { Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import {Typography} from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 
 
 
@@ -70,6 +70,8 @@ const ProfileTutor = (props) => {
     const [profileImage, setProfileImage] = useState("");
     const location = useHistory();
     const [success, setSuccess] = useState(true);
+    const[description, setDescription] = useState("");
+    const[tutorScore, setTutorScore] = useState(10);
 
     const match = matchPath(location.location.pathname, {
         path: "/profile-tutor/:param",
@@ -90,9 +92,11 @@ const ProfileTutor = (props) => {
                 const data = await response.json();
                 console.log(data);
                 setusername(data.username);
-                setisStudent(true);
+                setisStudent(false);
                 setjoinedDate(data.date_joined);
                 setstuLocation(data.location);
+                setDescription(data.description);
+                //setTutorScore(data.tutorScore);
                 console.log(data.image);
 
                 setProfileImage(data.image); // Assuming profile_image is the key for the profile picture URL
@@ -112,7 +116,7 @@ const ProfileTutor = (props) => {
                 <div className={classes.container}>
                     <div className={classes.profileSection}>
                         <img
-                            src={"../../.."+profileImage || 'default-profile-image.png'} // Use a default image if profileImage is empty
+                            src={"../../.." + profileImage || 'default-profile-image.png'} // Use a default image if profileImage is empty
                             alt="Profile"
                             className={classes.profileImage}
                         />
@@ -120,7 +124,7 @@ const ProfileTutor = (props) => {
                         <Button
                             variant="contained"
                             className={classes.profileButton}
-                             href={`/update-tutor/${code}`}
+                            href={`/update-tutor/${code}`}
                         >
                             Edit my Profile
                         </Button>

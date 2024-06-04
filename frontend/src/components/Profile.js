@@ -3,7 +3,7 @@ import { useHistory, matchPath } from 'react-router-dom';
 import NavBar from './Navbar';
 import { Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import {Typography} from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 
 
 
@@ -70,7 +70,7 @@ const Profile = (props) => {
     const [profileImage, setProfileImage] = useState("");
     const location = useHistory();
     const [success, setSuccess] = useState(true);
-    
+
 
     const match = matchPath(location.location.pathname, {
         path: "/profile/:param",
@@ -86,7 +86,7 @@ const Profile = (props) => {
             try {
                 const response = await fetch("/api/get-student?code=" + code);
                 if (!response.ok) {
-                    console.error("Error fetching room details:", response.statusText);
+                    console.error("Error fetching details:", response.statusText);
                     setSuccess(false);
                 }
                 const data = await response.json();
@@ -95,7 +95,7 @@ const Profile = (props) => {
                 setisStudent(true);
                 setjoinedDate(data.date_joined);
                 setstuLocation(data.location);
-                console.log("../../.."+data.image);
+                //console.log("../../.." + data.image);
                 //const t = "../../.."+data.image
                 setProfileImage(data.image); // Assuming profile_image is the key for the profile picture URL
             } catch (error) {
@@ -114,7 +114,7 @@ const Profile = (props) => {
                 <div className={classes.container}>
                     <div className={classes.profileSection}>
                         <img
-                            src={"../../.."+profileImage|| "../../static/images/Hero.png"} // Use a default image if profileImage is empty
+                            src={"../../.." + profileImage || "../../static/images/Hero.png"} // Use a default image if profileImage is empty
                             alt="Profile"
                             className={classes.profileImage}
                         />
