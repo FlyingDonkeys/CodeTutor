@@ -30,7 +30,12 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# The age of session cookies, in seconds
+SESSION_COOKIE_AGE = 1209600  # Two weeks
 
+# Whether the session cookie should expire when the browser is closed
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 # Application definition
 
 INSTALLED_APPS = [

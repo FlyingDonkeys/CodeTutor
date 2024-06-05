@@ -84,6 +84,10 @@ const CreateTutorProfilePage = (props) => {
             return;
         }
 
+        if(!image){
+            alert("Please upload a profile image!");
+            return;
+        }
         let formField = new FormData();
         formField.append('username', username);
         formField.append('password', password);

@@ -95,11 +95,15 @@ const ProfileTutor = (props) => {
                 setisStudent(false);
                 setjoinedDate(data.date_joined);
                 setstuLocation(data.location);
-                setDescription(data.description);
+                setDescription(data.tutor_description);
                 //setTutorScore(data.tutorScore);
                 console.log(data.image);
 
-                setProfileImage(data.image); // Assuming profile_image is the key for the profile picture URL
+                if(data.image != null){
+                    setProfileImage("../../.." + data.image);
+                }else {
+                    setProfileImage(data.image);
+                }// Assuming profile_image is the key for the profile picture URL
             } catch (error) {
                 console.error("Error fetching user details:", error);
                 setSuccess(false);
@@ -111,12 +115,12 @@ const ProfileTutor = (props) => {
 
     return (
         <>
-            <NavBar isHome={false} text={"Tutor Profile Page"} isLoggedIn={true} />
+            <NavBar isHome={false} text={""} isLoggedIn={true} />
             {success ? (
                 <div className={classes.container}>
                     <div className={classes.profileSection}>
                         <img
-                            src={"../../.." + profileImage || 'default-profile-image.png'} // Use a default image if profileImage is empty
+                            src={profileImage || 'default-profile-image.png'} // Use a default image if profileImage is empty
                             alt="Profile"
                             className={classes.profileImage}
                         />
@@ -134,6 +138,14 @@ const ProfileTutor = (props) => {
                         <div className={classes.joinedDate}>
                             <span className={classes.joinedDateIcon}>📅</span>
                             <Typography>Joined {new Date(joinedDate).toLocaleDateString()}</Typography>
+                        </div>
+                        <div className={classes.joinedDate}>
+                            <span className={classes.joinedDateIcon}>🌠</span>
+                            <Typography>Tutor</Typography>
+                        </div>
+                        <div className={classes.joinedDate}>
+                            <span className={classes.joinedDateIcon}>✌️</span>
+                            <Typography>{description}</Typography>
                         </div>
                     </div>
                 </div>

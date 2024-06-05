@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory, matchPath} from 'react-router-dom';
+import { useHistory, matchPath } from 'react-router-dom';
 import NavBar from './Navbar';
 import { Button, FormControl, Select, MenuItem, Checkbox, ListItemText } from '@material-ui/core';
 
@@ -15,10 +15,10 @@ const CreateProfilePage = (props) => {
     const location = useHistory();
 
     useEffect(() => {
-        const getSubjects = async() => {
-      
+        const getSubjects = async () => {
+
             const response = await fetch("/api/subjects");
-   
+
             if (!response.ok) {
                 console.error("Failed to fetch subjects");
                 return;
@@ -97,27 +97,30 @@ const CreateProfilePage = (props) => {
 
         const requestOptions = {
             method: "POST",
-            headers: {'X-CSRFToken': cookieValue },
+            headers: { 'X-CSRFToken': cookieValue },
             body: formField,
             credentials: 'include',
         };
-        if(!props.update){
-        fetch("/api/create-student", requestOptions)
-            .then((response) => response.json()).catch(e => {alert("Invalid Username"); return;})
-            .then((data) =>  {localStorage.setItem('token', data.token); history.push("/sign-in");});
-        }else {
-            
-            
+        if (!props.update) {
+            fetch("/api/create-student", requestOptions)
+                .then((response) => response.json()).catch(e => { alert("Invalid Username"); return; })
+                .then((data) => { localStorage.setItem('token', data.token); history.push("/sign-in"); });
+        } else {
+
+
             const match = matchPath(location.location.pathname, {
                 path: "/update/:param",
                 exact: true,
                 strict: false,
             });
-        
+
             const code = match === null ? " " : match.params.param;
-        fetch("/api/update-student?code="+code, requestOptions)
-            .then((response) => response.json()).catch(e => {alert("Invalid Username"); return;})
-            .then((data) => { localStorage.setItem('token', data.token);  history.push("/profile/" + data.code);});
+            fetch("/api/update-student?code=" + code, requestOptions)
+                .then((response) => response.json()).catch(e => { alert("Invalid Username"); return; })
+                .then((data) => { 
+                    localStorage.setItem('token', data.token); 
+                    history.push("/profile/" + data.code); 
+                });
         }
     };
 

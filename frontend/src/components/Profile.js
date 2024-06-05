@@ -95,9 +95,11 @@ const Profile = (props) => {
                 setisStudent(true);
                 setjoinedDate(data.date_joined);
                 setstuLocation(data.location);
-                //console.log("../../.." + data.image);
-                //const t = "../../.."+data.image
-                setProfileImage(data.image); // Assuming profile_image is the key for the profile picture URL
+                if(data.image != null){
+                    setProfileImage("../../.." + data.image);
+                }else {
+                    setProfileImage(data.image);
+                }
             } catch (error) {
                 console.error("Error fetching user details:", error);
                 setSuccess(false);
@@ -109,12 +111,12 @@ const Profile = (props) => {
 
     return (
         <>
-            <NavBar isHome={false} text={"Profile Page"} isLoggedIn={true} />
+            <NavBar isHome={false} text={""} isLoggedIn={true} />
             {success ? (
                 <div className={classes.container}>
                     <div className={classes.profileSection}>
                         <img
-                            src={"../../.." + profileImage || "../../static/images/Hero.png"} // Use a default image if profileImage is empty
+                            src={profileImage || "../../static/images/Hero.png"} // Use a default image if profileImage is empty
                             alt="Profile"
                             className={classes.profileImage}
                         />
@@ -132,6 +134,10 @@ const Profile = (props) => {
                         <div className={classes.joinedDate}>
                             <span className={classes.joinedDateIcon}>📅</span>
                             <Typography>Joined {new Date(joinedDate).toLocaleDateString()}</Typography>
+                        </div>
+                        <div className={classes.joinedDate}>
+                            <span className={classes.joinedDateIcon}>⭐</span>
+                            <Typography>Student</Typography>
                         </div>
                     </div>
                 </div>

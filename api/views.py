@@ -16,8 +16,6 @@ class SubjectList(APIView):
     def get(self, request):
         subjects = Subject.objects.all()
         serializer = SubjectSerializer(subjects, many=True)
-        
-        print(serializer.data)
         return Response(serializer.data)
 
 
@@ -35,94 +33,76 @@ class CreateStudentView(APIView):
     def post(self, request, format=None):
         if not self.request.session.exists(self.request.session.session_key):
             self.request.session.create()
-        data = request.data  # Use request.data for POST data in DRF
+        data = request.data 
 
         username = data['username']
         location = data['location']
         password = data['password']
         subjects_arr = data.getlist('subjects_required')
-        
-        image = data['image']
+        image = None
+        if 'image' in data:
+            image = data['image']
 
         queryset = Student.objects.filter(user_info__username=username)
         if queryset.exists():
             return Response({'Bad Request': 'Username already exists!'}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            # Create and save the student instance first
             user = User.objects.create_user(username=username, password=password)
             student = Student(user_info=user, location=location, image = image)
             student.save()
-            
-            # Map subjects_arr to Subject instances and set the many-to-many relationship
-            #student.subjects_required.filter(lambda x: True).delete()
-            print("Student chose the following subjects: ")
-            print(subjects_arr)
             subjects = Subject.objects.filter(subject_name__in=subjects_arr)
-            print("subjects objects filtered out:")
-            print(subjects)
             for subject in subjects:
-                print("in for loop")
-                print(subject)
                 student.subjects_required.add(subject)
-
-            
             student.save()
-            # Use the serializer to convert the student instance into JSON-friendly format
             serialized_student = StudentSerializer(student)
             auth.login(request,user)
-
+            request.session['code'] = student.code
             return Response(serialized_student.data, status=status.HTTP_201_CREATED)
 
 class UpdateStudentView(APIView):
-    #permission_classes = [IsAuthenticated]
     permission_classes = (permissions.IsAuthenticated, )
     
     lookup_url_kwarg = 'code'
-    print("at Update")
     def post(self, request, format=None):
-        print(request.user.is_authenticated)
         if not self.request.session.exists(self.request.session.session_key):
             self.request.session.create()
-        data = request.data  # Use request.data for POST data in DRF
-        print("test")
-        code = request.GET.get(self.lookup_url_kwarg)
+        data = request.data 
+        code = request.session.get('code','default_code')
+        if code == 'default_code':
+            print("code doesnt exist")
+        
         username = data['username']
         location = data['location']
         password = data['password']
         subjects_arr = data.getlist('subjects_required')
-        image = data['image']
+        image = None
+        if 'image' in data:
+            image = data['image']
 
         queryset = Student.objects.filter(code=code)
         if not queryset.exists():
             return Response({'Bad Request': 'Username doesnt exists!'}, status=status.HTTP_400_BAD_REQUEST)
         else:
             student = queryset.first()
-            # Create and save the student instance first
             user = student.user_info
             user.username = username
             if password:
                 user.set_password(password)
             user.save()
-
             student.location = location
-            #student = Student(username=username, password=password, location=location)
             student.save()
-            
-            # Map subjects_arr to Subject instances and set the many-to-many relationship
             temp = student.subjects_required.all()
             for t in temp:
                 student.subjects_required.remove(t)
-            print(subjects_arr)
             subjects = Subject.objects.filter(subject_name__in=subjects_arr)
             for subject in subjects:
-                print(subject)
                 student.subjects_required.add(subject)
-            student.image = image
-            
+            if image is not None:
+                student.image = image
             student.save()
-            # Use the serializer to convert the student instance into JSON-friendly format
             serialized_student = StudentSerializer(student)
             auth.login(request,user)
+            request.session['code'] = code
             return Response(serialized_student.data, status=status.HTTP_201_CREATED)
 
 class GetStudentView(APIView):
@@ -131,13 +111,12 @@ class GetStudentView(APIView):
     lookup_url_kwarg = 'code'
 
     def get(self, request, format = None):
-        if request.user.is_authenticated:
-            print("authenticated")
-        code = request.GET.get(self.lookup_url_kwarg)
-        if code != None:
+        code = request.session.get('code','default_code')
+        if code != 'default_code':
             student = Student.objects.filter(code = code)
             if len(student) > 0:
                 data = StudentSerializer(student[0]).data
+                request.session['code'] = code
                 return Response(data,status = status.HTTP_200_OK)
             return Response({'Student Not Found':'Invalid Student Username'}, status = status.HTTP_404_NOT_FOUND)
         return Response({'Bad Request':'Username not found in request'}, status = status.HTTP_400_BAD_REQUEST)
@@ -152,14 +131,12 @@ class GetStudentViewUsername(APIView):
         username = request.GET.get(self.lookup_url_kwarg)
         if username != None:
             student = Student.objects.filter(user_info__username=username)
-            print(student)
-            print(request.data['password'])
             if len(student) > 0:
                 user = auth.authenticate(username=username, password=request.data['password'])
-                print(user)
                 if user is not None:
                     data = TutorSerializer(student.first()).data
                     auth.login(request, user)
+                    request.session['code'] = student.first().code
                     return Response(data, status=status.HTTP_200_OK)
                 else:
                     return Response({'Invalid Password': 'Wrong Password'}, status=status.HTTP_404_NOT_FOUND)
@@ -186,8 +163,9 @@ class CreateTutorView(APIView):
         username = data['username']
         password = data['password']
         subjects_arr = data.getlist('subjects_taught')
-        image = data['image']
-        print(image)
+        image = None
+        if 'image' in data:
+            image = data['image']
         qual = data['tutor_qualification']
   
         hourly_rate = data['hourly_rate']
@@ -207,6 +185,7 @@ class CreateTutorView(APIView):
             tutor.save()
             serialized_tutor = TutorSerializer(tutor)
             auth.login(request,user)
+            request.session['code'] = tutor.code
             return Response(serialized_tutor.data, status=status.HTTP_201_CREATED)
 
 
@@ -218,17 +197,17 @@ class UpdateTutorView(APIView):
     def post(self, request, format=None):
         if not self.request.session.exists(self.request.session.session_key):
             self.request.session.create()
-        data = request.data
-        code = request.GET.get(self.lookup_url_kwarg)
+        data = request.data  
+        code = request.session.get('code','default_code')
         username = data['username']
         password = data['password']
         subjects_arr = data.getlist('subjects_taught')
         qual = data['tutor_qualification']
         hourly_rate = data['hourly_rate']
         tutor_description = data['tutor_description']
-        image = data['image']
-        print(image)
-
+        image = None
+        if 'image' in data:
+            image = data['image']
         queryset = Tutor.objects.filter(code=code)
         if not queryset.exists():
             return Response({'Bad Request': 'Username does not exist!'}, status=status.HTTP_400_BAD_REQUEST)
@@ -242,20 +221,19 @@ class UpdateTutorView(APIView):
             tutor.hourly_rate = hourly_rate
             tutor.tutor_description = tutor_description
             tutor.save()
-            
             temp = tutor.subjects_taught.all()
             for t in temp:
                 tutor.subjects_taught.remove(t)
             subjects_taught = Subject.objects.filter(subject_name__in=subjects_arr)
-
             for subject in subjects_taught:
                 tutor.subjects_taught.add(subject)
-
             tutor.tutor_qualification = qual
-            tutor.image = image
+            if image is not None:
+                tutor.image = image
             tutor.save()
             serialized_tutor = TutorSerializer(tutor)
             auth.login(request,user)
+            request.session['code'] = code
             return Response(serialized_tutor.data, status=status.HTTP_200_OK)
 
 
@@ -264,18 +242,15 @@ class GetTutorView(APIView):
     permission_classes = (permissions.IsAuthenticated, )
     serializer_class = TutorSerializer
     lookup_url_kwarg = 'code'
-    print("hello")
     def get(self, request, format=None):
 
-        code = request.GET.get(self.lookup_url_kwarg)
-        if code is not None:
-            print(code)
+        #code = request.GET.get(self.lookup_url_kwarg)
+        code = request.session.get('code','default_code')
+        if code != 'default_code':
             tutor = Tutor.objects.filter(code=code)
-            print(tutor)
             if tutor.exists():
-                print(tutor[0])
                 data = TutorSerializer(tutor[0]).data
-                print(data)
+                request.session['code'] = code
                 return Response(data, status=status.HTTP_200_OK)
             return Response({'Tutor Not Found': 'Invalid Tutor Code'}, status=status.HTTP_404_NOT_FOUND)
         return Response({'Bad Request': 'Code not found in request'}, status=status.HTTP_400_BAD_REQUEST)
@@ -297,6 +272,7 @@ class GetTutorViewUsername(APIView):
                 if user is not None:
                     data = TutorSerializer(tutor.first()).data
                     auth.login(request, user)
+                    request.session['code'] = tutor.first().code
                     return Response(data, status=status.HTTP_200_OK)
                 else:
                     return Response({'Invalid Password': 'Wrong Password'}, status=status.HTTP_404_NOT_FOUND)

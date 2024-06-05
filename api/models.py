@@ -36,7 +36,7 @@ class Person(models.Model):
 
         while(True):
 
-            code = uuid.uuid4().hex[:6].upper()
+            code = uuid.uuid4().hex[:12].upper()
 
             print(Person.objects.filter(code=code))
 

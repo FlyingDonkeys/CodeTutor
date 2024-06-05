@@ -5,7 +5,7 @@ import NavBar from './Navbar';
 const SearchFilterPage = (props) => {
   return (
     <div className="search-filter-page">
-     <NavBar isHome = {false}/>
+      <NavBar isHome={false} />
       <div className="main-content">
         <div className="search-bar">
           <input type="text" placeholder="Search" />

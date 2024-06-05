@@ -85,7 +85,7 @@ const LandingPage = (props) => {
 
   return (
     <div className="landing-page">
-      <NavBar loggedIn={true} profileImage={profileImage} code = {code} username = {username}/>
+      <NavBar isStudent = {props.isStudent} loggedIn={true} profileImage={profileImage} code = {code} username = {username}/>
       {success? 
       <div className="main-content">
         <div className="timetable">

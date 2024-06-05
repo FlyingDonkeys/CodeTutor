@@ -1,19 +1,19 @@
 import { Card } from '@material-ui/core';
-import {CardContent} from '@material-ui/core';
-import {CardActionArea} from '@material-ui/core';
-import {CardMedia} from '@material-ui/core';
-import {Typography} from '@material-ui/core';
+import { CardContent } from '@material-ui/core';
+import { CardActionArea } from '@material-ui/core';
+import { CardMedia } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { Link } from '@mui/material';
 import React, { Component } from 'react';
 
 export default function InfoCard(props) {
   return (
-    <Card sx={{ maxWidth: 345 }} style={{minHeight:'45vh'}}>
+    <Card sx={{ maxWidth: 345 }} style={{ minHeight: '45vh' }}>
       <CardActionArea>
         <CardMedia
           component="img"
           height="140"
-          image={props.link || "../../static/images/codeTutor.png"}
+          image={props.link || "../../static/images/Hero.png"}
           alt="placeholder"
         />
         <CardContent>
@@ -24,8 +24,8 @@ export default function InfoCard(props) {
             {props.description}
           </Typography>
           {props.path != "" ?
-          <Link href ={props.path}>click here</Link>
-          :null
+            <Link href={props.path}>click here</Link>
+            : null
           }
         </CardContent>
       </CardActionArea>

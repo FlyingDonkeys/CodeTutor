@@ -1,5 +1,7 @@
 const path = require("path");
 const webpack = require("webpack");
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+
 
 module.exports = {
 
@@ -23,6 +25,7 @@ module.exports = {
     minimize: true,
   },
   plugins: [
+    new CleanWebpackPlugin(),
     new webpack.DefinePlugin({
       "process.env": {
         // This has effect on the react lib size

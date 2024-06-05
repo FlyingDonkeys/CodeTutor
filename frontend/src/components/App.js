@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { StrictMode } from 'react';
 import HomePage from './HomePage';
-import { 
-  BrowserRouter as Router, 
+import {
+  BrowserRouter as Router,
   Routes,
   Route,
-  Link, 
-  Redirect 
+  Link,
+  Redirect
 } from 'react-router-dom';
 
 export default class App extends Component {
@@ -19,9 +19,9 @@ export default class App extends Component {
   render() {
 
     return (
-    <Router>
-    <HomePage/>
-    </Router>
+      <Router>
+        <HomePage />
+      </Router>
     )
   }
 }

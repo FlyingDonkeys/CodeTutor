@@ -18,7 +18,7 @@ const Helper = () => {
        </div>
     </div>
 
-
+    <div style={{marginLeft:'10%',marginRight:'10%'}}>
       <div style = {{display:'flex', justifyContent:'center',paddingTop:'5%'}}>
       <h1>
         What is Code Tutor? 
@@ -31,17 +31,17 @@ const Helper = () => {
       </p>
       </div>
 
-      <div style={{display: 'flex', justifyContent: 'center'}}>
+      <div style={{display: 'flex', justifyContent: 'center',marginLeft:'10%',marginRight:'10%'}}>
       <div style={{ backgroundColor: "#fffefa" }}>
         <Grid container spacing = {1}>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"}  path = {""} link = {"../../static/images/img10.png"}/>
+              <InfoCard header = {"Personalized Learning"} description={"Tailored tutoring sessions to fit each student’s needs."}  path = {""} link = {"../../static/images/img10.png"}/>
             </Grid>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"} path = {""} link = {"../../static/images/img11.png"}/>
+              <InfoCard header = {"Focused Study"} description={"Resources to enhance concentration and retention."} path = {""} link = {"../../static/images/img11.png"}/>
             </Grid>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"} path = {""} link = {"../../static/images/img12.png"}/>
+              <InfoCard header = {"Collaborative Learning"} description={"Interactive sessions to promote understanding and engagement."} path = {""} link = {"../../static/images/img12.png"}/>
             </Grid>
         </Grid>
       </div>
@@ -59,17 +59,17 @@ const Helper = () => {
       </p>
       </div>
 
-      <div style={{display: 'flex', justifyContent: 'center'}}>
+      <div style={{display: 'flex', justifyContent: 'center',marginLeft:'10%',marginRight:'10%'}}>
       <div style={{ backgroundColor: "#fffefa" }}>
         <Grid container spacing = {1}>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"} path = {""} link = {"../../static/images/img1.png"} />
+              <InfoCard header = {"Create an Account"} description={"Sign up with your email and create a secure password"} path = {""} link = {"../../static/images/img1.png"} />
             </Grid>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"} path = {""} link = {"../../static/images/img2.png"}/>
+              <InfoCard header = {"Complete Your Profile"} description={"Add your personal information and academic preferences"} path = {""} link = {"../../static/images/img2.png"}/>
             </Grid>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"} path = {""} link = {"../../static/images/img3.png"}/>
+              <InfoCard header = {"Start Learning"} description={"Browse and connect with tutors that match your needs"} path = {""} link = {"../../static/images/img3.png"}/>
             </Grid>
         </Grid>
       </div>
@@ -87,17 +87,17 @@ const Helper = () => {
       </p>
       </div>
 
-      <div style={{display: 'flex', justifyContent: 'center'}}>
+      <div style={{display: 'flex', justifyContent: 'center',marginLeft:'10%',marginRight:'10%'}}>
       <div style={{ backgroundColor: "#fffefa" }}>
         <Grid container spacing = {1}>
             <Grid item xs = {4}>
               <InfoCard header = {"Sign Up Now!"} description={"Click link below to sign up as a tutor! "} path = {"/sign-up-tutor"}  link = {"../../static/images/img4.png"}/>
             </Grid>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"} path = {""} link = {"../../static/images/img5.png"}/>
+              <InfoCard header = {"Online Sessions"} description={"Add your qualifications and availability"} path = {""} link = {"../../static/images/img5.png"}/>
             </Grid>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"} path = {""} link = {"../../static/images/img6.png"}/>
+              <InfoCard header = {"Start Teaching"} description={"Connect with students and start tutoring"} path = {""} link = {"../../static/images/img6.png"}/>
             </Grid>
         </Grid>
       </div>
@@ -115,19 +115,20 @@ const Helper = () => {
       </p>
       </div>
 
-      <div style={{display: 'flex', justifyContent: 'center'}}>
+      <div style={{display: 'flex', justifyContent: 'center',marginLeft:'10%',marginRight:'10%'}}>
       <div style={{ backgroundColor: "#fffefa" }}>
         <Grid container spacing = {1}>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"} path = {""} link = {"../../static/images/img7.png"}/>
+              <InfoCard header = {"Professional Tutoring" } description={"Experienced professionals to guide your learning"} path = {""} link = {"../../static/images/img7.png"}/>
             </Grid>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"} path = {""} link = {"../../static/images/img8.png"}/>
+              <InfoCard header = {"Online Sessions"} description={"Convenient online tutoring sessions to fit your schedule"} path = {""} link = {"../../static/images/img8.png"}/>
             </Grid>
             <Grid item xs = {4}>
-              <InfoCard header = {"placeHolder"} description={"Description"} path = {""} link = {"../../static/images/img9.png"}/>
+              <InfoCard header = {"In-Person Tutoring"} description={"Face-to-face tutoring for personalized learning"} path = {""} link = {"../../static/images/img9.png"}/>
             </Grid>
         </Grid>
+      </div>
       </div>
       </div>
       <Footer/>
