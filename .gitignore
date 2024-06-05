@@ -60,3 +60,6 @@ dist/
 
 # Ignore the frontend/node_modules directory
 /frontend/node_modules/
+
+# Vercel
+.vercel
