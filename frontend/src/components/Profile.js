@@ -111,7 +111,7 @@ const Profile = (props) => {
 
     return (
         <>
-            <NavBar isHome={false} text={""} isLoggedIn={true} />
+            <NavBar isHome={false} text={""} isLoggedIn={true} isStudent = {true} code = {code}/>
             {success ? (
                 <div className={classes.container}>
                     <div className={classes.profileSection}>
