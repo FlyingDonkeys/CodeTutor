@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
@@ -64,94 +65,112 @@ class StudentRegistrationForm(forms.ModelForm):
         ]
 
 
-def index(request):
-    return render(request, "CodeTutor/layout.html")
+def entry(request):
+    if (request.method == 'GET' and not request.user.is_authenticated):
+        return render(request, "CodeTutor/index.html", context={
+            "tutor_registration_form": TutorRegistrationForm(),
+            "student_registration_form": StudentRegistrationForm()
+        })
 
-def register(request, user_type):
-    if (request.method == 'GET'):
-        if user_type == 'tutor':
-            return render(request, 'CodeTutor/registerTutor.html', context={
-                "tutor_registration_form": TutorRegistrationForm()
-            })
-        elif user_type == 'student':
-            return render(request, 'CodeTutor/registerStudent.html', context={
-                "student_registration_form": StudentRegistrationForm()
-            })
+    # IF somehow the tutor/student goes to the entry page when he is not supposed to, redirect him to the student list page
+    # Not well coded sorry...
+    elif (request.method == 'GET' and request.user.is_authenticated):
+        if (Tutor.objects.filter(username=request.user.username)):
+            return render(request, "CodeTutor/student_list.html")
 
-    elif (request.method == 'POST'):
+    if (request.method == 'POST'):
         if ("student" in request.POST):
             student_registration_form = StudentRegistrationForm(request.POST)
             if (student_registration_form.is_valid()):
-                new_student = Student.objects.create(
-                    username=student_registration_form.cleaned_data['username'],
-                    first_name=student_registration_form.cleaned_data['first_name'],
-                    last_name=student_registration_form.cleaned_data['last_name'],
-                    email=student_registration_form.cleaned_data['email'],
-                    mobile_number=student_registration_form.cleaned_data['mobile_number'],
-                    location=student_registration_form.cleaned_data['location'],
-                )
-
-                password = student_registration_form.cleaned_data['password']
-                subjects_required = student_registration_form.cleaned_data['subjects_required']
-                # Assign the many-to-many field after making the student object
-                new_student.subjects_required.set(subjects_required)
-                new_student.set_password(password)
-                new_student.save()
-                return HttpResponseRedirect(reverse("login_function"))
+                return register_student(student_registration_form)
             else:
-                return render(request, 'CodeTutor/registerStudent.html', {
+                return render(request, 'CodeTutor/index.html', {
                     "student_registration_form": student_registration_form
                 })
-
         elif ("tutor" in request.POST):
             tutor_registration_form = TutorRegistrationForm(request.POST)
             if (tutor_registration_form.is_valid()):
-                new_tutor = Tutor.objects.create(
-                    username=tutor_registration_form.cleaned_data['username'],
-                    first_name=tutor_registration_form.cleaned_data['first_name'],
-                    last_name=tutor_registration_form.cleaned_data['last_name'],
-                    email=tutor_registration_form.cleaned_data['email'],
-                    mobile_number=tutor_registration_form.cleaned_data['mobile_number'],
-                    tutor_qualification = tutor_registration_form.cleaned_data['tutor_qualification'],
-                    hourly_rate = tutor_registration_form.cleaned_data['hourly_rate'],
-                    tutor_description = tutor_registration_form.cleaned_data['tutor_description']
-                )
-
-                password = tutor_registration_form.cleaned_data['password']
-                subjects_taught = tutor_registration_form.cleaned_data['subjects_taught']
-                # Assign the many-to-many field after making the student object
-                new_tutor.subjects_taught.set(subjects_taught)
-                new_tutor.set_password(password)
-                new_tutor.save()
-                return HttpResponseRedirect(reverse("login_function"))
+                return register_tutor(tutor_registration_form)
             else:
-                return render(request, 'CodeTutor/registerTutor.html', {
+                return render(request, 'CodeTutor/index.html', {
                     "tutor_registration_form": tutor_registration_form
                 })
+        elif ("login" in request.POST):
+            return login_function(request)
+
+
+def register_student(student_registration_form):
+    new_student = Student.objects.create(
+        username=student_registration_form.cleaned_data['username'],
+        first_name=student_registration_form.cleaned_data['first_name'],
+        last_name=student_registration_form.cleaned_data['last_name'],
+        email=student_registration_form.cleaned_data['email'],
+        mobile_number=student_registration_form.cleaned_data['mobile_number'],
+        location=student_registration_form.cleaned_data['location'],
+    )
+
+    password = student_registration_form.cleaned_data['password']
+    subjects_required = student_registration_form.cleaned_data['subjects_required']
+    # Assign the many-to-many field after making the student object
+    new_student.subjects_required.set(subjects_required)
+    new_student.set_password(password)
+    new_student.save()
+    return HttpResponseRedirect(reverse("login_function"))
+
+
+def register_tutor(tutor_registration_form):
+    new_tutor = Tutor.objects.create(
+        username=tutor_registration_form.cleaned_data['username'],
+        first_name=tutor_registration_form.cleaned_data['first_name'],
+        last_name=tutor_registration_form.cleaned_data['last_name'],
+        email=tutor_registration_form.cleaned_data['email'],
+        mobile_number=tutor_registration_form.cleaned_data['mobile_number'],
+        tutor_qualification=tutor_registration_form.cleaned_data['tutor_qualification'],
+        hourly_rate=tutor_registration_form.cleaned_data['hourly_rate'],
+        tutor_description=tutor_registration_form.cleaned_data['tutor_description']
+    )
+
+    password = tutor_registration_form.cleaned_data['password']
+    subjects_taught = tutor_registration_form.cleaned_data['subjects_taught']
+    # Assign the many-to-many field after making the student object
+    new_tutor.subjects_taught.set(subjects_taught)
+    new_tutor.set_password(password)
+    new_tutor.save()
+    return HttpResponseRedirect(reverse("login_function"))
 
 
 def login_function(request):
     if (request.method == "GET"):
-        return render(request, 'CodeTutor/login.html')
+        return render(request, 'CodeTutor/index.html')
 
     elif (request.method == "POST"):
-
         # Attempt to sign user in
         username = request.POST["username"]
         password = request.POST["password"]
         user = authenticate(request, username=username, password=password)
-
         # Check if authentication successful
         if user is not None:
             login(request, user)
-            return HttpResponseRedirect(reverse("index"))
+            # If the user with this username is a tutor, bring him to the student list view
+            if (Tutor.objects.filter(username=username)):
+                return HttpResponseRedirect(reverse("tutor_main"))
+            elif (Student.objects.filter(username=username)):
+                pass # Should go student_main page but yet to implement
+
+            # Otherwise, bring to tutor list view (tbc)
+            return HttpResponseRedirect(reverse("entry"))
         else:
-            return render(request, "CodeTutor/login.html", {
+            return render(request, "CodeTutor/index.html", {
                 "message": "Invalid username and/or password."
             })
 
 
+@login_required
+def tutor_main(request):
+    return render(request, "CodeTutor/student_list.html")
+
+
 def logout_function(request):
     logout(request)
-    return HttpResponseRedirect(reverse("index"))
+    return HttpResponseRedirect(reverse("entry"))
 
