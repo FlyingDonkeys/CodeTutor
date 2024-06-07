@@ -1,0 +1,145 @@
+{% extends "CodeTutor/layout.html" %}
+{% load static %}
+
+{% block script %}
+    <!-- Javascript logic for client side login and registration features -->
+    <script src="{% static "CodeTutor/javascript/entry.js" %}"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="container" id="login_view">
+        <div class="container" style="background: white">
+            <div class="row">
+                <div class="col-2">
+                    <!-- To centralise -->
+                </div>
+                <h3>Login</h3>
+            </div>
+            <form action="{% url 'login_function' %}" method="post">
+                {% csrf_token %}
+                <div class="row mb-3">
+                    <div class="col-4">
+                        <!-- To centralise -->
+                    </div>
+                    <div class="col-4">
+                        {% if message %}
+                            <div class="alert alert-danger" role="alert">
+                                {{ message }}
+                            </div>
+                        {% endif %}
+                        <div class="input-group mb-3">
+                          <span class="input-group-text" id="basic-addon1">Username</span>
+                          <input type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1" name="username">
+                        </div>
+                        <div class="input-group mb-3">
+                          <span class="input-group-text" id="basic-addon1">Password</span>
+                          <input type="password" class="form-control" aria-label="Password" aria-describedby="basic-addon1" name="password">
+                        </div>
+                    </div>
+                </div>
+                <!-- Submit Button -->
+                <div class="row mb-3">
+                    <div class="col-5">
+                        <!-- To centralise -->
+                    </div>
+                    <div class="col-4">
+                            <input type="submit" name="login">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="container" id="register_student_view">
+        <div class="container" style="background: white">
+            <div class="row">
+                <div class="col-2">
+                    <!-- To centralise -->
+                </div>
+                <h3>Register as a Student</h3>
+            </div>
+            <form action="{% url 'entry' %}" method="post">
+                {% csrf_token %}
+                {% for field in student_registration_form.visible_fields %}
+                    <div class="row mb-3">
+                        <div class="col-4">
+                            <!-- To centralise -->
+                        </div>
+                        <div class="col-4">
+                            <div class="fieldWrapper">
+                                <div class="row mb-3">
+                                    {% if field.errors %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {{ field.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="row mb-3">
+                                    {{ field.label_tag }}
+                                </div>
+                                <div class="row mb-3">
+                                    {{ field }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="row mb-3">
+                    <div class="col-5">
+                        <!-- To centralise -->
+                    </div>
+                    <div class="col-4">
+                        <input type="submit" name="student">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="container" id="register_tutor_view">
+        <div class="container" style="background: white">
+            <div class="row">
+                <div class="col-2">
+                    <!-- To centralise -->
+                </div>
+                <h3>Register as a Tutor</h3>
+            </div>
+            <form action="{% url 'entry' %}" method="post">
+                {% csrf_token %}
+                {% for field in tutor_registration_form.visible_fields %}
+                    <div class="row mb-3">
+                        <div class="col-4">
+                            <!-- To centralise -->
+                        </div>
+                        <div class="col-4">
+                            <div class="fieldWrapper">
+                                <div class="row mb-3">
+                                    {% if field.errors %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {{ field.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="row mb-3">
+                                    {{ field.label_tag }}
+                                </div>
+                                <div class="row mb-3">
+                                    {{ field }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="row mb-3">
+                    <div class="col-5">
+                        <!-- To centralise -->
+                    </div>
+                    <div class="col-1">
+                            <input type="submit" name="tutor">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+{% endblock %}
