@@ -43,6 +43,18 @@ class Student(CommonUser):
     class Meta:
         verbose_name = "Student"
 
+    def serialize(self):
+        return {
+            "id": self.id,
+            "username": self.username,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "email": self.email,
+            "date_joined": self.date_joined,
+            "location": self.location,
+            "subjects_required": [subject.subject_name for subject in self.subjects_required.all()]
+        }
+
 
 
 class Tutor(CommonUser):

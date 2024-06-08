@@ -1,6 +1,8 @@
+import time
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from .models import *
@@ -77,6 +79,9 @@ def entry(request):
     elif (request.method == 'GET' and request.user.is_authenticated):
         if (Tutor.objects.filter(username=request.user.username)):
             return render(request, "CodeTutor/student_list.html")
+        else:
+            # Yet to implement
+            return logout_function(request)
 
     if (request.method == 'POST'):
         if ("student" in request.POST):
@@ -155,10 +160,10 @@ def login_function(request):
             if (Tutor.objects.filter(username=username)):
                 return HttpResponseRedirect(reverse("tutor_main"))
             elif (Student.objects.filter(username=username)):
-                pass # Should go student_main page but yet to implement
+                return logout_function(request) # Should go student_main page but yet to implement
 
             # Otherwise, bring to tutor list view (tbc)
-            return HttpResponseRedirect(reverse("entry"))
+            return HttpResponseRedirect(reverse("tutor_main"))
         else:
             return render(request, "CodeTutor/index.html", {
                 "message": "Invalid username and/or password."
@@ -167,7 +172,30 @@ def login_function(request):
 
 @login_required
 def tutor_main(request):
-    return render(request, "CodeTutor/student_list.html")
+    if (request.method == "GET"):
+        return render(request, "CodeTutor/student_list.html")
+
+
+@login_required
+def load_student_profiles(request):
+    if (request.method == "GET"):
+        # Get start and end profiles
+        start = int(request.GET.get('start') or 0)
+        end = int(request.GET.get('end') or (start + 9))
+
+        # Generate list of profiles
+        data = []
+        for i in range(start, end + 1):
+            try:
+                # Try to get 10 profiles at a time
+                data.append(Student.objects.all()[i].serialize())
+            except:
+                # If not possible to get 10 profiles, break
+                break
+        print(data)
+        # Artificially delay speed of response
+        time.sleep(1)
+        return JsonResponse(data, safe=False)
 
 
 def logout_function(request):
