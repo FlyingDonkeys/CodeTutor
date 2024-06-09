@@ -7,8 +7,17 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('#login_button').onclick = () => log_in();
     console.log("DOM content reloaded");
 
-    // By default, user should be in the log_in view
-    log_in();
+    // By default, user should be in the log_in view, unless there are form errors
+    const studentformHasErrors = document.querySelector('#student_form_has_errors').value;
+    const tutorformHasErrors = document.querySelector('#tutor_form_has_errors').value;
+    const loginformHasErrors = document.querySelector('#login_form_has_errors').value;
+    if (tutorformHasErrors) {
+        load_form('tutor');
+    } else if (studentformHasErrors) {
+        load_form('student');
+    } else {
+        log_in();
+    }
 })
 
 

@@ -8,6 +8,7 @@
 {% endblock %}
 
 {% block body %}
+    
     <div class="container" id="login_view">
         <div class="container" style="background: white">
             <div class="row">
@@ -16,8 +17,13 @@
                 </div>
                 <h3>Login</h3>
             </div>
-            <form action="{% url 'login_function' %}" method="post">
+            <form action="{% url 'login_function' %}" method="post" novalidate>
                 {% csrf_token %}
+                {% if form.errors %}
+                    <input type="hidden" id="login_form_has_errors" value="true">
+                {% else %}
+                    <input type="hidden" id="login_form_has_errors" value="false">
+                {% endif %}
                 <div class="row mb-3">
                     <div class="col-4">
                         <!-- To centralise -->
@@ -59,8 +65,13 @@
                 </div>
                 <h3>Register as a Student</h3>
             </div>
-            <form action="{% url 'entry' %}" method="post">
+            <form action="{% url 'entry' %}" method="post" novalidate>
                 {% csrf_token %}
+                {% if form.errors %}
+                    <input type="hidden" id="student_form_has_errors" value="true">
+                {% else %}
+                    <input type="hidden" id="student_form_has_errors" value="false">
+                {% endif %}
                 {% for field in student_registration_form.visible_fields %}
                     <div class="row mb-3">
                         <div class="col-4">
@@ -105,8 +116,13 @@
                 </div>
                 <h3>Register as a Tutor</h3>
             </div>
-            <form action="{% url 'entry' %}" method="post">
+            <form action="{% url 'entry' %}" method="post" novalidate>
                 {% csrf_token %}
+                {% if form.errors %}
+                    <input type="hidden" id="tutor_form_has_errors" value="true">
+                {% else %}
+                    <input type="hidden" id="tutor_form_has_errors" value="false">
+                {% endif %}
                 {% for field in tutor_registration_form.visible_fields %}
                     <div class="row mb-3">
                         <div class="col-4">
@@ -136,7 +152,7 @@
                         <!-- To centralise -->
                     </div>
                     <div class="col-1">
-                            <input type="submit" name="tutor">
+                        <input type="submit" name="tutor">
                     </div>
                 </div>
             </form>
