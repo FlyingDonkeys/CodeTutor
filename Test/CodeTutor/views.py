@@ -160,10 +160,10 @@ def login_function(request):
             if (Tutor.objects.filter(username=username)):
                 return HttpResponseRedirect(reverse("job_postings"))
             elif (Student.objects.filter(username=username)):
-                return logout_function(request) # Should go student_main page but yet to implement
+                return HttpResponseRedirect(reverse("job_postings"))# Should go student_main page but yet to implement
 
             # Otherwise, bring to tutor list view (tbc)
-            return HttpResponseRedirect(reverse("tutor_main"))
+            return HttpResponseRedirect(reverse("job_postings"))
         else:
             return render(request, "CodeTutor/index.html", {
                 "message": "Invalid username and/or password."
