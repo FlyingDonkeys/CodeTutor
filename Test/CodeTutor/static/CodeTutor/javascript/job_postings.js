@@ -33,11 +33,18 @@ function load() {
         .then(response => response.json()) // We have a Json object here of the student model
         .then(students => {
             console.log(students); // Verify that the students json objects have been passed in
-            students.forEach(student => add_student(student));
+            students.forEach(student => {
+                if (student.is_finding_tutor) { // Only display students actively finding tutors
+                    add_student(student)
+                }
+            });
             console.log("All students loaded");
-
             // Update counter to load the next 10 posts
             counter+=quantity;
+        })
+        .finally(() => {
+            // Display header once profiles are done, this shld be fast process
+            document.querySelector('#heading').style.display = 'block';
         });
 
 }
@@ -70,7 +77,7 @@ function add_student(student) {
                                     </div>
                                     <div class="row mb-1">
                                         <div class="col-3">
-                                            <h4>Location <h4>
+                                            <h4>Location: <h4>
                                         </div>
                                         <div class="col-3">
                                             ${student.location}
@@ -88,7 +95,7 @@ function add_student(student) {
                                         <div class="col-4"><!-- To centralise --></div>
                                         <div class="col-2">
                                             <!-- Logic to apply for tuition job not done -->
-                                            <a class="btn btn-primary" href="logout" role="button">Enquire More</a>
+                                            <a class="btn btn-primary" href="logout" role="button">Apply as Tutor</a>
                                         </div>
                                     </div>
                                 </div>

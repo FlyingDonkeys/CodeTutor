@@ -10,7 +10,7 @@ urlpatterns = [
     path("logout", views.logout_function, name="logout_function"),
 
     # Loads the tutor page
-    path("tutor_main", views.tutor_main, name="tutor_main"),
+    path("job_postings", views.job_postings, name="job_postings"),
     # API endpoint to retrieve student profiles dynamically on tutor main page
     path("load_student_profiles", views.load_student_profiles, name="load_student_profiles")
 ]

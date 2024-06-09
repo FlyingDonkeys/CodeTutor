@@ -4,10 +4,13 @@
 {% block script %}
     <!-- Javascript logic for client side login and registration features -->
     <!-- Uses entry.js -->
-    <script src="{% static "CodeTutor/javascript/student_list.js" %}"></script>
+    <script src="{% static "CodeTutor/javascript/job_postings.js" %}"></script>
 {% endblock %}
 
 {% block body %}
     <div class="container" id="student_list" style="background: white">
+        <div class="row" style="display: none" id="heading">
+            <h2>Active Job Postings</h2>
+        </div>
     </div>
 {% endblock %}

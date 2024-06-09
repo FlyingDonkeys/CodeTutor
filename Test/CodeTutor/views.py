@@ -78,7 +78,7 @@ def entry(request):
     # Not well coded sorry...
     elif (request.method == 'GET' and request.user.is_authenticated):
         if (Tutor.objects.filter(username=request.user.username)):
-            return render(request, "CodeTutor/student_list.html")
+            return render(request, "CodeTutor/job_postings.html")
         else:
             # Yet to implement
             return logout_function(request)
@@ -158,7 +158,7 @@ def login_function(request):
             login(request, user)
             # If the user with this username is a tutor, bring him to the student list view
             if (Tutor.objects.filter(username=username)):
-                return HttpResponseRedirect(reverse("tutor_main"))
+                return HttpResponseRedirect(reverse("job_postings"))
             elif (Student.objects.filter(username=username)):
                 return logout_function(request) # Should go student_main page but yet to implement
 
@@ -171,9 +171,9 @@ def login_function(request):
 
 
 @login_required
-def tutor_main(request):
+def job_postings(request):
     if (request.method == "GET"):
-        return render(request, "CodeTutor/student_list.html")
+        return render(request, "CodeTutor/job_postings.html")
 
 
 @login_required

@@ -39,6 +39,7 @@ class Student(CommonUser):
     }
     location = models.CharField(choices=location_choices, max_length=64)
     subjects_required = models.ManyToManyField(Subject, related_name="students")
+    is_finding_tutor = models.BooleanField(default=True)
 
     class Meta:
         verbose_name = "Student"
@@ -52,9 +53,9 @@ class Student(CommonUser):
             "email": self.email,
             "date_joined": self.date_joined,
             "location": self.location,
-            "subjects_required": [subject.subject_name for subject in self.subjects_required.all()]
+            "subjects_required": [subject.subject_name for subject in self.subjects_required.all()],
+            "is_finding_tutor": self.is_finding_tutor
         }
-
 
 
 class Tutor(CommonUser):
