@@ -8,6 +8,7 @@ urlpatterns = [
     # Note that we need to connect with the server in order to login/logout
     path("login", views.login_function, name="login_function"),
     path("logout", views.logout_function, name="logout_function"),
+    path("work_in_progress", views.work_in_progress, name="work_in_progress"),
 
     # Loads the tutor page
     path("job_postings", views.job_postings, name="job_postings"),

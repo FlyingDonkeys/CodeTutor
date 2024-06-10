@@ -23,7 +23,7 @@ class TutorRegistrationForm(forms.ModelForm):
     subjects_taught = forms.ModelMultipleChoiceField(queryset=Subject.objects.all())
     tutor_qualification = forms.ModelChoiceField(queryset=Qualification.objects.all())
     hourly_rate = forms.IntegerField(min_value=0, max_value=1000)
-    tutor_description = forms.CharField(widget=forms.Textarea(attrs={'rows':18, 'cols':36}))
+    tutor_description = forms.CharField(required=False, widget=forms.Textarea(attrs={'rows':18, 'cols':36}))
 
     class Meta:
         model = Tutor  # Ensures Django knows which model this form is associated with
@@ -81,7 +81,7 @@ def entry(request):
             return render(request, "CodeTutor/job_postings.html")
         else:
             # Yet to implement
-            return logout_function(request)
+            return render(request, "CodeTutor/work_in_progress.html")
 
     if (request.method == 'POST'):
         if ("student" in request.POST):
@@ -90,7 +90,10 @@ def entry(request):
                 return register_student(student_registration_form)
             else:
                 return render(request, 'CodeTutor/index.html', {
-                    "student_registration_form": student_registration_form
+                    "student_registration_form": student_registration_form,
+                    "tutor_registration_form": TutorRegistrationForm,
+                    "student_error": True,
+                    "tutor_error": False
                 })
         elif ("tutor" in request.POST):
             tutor_registration_form = TutorRegistrationForm(request.POST)
@@ -98,7 +101,10 @@ def entry(request):
                 return register_tutor(tutor_registration_form)
             else:
                 return render(request, 'CodeTutor/index.html', {
-                    "tutor_registration_form": tutor_registration_form
+                    "tutor_registration_form": tutor_registration_form,
+                    "student_registration_form": StudentRegistrationForm,
+                    "tutor_error": True,
+                    "student_error": False
                 })
         elif ("login" in request.POST):
             return login_function(request)
@@ -146,7 +152,10 @@ def register_tutor(tutor_registration_form):
 
 def login_function(request):
     if (request.method == "GET"):
-        return render(request, 'CodeTutor/index.html')
+        return render(request, 'CodeTutor/index.html', context={
+            "tutor_registration_form": TutorRegistrationForm,
+            "student_registration_form": StudentRegistrationForm
+        })
 
     elif (request.method == "POST"):
         # Attempt to sign user in
@@ -160,10 +169,11 @@ def login_function(request):
             if (Tutor.objects.filter(username=username)):
                 return HttpResponseRedirect(reverse("job_postings"))
             elif (Student.objects.filter(username=username)):
-                return HttpResponseRedirect(reverse("job_postings"))# Should go student_main page but yet to implement
+                # Should go student_main page but yet to implement
+                return HttpResponseRedirect(reverse("work_in_progress"))
 
             # Otherwise, bring to tutor list view (tbc)
-            return HttpResponseRedirect(reverse("job_postings"))
+            return HttpResponseRedirect(reverse("work_in_progress"))
         else:
             return render(request, "CodeTutor/index.html", {
                 "message": "Invalid username and/or password."
@@ -201,4 +211,8 @@ def load_student_profiles(request):
 def logout_function(request):
     logout(request)
     return HttpResponseRedirect(reverse("entry"))
+
+
+def work_in_progress(request):
+    return HttpResponseRedirect(reverse("work_in_progress"))
 

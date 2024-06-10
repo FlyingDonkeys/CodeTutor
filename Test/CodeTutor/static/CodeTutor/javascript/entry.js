@@ -10,11 +10,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // By default, user should be in the log_in view, unless there are form errors
     const studentformHasErrors = document.querySelector('#student_form_has_errors').value;
     const tutorformHasErrors = document.querySelector('#tutor_form_has_errors').value;
-    const loginformHasErrors = document.querySelector('#login_form_has_errors').value;
-    if (tutorformHasErrors) {
-        load_form('tutor');
-    } else if (studentformHasErrors) {
+
+    // A small detail here, but Python returns true while javascript true is actually True,
+    // so we gotta compare with 'True' instead
+    if (studentformHasErrors === 'True') {
         load_form('student');
+    } else if (tutorformHasErrors === 'True') {
+        load_form('tutor');
     } else {
         log_in();
     }
