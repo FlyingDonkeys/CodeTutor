@@ -20,6 +20,8 @@ class TutorRegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
 
     mobile_number = forms.CharField(min_length=8, max_length=8)
+    profile_picture = forms.ImageField(required=False)
+
     subjects_taught = forms.ModelMultipleChoiceField(queryset=Subject.objects.all())
     tutor_qualification = forms.ModelChoiceField(queryset=Qualification.objects.all())
     hourly_rate = forms.IntegerField(min_value=0, max_value=1000)
@@ -37,7 +39,8 @@ class TutorRegistrationForm(forms.ModelForm):
             'subjects_taught',
             'tutor_qualification',
             'hourly_rate',
-            'tutor_description'
+            'tutor_description',
+            'profile_picture'
         ]
 
 
@@ -51,6 +54,8 @@ class StudentRegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
 
     mobile_number = forms.CharField(min_length=8, max_length=8)
+    profile_picture = forms.ImageField(required=False)
+
     location = forms.ChoiceField(choices=Student.location_choices)
     subjects_required = forms.ModelMultipleChoiceField(queryset=Subject.objects.all())
 
@@ -63,7 +68,8 @@ class StudentRegistrationForm(forms.ModelForm):
             'email',
             'password',
             'mobile_number',
-            'subjects_required'
+            'subjects_required',
+            'profile_picture'
         ]
 
 
@@ -85,7 +91,7 @@ def entry(request):
 
     if (request.method == 'POST'):
         if ("student" in request.POST):
-            student_registration_form = StudentRegistrationForm(request.POST)
+            student_registration_form = StudentRegistrationForm(request.POST, request.FILES)
             if (student_registration_form.is_valid()):
                 return register_student(student_registration_form)
             else:
@@ -96,7 +102,7 @@ def entry(request):
                     "tutor_error": False
                 })
         elif ("tutor" in request.POST):
-            tutor_registration_form = TutorRegistrationForm(request.POST)
+            tutor_registration_form = TutorRegistrationForm(request.POST, request.FILES)
             if (tutor_registration_form.is_valid()):
                 return register_tutor(tutor_registration_form)
             else:
@@ -118,6 +124,7 @@ def register_student(student_registration_form):
         email=student_registration_form.cleaned_data['email'],
         mobile_number=student_registration_form.cleaned_data['mobile_number'],
         location=student_registration_form.cleaned_data['location'],
+        profile_picture=student_registration_form.cleaned_data['profile_picture']
     )
 
     password = student_registration_form.cleaned_data['password']
@@ -138,7 +145,8 @@ def register_tutor(tutor_registration_form):
         mobile_number=tutor_registration_form.cleaned_data['mobile_number'],
         tutor_qualification=tutor_registration_form.cleaned_data['tutor_qualification'],
         hourly_rate=tutor_registration_form.cleaned_data['hourly_rate'],
-        tutor_description=tutor_registration_form.cleaned_data['tutor_description']
+        tutor_description=tutor_registration_form.cleaned_data['tutor_description'],
+        profile_picture=tutor_registration_form.cleaned_data['profile_picture']
     )
 
     password = tutor_registration_form.cleaned_data['password']
@@ -214,5 +222,5 @@ def logout_function(request):
 
 
 def work_in_progress(request):
-    return HttpResponseRedirect(reverse("work_in_progress"))
+    return render(request, 'CodeTutor/work_in_progress.html')
 

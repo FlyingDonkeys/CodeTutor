@@ -59,7 +59,7 @@
                 </div>
                 <h3>Register as a Student</h3>
             </div>
-            <form action="{% url 'entry' %}" method="post" id="student_form" novalidate>
+            <form enctype="multipart/form-data" action="{% url 'entry' %}" method="post" id="student_form" novalidate>
                 {% csrf_token %}
                 <input type="hidden" id="student_form_has_errors" value={{ student_error }}>
                 {% for field in student_registration_form.visible_fields %}
@@ -106,7 +106,7 @@
                 </div>
                 <h3>Register as a Tutor</h3>
             </div>
-            <form action="{% url 'entry' %}" method="post" id="tutor_form" novalidate>
+            <form enctype="multipart/form-data" action="{% url 'entry' %}" method="post" id="tutor_form" novalidate>
                 {% csrf_token %}
                 <input type="hidden" id="tutor_form_has_errors" value={{ tutor_error }}>
                 {% for field in tutor_registration_form.visible_fields %}

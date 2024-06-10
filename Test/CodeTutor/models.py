@@ -1,6 +1,7 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.core import serializers
 
 # Create your models here.
 
@@ -22,6 +23,8 @@ class Qualification(models.Model):
 class CommonUser(AbstractUser):
     # Might need to handle for invalid phone numbers
     mobile_number = models.CharField(max_length=8)
+    # Each user to have a profile picture
+    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
 
 
 class Student(CommonUser):
@@ -45,6 +48,8 @@ class Student(CommonUser):
         verbose_name = "Student"
 
     def serialize(self):
+        # Note that ImageFields cannot be serialised, so we pass the url to the Javascript to be converted to image there
+        profile_picture_url = self.profile_picture.url if self.profile_picture else None
         return {
             "id": self.id,
             "username": self.username,
@@ -54,7 +59,8 @@ class Student(CommonUser):
             "date_joined": self.date_joined,
             "location": self.location,
             "subjects_required": [subject.subject_name for subject in self.subjects_required.all()],
-            "is_finding_tutor": self.is_finding_tutor
+            "is_finding_tutor": self.is_finding_tutor,
+            "profile_picture_url": profile_picture_url
         }
 
 
