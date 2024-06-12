@@ -99,7 +99,7 @@ function add_student(student) {
                                         <div class="col-4"><!-- To centralise --></div>
                                         <div class="col-2">
                                             <!-- Logic to apply for tuition job not done -->
-                                            <a class="btn btn-primary" href="logout" role="button">Apply as Tutor</a>
+                                            <a class="btn btn-primary" href="apply/${student.username}" role="button">Apply as Tutor</a>
                                         </div>
                                     </div>
                                 </div>

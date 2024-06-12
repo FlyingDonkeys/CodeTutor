@@ -7,6 +7,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from .models import *
 from django import forms
+from django.contrib import messages
 # Create your views here.
 
 
@@ -93,7 +94,7 @@ def entry(request):
         if ("student" in request.POST):
             student_registration_form = StudentRegistrationForm(request.POST, request.FILES)
             if (student_registration_form.is_valid()):
-                return register_student(student_registration_form)
+                return register_student(request, student_registration_form)
             else:
                 return render(request, 'CodeTutor/index.html', {
                     "student_registration_form": student_registration_form,
@@ -104,7 +105,7 @@ def entry(request):
         elif ("tutor" in request.POST):
             tutor_registration_form = TutorRegistrationForm(request.POST, request.FILES)
             if (tutor_registration_form.is_valid()):
-                return register_tutor(tutor_registration_form)
+                return register_tutor(request, tutor_registration_form)
             else:
                 return render(request, 'CodeTutor/index.html', {
                     "tutor_registration_form": tutor_registration_form,
@@ -116,7 +117,7 @@ def entry(request):
             return login_function(request)
 
 
-def register_student(student_registration_form):
+def register_student(request, student_registration_form):
     new_student = Student.objects.create(
         username=student_registration_form.cleaned_data['username'],
         first_name=student_registration_form.cleaned_data['first_name'],
@@ -133,10 +134,13 @@ def register_student(student_registration_form):
     new_student.subjects_required.set(subjects_required)
     new_student.set_password(password)
     new_student.save()
-    return HttpResponseRedirect(reverse("login_function"))
+
+    # Use Django messages framework to pass context to the html
+    messages.success(request, "You have successfully registered your student profile. Please proceed to login.")
+    return HttpResponseRedirect(reverse("success"))
 
 
-def register_tutor(tutor_registration_form):
+def register_tutor(request, tutor_registration_form):
     new_tutor = Tutor.objects.create(
         username=tutor_registration_form.cleaned_data['username'],
         first_name=tutor_registration_form.cleaned_data['first_name'],
@@ -155,7 +159,11 @@ def register_tutor(tutor_registration_form):
     new_tutor.subjects_taught.set(subjects_taught)
     new_tutor.set_password(password)
     new_tutor.save()
-    return HttpResponseRedirect(reverse("login_function"))
+
+    # Use Django messages framework to pass context to the html
+    messages.success(request, "You have successfully registered your tutor profile. Please proceed to login.")
+
+    return HttpResponseRedirect(reverse("success"))
 
 
 def login_function(request):
@@ -210,10 +218,23 @@ def load_student_profiles(request):
             except:
                 # If not possible to get 10 profiles, break
                 break
-        print(data)
         # Artificially delay speed of response
         time.sleep(1)
         return JsonResponse(data, safe=False)
+
+
+def apply(request, student_username):
+    if (request.method == "GET"):
+        return render(request, 'CodeTutor/apply.html', context=
+            {'student': Student.objects.get(username=student_username)}
+        )
+    # After receiving the form. we have to send the tutor's application to the student
+    # I guess it is timely to include a new model to meet this requirement
+    # Each Student may be related to several Applications
+    elif (request.method == "POST"):
+        messages.success(request, "Your application has been received successfully.")
+        return HttpResponseRedirect(reverse('success'))
+
 
 
 def logout_function(request):
@@ -223,4 +244,9 @@ def logout_function(request):
 
 def work_in_progress(request):
     return render(request, 'CodeTutor/work_in_progress.html')
+
+
+def success(request):
+    return render(request, 'CodeTutor/success.html')
+
 

@@ -1,0 +1,66 @@
+{% extends "CodeTutor/layout.html" %}
+{% load static %}
+
+{% block style %}
+{% endblock %}
+
+{% block body %}
+    <div class="container" id="student_list" style="background: white">
+        <div class="row">
+            <div class="row mb-3">
+                <div class="row">
+                    <div class="col-3">
+                        <!-- To centralise -->
+                    </div>
+                    <div class="col-6">
+                        <h4 style="color: green">You are currently applying as a Tutor for {{ student.username }}</h4>
+                    </div>
+                </div>
+            </div>
+            <form method="post" action="{% url 'apply' student.username %}">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-3">
+                        <!-- To centralise -->
+                    </div>
+                    <div class="col-6">
+                        <!-- For tutor to choose which subjects he would like to apply for -->
+                        <h3 class="mb-3" id="subject_heading">Select Subject</h3>
+                        <select id="selected_subject" class="form-select mb-3" aria-label="Default select example">
+                          <option selected>Subject to teach</option>
+                          {% for subject in student.subjects_required.all %}
+                              <option id="{{ subject }}">{{ subject }}</option>
+                          {% endfor %}
+                        </select>
+
+                        <!-- For tutor to give personal experience pertaining to subject -->
+                        <h3 class="mb-1" id="description_heading">Why should you be selected?</h3>
+                        <div class="form-text">- May give relevant experience with respect to this subject</div>
+                        <div class="form-text">- May give your own grades/achievements for this subject</div>
+                        <div class="form-text mb-1">- May give other information that will boost your chances of selection</div>
+                        <div class="input-group mb-3">
+                          <span class="input-group-text">Description</span>
+                          <textarea id="tutor_description" class="form-control" aria-label="With textarea" rows="20"></textarea>
+                        </div>
+
+                        <!-- For tutor to quote his rates -->
+                        <h3 class="mb-1">What are your rates? (Hourly)</h3>
+                        <div class="input-group mb-3">
+                          <span class="input-group-text">$</span>
+                          <input id="tutor_rates" type="number" class="form-control" aria-label="Amount (to the nearest dollar)">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <!-- To centralise button -->
+                    </div>
+                    <div class="col-3">
+                        <!-- To submit form -->
+                        <input type="submit" class="btn btn-dark">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "CodeTutor/layout.html" %}
+{% load static %}
+
+{% block style %}
+    <style>
+        #success_message {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container" id="success_message">
+        <div class="row mb-3">
+            <!-- Add spacing vertically -->
+        </div>
+        <div class="row">
+            <div class="col-3">
+                <!-- To centralize -->
+            </div>
+            <div class="col-6">
+                {% if messages %}
+                    {% for message in messages %}
+                        <h3>{{ message }}</h3>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
