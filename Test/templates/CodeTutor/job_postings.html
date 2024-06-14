@@ -3,8 +3,15 @@
 
 {% block script %}
     <!-- Javascript logic for client side login and registration features -->
+    <!-- In fact, the "main page" for tutors is this page! -->
     <!-- Uses entry.js -->
     <script src="{% static "CodeTutor/javascript/job_postings.js" %}"></script>
+{% endblock %}
+
+{% block nav %}
+  <li class="nav-item">
+    <a class="btn btn-primary me-2" href="{% url 'job_postings' %}" role="button">Back</a>
+  </li>
 {% endblock %}
 
 {% block body %}

@@ -232,6 +232,22 @@ def apply(request, student_username):
     # I guess it is timely to include a new model to meet this requirement
     # Each Student may be related to several Applications
     elif (request.method == "POST"):
+
+        # Extract information from the application form
+        information = request.POST
+        selected_subject = information.get('selected_subject')
+        tutor_description = information.get('tutor_description')
+        tutor_rates = information.get('tutor_rates')
+
+        # Create new Application object
+        application = Application(subject=Subject.objects.get(subject_name=selected_subject),
+                                  application_description=tutor_description,
+                                  tutor_rates=tutor_rates,
+                                  tutor=Tutor.objects.get(username=request.user.username),
+                                  student=Student.objects.get(username=student_username)
+                                  )
+        application.save()
+
         messages.success(request, "Your application has been received successfully.")
         return HttpResponseRedirect(reverse('success'))
 

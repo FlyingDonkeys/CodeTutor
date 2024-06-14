@@ -26,8 +26,7 @@
                     <div class="col-6">
                         <!-- For tutor to choose which subjects he would like to apply for -->
                         <h3 class="mb-3" id="subject_heading">Select Subject</h3>
-                        <select id="selected_subject" class="form-select mb-3" aria-label="Default select example">
-                          <option selected>Subject to teach</option>
+                        <select name="selected_subject" class="form-select mb-3" aria-label="Default select example" required>
                           {% for subject in student.subjects_required.all %}
                               <option id="{{ subject }}">{{ subject }}</option>
                           {% endfor %}
@@ -40,14 +39,14 @@
                         <div class="form-text mb-1">- May give other information that will boost your chances of selection</div>
                         <div class="input-group mb-3">
                           <span class="input-group-text">Description</span>
-                          <textarea id="tutor_description" class="form-control" aria-label="With textarea" rows="20"></textarea>
+                          <textarea name="tutor_description" class="form-control" aria-label="With textarea" rows="20" required></textarea>
                         </div>
 
                         <!-- For tutor to quote his rates -->
                         <h3 class="mb-1">What are your rates? (Hourly)</h3>
                         <div class="input-group mb-3">
                           <span class="input-group-text">$</span>
-                          <input id="tutor_rates" type="number" class="form-control" aria-label="Amount (to the nearest dollar)">
+                          <input name="tutor_rates" type="number" class="form-control" aria-label="Amount (to the nearest dollar)" required>
                         </div>
                     </div>
                 </div>
@@ -55,7 +54,7 @@
                     <div class="col-6">
                         <!-- To centralise button -->
                     </div>
-                    <div class="col-3">
+                    <div class="col-3 mb-3">
                         <!-- To submit form -->
                         <input type="submit" class="btn btn-dark">
                     </div>

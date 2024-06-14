@@ -48,8 +48,10 @@
               </li>
             {% endif %}
             {% if request.user.is_authenticated %}
+                {% block nav %}
+                {% endblock %}
               <li class="nav-item">
-                <a class="btn btn-primary" href="{% url 'logout_function' %}" role="button" >Log Out</a>
+                <a class="btn btn-primary" href="{% url 'logout_function' %}" role="button">Log Out</a>
               </li>
             {% endif %}
           </ul>

@@ -77,3 +77,18 @@ class Tutor(CommonUser):
 
     class Meta:
         verbose_name = "Tutor"
+
+
+class Application(models.Model):
+    # Stuff in application form
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    application_description = models.TextField(blank=True)
+    tutor_rates = models.IntegerField(default=0)
+
+    # Other stuff
+    tutor = models.ForeignKey(Tutor, on_delete=models.CASCADE, related_name="sent_applications") # Tutor is related to his applications
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="received_applications") # Student related to received ones
+    application_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.tutor.username} applied for {self.subject.subject_name} with {self.student.username}"
