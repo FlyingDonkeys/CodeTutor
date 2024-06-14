@@ -12,6 +12,14 @@
     </style>
 {% endblock %}
 
+<!-- Currently hard coded to redirect to job postings, as we are assuming every user who -->
+<!-- sees this success page is a tutor. -->
+{% block nav %}
+  <li class="nav-item">
+    <a class="btn btn-primary me-2" href="{% url 'job_postings' %}" role="button">Back</a>
+  </li>
+{% endblock %}
+
 {% block body %}
     <div class="container" id="success_message">
         <div class="row mb-3">

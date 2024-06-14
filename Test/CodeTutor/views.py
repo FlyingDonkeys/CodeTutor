@@ -223,6 +223,7 @@ def load_student_profiles(request):
         return JsonResponse(data, safe=False)
 
 
+@login_required()
 def apply(request, student_username):
     if (request.method == "GET"):
         return render(request, 'CodeTutor/apply.html', context=
@@ -252,7 +253,7 @@ def apply(request, student_username):
         return HttpResponseRedirect(reverse('success'))
 
 
-
+@login_required()
 def logout_function(request):
     logout(request)
     return HttpResponseRedirect(reverse("entry"))
@@ -262,6 +263,7 @@ def work_in_progress(request):
     return render(request, 'CodeTutor/work_in_progress.html')
 
 
+@login_required
 def success(request):
     return render(request, 'CodeTutor/success.html')
 

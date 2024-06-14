@@ -1,11 +1,15 @@
 {% extends "CodeTutor/layout.html" %}
 {% load static %}
 
-{% block style %}
+
+{% block nav %}
+  <li class="nav-item">
+    <a class="btn btn-primary me-2" href="{% url 'job_postings' %}" role="button">Back</a>
+  </li>
 {% endblock %}
 
 {% block body %}
-    <div class="container" id="student_list" style="background: white">
+    <div class="container" id="application_form" style="background: white">
         <div class="row">
             <div class="row mb-3">
                 <div class="row">
