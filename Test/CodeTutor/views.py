@@ -135,9 +135,7 @@ def register_student(request, student_registration_form):
     new_student.set_password(password)
     new_student.save()
 
-    # Use Django messages framework to pass context to the html
-    messages.success(request, "You have successfully registered your student profile. Please proceed to login.")
-    return HttpResponseRedirect(reverse("success"))
+    return HttpResponseRedirect(reverse("login_function"))
 
 
 def register_tutor(request, tutor_registration_form):
