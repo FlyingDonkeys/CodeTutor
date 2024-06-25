@@ -199,6 +199,7 @@ function add_subject(subject){
         subject_to_be_loaded = subject // Give context to global variable to indicate subject to be loaded
         counter = 0 // Reset counter
         document.querySelector("#the_actual_list").innerHTML = `` // Remove previously loaded profiles
+        document.querySelector("#button_text").innerHTML = subject // Aesthetic stuff
         load_specific_profiles(subject)
     }
     the_subject.innerHTML = `<a class="dropdown-item" href="#">${subject}</a>`
