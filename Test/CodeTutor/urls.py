@@ -15,6 +15,8 @@ urlpatterns = [
     path("job_postings", views.job_postings, name="job_postings"),
     # API endpoint to retrieve student profiles dynamically on tutor main page
     path("load_student_profiles", views.load_student_profiles, name="load_student_profiles"),
+    # API endpoint to retrieve list of subjects
+    path("load_subjects", views.load_subjects, name="load_subjects"),
     # Path for tutor to apply to tutor a particular student
     path("apply/<str:student_username>", views.apply, name="apply")
 ]

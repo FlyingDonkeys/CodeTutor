@@ -1,9 +1,18 @@
 console.log("student list page is loaded!")
 
+// Note that the infinite scroll feature should be different according to whether user is loading
+// all profiles or only specific profiles
+let loading_all_profiles = true
+let subject_to_be_loaded = ""
+
 window.onscroll = () => {
     // If user scrolls to the end, load more profiles
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-        load();
+        if (loading_all_profiles) {
+            load();
+        } else {
+            load_specific_profiles(subject_to_be_loaded)
+        }
     }
 }
 
@@ -17,6 +26,8 @@ const quantity = 10;
 document.addEventListener('DOMContentLoaded', function () {
     load()
     // Other eventlisteners such as change of profile display upon hover etc
+    load_subjects()
+
 });
 
 // Load next set of posts
@@ -24,13 +35,16 @@ function load() {
     // Check if load is being called
     console.log("Loading new profiles")
 
+    // Ensure that we are loading all profiles
+    loading_all_profiles = true
+
     // Set start and end profile numbers
     const start = counter;
     const end = start + quantity - 1;
 
     // Get new posts and add posts
     fetch(`/load_student_profiles?start=${start}&end=${end}`)
-        .then(response => response.json()) // We have a Json object here of the student model
+        .then(response => response.json()) // We have a Json object here of 10 students
         .then(students => {
             console.log(students); // Verify that the students json objects have been passed in
             students.forEach(student => {
@@ -38,16 +52,57 @@ function load() {
                     add_student(student)
                 }
             });
-            console.log("All students loaded");
             // Update counter to load the next 10 posts
             counter+=quantity;
         })
         .finally(() => {
-            // Display header once profiles are done, this shld be fast process
-            document.querySelector('#heading').style.display = 'block';
+            console.log("All students loaded");
+            document.querySelector("#student_list").style.display = "block"
         });
-
 }
+
+
+// Used to implement filter function
+
+function load_specific_profiles(subject) {
+
+    // User may choose to load all profiles again
+    if (subject === "All") {
+        load()
+        return null
+    }
+
+    // Check if load is being called
+    console.log(`Loading student profiles who require ${subject}`)
+
+    // Note that the start should be reset
+    const start = counter;
+    const end = start + quantity - 1;
+    // Get new posts and add posts
+    fetch(`/load_student_profiles?start=${start}&end=${end}`)
+        .then(response => response.json()) // We have a Json object here of 10 students
+        .then(students => {
+            console.log(students)
+            return students.filter(student => student.subjects_required.includes(subject));
+        })
+        .then(students => {
+            console.log("middle")
+            console.log(students); // Verify that the students json objects have been passed in
+            students.forEach(student => {
+                // For filter feature, we have to take profiles requiring specific subjects
+                if (student.is_finding_tutor) {
+                    add_student(student)
+                }
+            });
+            // Update counter to load the next 10 posts
+            counter+=quantity;
+        })
+        .finally(() => {
+            console.log(`Students requiring ${subject} loaded`)
+            document.querySelector("#student_list").style.display = "block"
+        });
+}
+
 
 function add_student(student) {
     // Create new student profile object for viewing
@@ -108,6 +163,47 @@ function add_student(student) {
                       <hr>`
 
     // Add post to DOM
-    document.querySelector('#student_list').append(profile);
+    document.querySelector('#the_actual_list').append(profile);
+}
+
+
+function load_subjects() {
+    // Check if load_subjects is being called
+    console.log("Loading subjects in dropdown bar")
+
+    // Get new posts and add posts
+    fetch(`/load_subjects`)
+        .then(response => response.json())
+        .then(subjects => {
+            // Verify if list of subjects has been passed in correctly
+            console.log(subjects)
+            subjects.forEach(
+                subject => add_subject(subject.subject_name)
+            )
+        })
+        .finally(() =>{
+            add_subject("All")
+            console.log("Subjects added")
+        })
+}
+
+
+function add_subject(subject){
+    console.log(`Adding ${subject}`)
+    // Create the option with the subject as the name
+    const the_subject = document.createElement('li')
+
+    // When the list element is clicked, we want to dynamically load revelant student profiles
+    the_subject.onclick = () => {
+        loading_all_profiles = false // Ensure we are loading specific profiles
+        subject_to_be_loaded = subject // Give context to global variable to indicate subject to be loaded
+        counter = 0 // Reset counter
+        document.querySelector("#the_actual_list").innerHTML = `` // Remove previously loaded profiles
+        load_specific_profiles(subject)
+    }
+    the_subject.innerHTML = `<a class="dropdown-item" href="#">${subject}</a>`
+
+    // Add option to dropdown
+    document.querySelector('#subject_list').append(the_subject)
 }
 

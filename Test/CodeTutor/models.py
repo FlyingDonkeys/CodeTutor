@@ -12,6 +12,11 @@ class Subject(models.Model):
     def __str__(self):
         return f"{self.subject_name}"
 
+    def serialize(self):
+        return {
+            "subject_name": self.subject_name
+        }
+
 
 class Qualification(models.Model):
     type_of_qualification = models.CharField(max_length=64)

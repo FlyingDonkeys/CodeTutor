@@ -221,6 +221,17 @@ def load_student_profiles(request):
         return JsonResponse(data, safe=False)
 
 
+def load_subjects(request):
+    if (request.method == "GET"):
+        subjects = []
+        for subject in Subject.objects.all():
+            subjects.append(subject.serialize())
+        return JsonResponse(subjects, safe=False)
+    else:
+        return None
+        # Throw an error, but I have no time to complete this yet
+
+
 @login_required()
 def apply(request, student_username):
     if (request.method == "GET"):
