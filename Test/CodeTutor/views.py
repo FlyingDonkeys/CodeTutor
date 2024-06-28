@@ -247,10 +247,7 @@ def register_student(request, student_registration_form):
     new_student.subjects_required.set(subjects_required)
     new_student.set_password(password)
     new_student.save()
-
-    # Use Django messages framework to pass context to the html
-    messages.success(request, "You have successfully registered your student profile. Please proceed to login.")
-    return HttpResponseRedirect(reverse("entry"))
+    return HttpResponseRedirect(reverse("login_function"))
 
 
 def register_tutor(request, tutor_registration_form):
@@ -272,11 +269,7 @@ def register_tutor(request, tutor_registration_form):
     new_tutor.subjects_taught.set(subjects_taught)
     new_tutor.set_password(password)
     new_tutor.save()
-
-    # Use Django messages framework to pass context to the html
-    messages.success(request, "You have successfully registered your tutor profile. Please proceed to login.")
-
-    return HttpResponseRedirect(reverse("entry"))
+    return HttpResponseRedirect(reverse("login_function"))
 
 
 def login_function(request):
