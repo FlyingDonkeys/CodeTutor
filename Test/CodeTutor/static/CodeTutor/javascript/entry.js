@@ -7,8 +7,19 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('#login_button').onclick = () => log_in();
     console.log("DOM content reloaded");
 
-    // By default, user should be in the log_in view
-    log_in();
+    // By default, user should be in the log_in view, unless there are form errors
+    const studentformHasErrors = document.querySelector('#student_form_has_errors').value;
+    const tutorformHasErrors = document.querySelector('#tutor_form_has_errors').value;
+
+    // A small detail here, but Python returns true while javascript true is actually True,
+    // so we gotta compare with 'True' instead
+    if (studentformHasErrors === 'True') {
+        load_form('student');
+    } else if (tutorformHasErrors === 'True') {
+        load_form('tutor');
+    } else {
+        log_in();
+    }
 })
 
 

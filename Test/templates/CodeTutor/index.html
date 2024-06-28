@@ -16,7 +16,7 @@
                 </div>
                 <h3>Login</h3>
             </div>
-            <form action="{% url 'login_function' %}" method="post">
+            <form action="{% url 'login_function' %}" method="post" id="login_form" novalidate>
                 {% csrf_token %}
                 <div class="row mb-3">
                     <div class="col-4">
@@ -59,8 +59,9 @@
                 </div>
                 <h3>Register as a Student</h3>
             </div>
-            <form action="{% url 'entry' %}" method="post">
+            <form enctype="multipart/form-data" action="{% url 'entry' %}" method="post" id="student_form" novalidate>
                 {% csrf_token %}
+                <input type="hidden" id="student_form_has_errors" value={{ student_error }}>
                 {% for field in student_registration_form.visible_fields %}
                     <div class="row mb-3">
                         <div class="col-4">
@@ -105,8 +106,9 @@
                 </div>
                 <h3>Register as a Tutor</h3>
             </div>
-            <form action="{% url 'entry' %}" method="post">
+            <form enctype="multipart/form-data" action="{% url 'entry' %}" method="post" id="tutor_form" novalidate>
                 {% csrf_token %}
+                <input type="hidden" id="tutor_form_has_errors" value={{ tutor_error }}>
                 {% for field in tutor_registration_form.visible_fields %}
                     <div class="row mb-3">
                         <div class="col-4">
@@ -136,7 +138,7 @@
                         <!-- To centralise -->
                     </div>
                     <div class="col-1">
-                            <input type="submit" name="tutor">
+                        <input type="submit" name="tutor">
                     </div>
                 </div>
             </form>

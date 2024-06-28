@@ -1,0 +1,20 @@
+{% extends "CodeTutor/layout.html" %}
+{% load static %}
+
+{% block script %}
+    <!-- Javascript logic for client side login and registration features -->
+    <!-- Uses entry.js -->
+    <script src="{% static "CodeTutor/javascript/profile.js" %}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% endblock %}
+
+{% block body %}
+<div class="container"style="background: white">
+    <h1>About me</h1>
+<div  class="container" id="student_list" >
+    
+</div>
+<button id="showButton" class="btn btn-outline-primary fw-bolder fs-7 px-4 py-2 mt-3 rounded-pill" >View Location</button>
+<div id="map" style="height: 500px; width: 100%; display:none;"></div>
+</div>
+{% endblock%}

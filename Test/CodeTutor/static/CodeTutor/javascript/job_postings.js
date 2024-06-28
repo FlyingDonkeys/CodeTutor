@@ -58,13 +58,17 @@ function add_student(student) {
     student.subjects_required.forEach(subject => {
         subjects_required += subject + ", ";
     });
-    console.log(subjects_required)
+
+    // Get the profile pictures urls of the users
+    let url = student.profile_picture_url === null ? 'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'
+                                                            : student.profile_picture_url;
+
     profile.className = 'post';
     profile.innerHTML = `<div class="container" id="Student ${student.id}">
                             <div class="row">
                                 <div class="col-3">
                                     <!-- Profile picture functionality in Django to be implemented -->
-                                    <img style='height: 100%; width: 100%; object-fit: contain;' src="https://media.istockphoto.com/id/508408464/vector/work-in-progress-loading-bar.jpg?s=612x612&w=0&k=20&c=NyDSPinMdT1wuEODQQPk2YS2Tt-qf3K-w620zK3F9ls=" alt="No Image">
+                                    <img style='height: 100%; width: 100%; object-fit: contain;' src="${url}" alt="No Image">
                                 </div>
                                 <div class="col-9">
                                     <div class="row mb-1">
@@ -95,7 +99,7 @@ function add_student(student) {
                                         <div class="col-4"><!-- To centralise --></div>
                                         <div class="col-2">
                                             <!-- Logic to apply for tuition job not done -->
-                                            <a class="btn btn-primary" href="logout" role="button">Apply as Tutor</a>
+                                            <a class="btn btn-primary" href="apply/${student.username}" role="button">Apply as Tutor</a>
                                         </div>
                                     </div>
                                 </div>

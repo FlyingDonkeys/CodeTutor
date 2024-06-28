@@ -1,6 +1,7 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.core import serializers
 
 # Create your models here.
 
@@ -22,6 +23,8 @@ class Qualification(models.Model):
 class CommonUser(AbstractUser):
     # Might need to handle for invalid phone numbers
     mobile_number = models.CharField(max_length=8)
+    # Each user to have a profile picture
+    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
 
 
 class Student(CommonUser):
@@ -38,6 +41,10 @@ class Student(CommonUser):
         "C": "Central"
     }
     location = models.CharField(choices=location_choices, max_length=64)
+    postal_code = models.IntegerField(default= 738090, validators=[
+            MaxValueValidator(999999),
+            MinValueValidator(100000)
+        ])
     subjects_required = models.ManyToManyField(Subject, related_name="students")
     is_finding_tutor = models.BooleanField(default=True)
 
@@ -45,6 +52,8 @@ class Student(CommonUser):
         verbose_name = "Student"
 
     def serialize(self):
+        # Note that ImageFields cannot be serialised, so we pass the url to the Javascript to be converted to image there
+        profile_picture_url = self.profile_picture.url if self.profile_picture else None
         return {
             "id": self.id,
             "username": self.username,
@@ -54,7 +63,9 @@ class Student(CommonUser):
             "date_joined": self.date_joined,
             "location": self.location,
             "subjects_required": [subject.subject_name for subject in self.subjects_required.all()],
-            "is_finding_tutor": self.is_finding_tutor
+            "is_finding_tutor": self.is_finding_tutor,
+            "profile_picture_url": profile_picture_url,
+            "postal_code":self.postal_code
         }
 
 
@@ -71,3 +82,24 @@ class Tutor(CommonUser):
 
     class Meta:
         verbose_name = "Tutor"
+
+
+class Application(models.Model):
+    # Stuff in application form
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    application_description = models.TextField(blank=True)
+    tutor_rates = models.IntegerField(default=0)
+
+    # Other stuff
+    tutor = models.ForeignKey(Tutor, on_delete=models.CASCADE, related_name="sent_applications") # Tutor is related to his applications
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="received_applications") # Student related to received ones
+    application_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.tutor.username} applied for {self.subject.subject_name} with {self.student.username}"
+
+#Payment recording 
+class UserPayment(models.Model):
+	app_user = models.ForeignKey(Tutor, on_delete=models.CASCADE)
+	payment_bool = models.BooleanField(default=False)
+	stripe_checkout_id = models.CharField(max_length=500)
