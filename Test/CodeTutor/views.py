@@ -1,15 +1,126 @@
 import time
-
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse
 from .models import *
 from django import forms
 from django.contrib import messages
-# Create your views here.
+from django.conf import settings
+import stripe
+import time
 
+
+@login_required
+def profile(request):
+     return render(request, "CodeTutor/profile.html")
+
+@login_required
+def load_user_profile(request):
+     if request.method == "GET":
+        is_student = False
+        user = None
+        query_set = Student.objects.all().filter(username = request.user.username)
+        if query_set.exists():   
+            is_student = True
+            user = query_set.first()
+            print(f"currently searching student db {query_set}")
+            context = {
+            'google_api_key': settings.GOOGLE_API_KEY,
+            'is_student':is_student,
+            'user': {
+            'username': user.username,
+            'id': user.id,
+            'location':user.location,
+            'postal_code':user.postal_code,
+            'profile_picture_url':user.profile_picture.url
+            }
+	        }
+            return JsonResponse(context, safe=False)
+        else:
+            query_set = Tutor.objects.all().filter(username = request.user.username)
+            user = query_set[0]
+            print(f"currently searching tutor db {user}")
+    
+        context = {
+        'google_api_key': settings.GOOGLE_API_KEY,
+        'is_student':is_student,
+        'user': {
+            'username': user.username,
+            'id': user.id,
+            'description':user.tutor_description,
+            'profile_picture_url':user.profile_picture.url
+            }
+	    }
+        return JsonResponse(context, safe=False)
+     
+
+
+#STRIPE API 
+@login_required(login_url='login')
+def product_page(request):
+	stripe.api_key = settings.STRIPE_SECRET_KEY_TEST
+	if request.method == 'POST':
+		checkout_session = stripe.checkout.Session.create(
+			payment_method_types = ['card'],
+			line_items = [
+				{
+					'price': settings.PRODUCT_PRICE,
+					'quantity': 1,
+				},
+			],
+			mode = 'payment',
+			customer_creation = 'always',
+			success_url = settings.REDIRECT_DOMAIN + '/payment_successful?session_id={CHECKOUT_SESSION_ID}',
+			cancel_url = settings.REDIRECT_DOMAIN + '/payment_cancelled',
+		)
+		return redirect(checkout_session.url, code=303)
+	return render(request, 'CodeTutor/product_page.html')
+
+#Goes here if successful,works only with real web address  
+## use Stripe dummy card: 4242 4242 4242 4242
+def payment_successful(request):
+	stripe.api_key = settings.STRIPE_SECRET_KEY_TEST
+	checkout_session_id = request.GET.get('session_id', None)
+	session = stripe.checkout.Session.retrieve(checkout_session_id)
+	customer = stripe.Customer.retrieve(session.customer)
+	user_id = request.user.id
+	user_payment = UserPayment.objects.get(app_user=user_id)
+	user_payment.stripe_checkout_id = checkout_session_id
+	user_payment.save()
+	return render(request, 'CodeTutor/payment_successful.html', {'customer': customer})
+
+
+def payment_cancelled(request):
+	stripe.api_key = settings.STRIPE_SECRET_KEY_TEST
+	return render(request, 'CodeTutor/payment_cancelled.html')
+
+#This is to be called by stripeAPI do not try to access the url 
+@csrf_exempt
+def stripe_webhook(request):
+	stripe.api_key = settings.STRIPE_SECRET_KEY_TEST
+	time.sleep(10)
+	payload = request.body
+	signature_header = request.META['HTTP_STRIPE_SIGNATURE']
+	event = None
+	try:
+		event = stripe.Webhook.construct_event(
+			payload, signature_header, settings.STRIPE_WEBHOOK_SECRET_TEST
+		)
+	except ValueError as e:
+		return HttpResponse(status=400)
+	except stripe.error.SignatureVerificationError as e:
+		return HttpResponse(status=400)
+	if event['type'] == 'checkout.session.completed':
+		session = event['data']['object']
+		session_id = session.get('id', None)
+		time.sleep(15)
+		user_payment = UserPayment.objects.get(stripe_checkout_id=session_id)
+		user_payment.payment_bool = True
+		user_payment.save()
+	return HttpResponse(status=200)
 
 class TutorRegistrationForm(forms.ModelForm):
 
@@ -58,6 +169,7 @@ class StudentRegistrationForm(forms.ModelForm):
     profile_picture = forms.ImageField(required=False)
 
     location = forms.ChoiceField(choices=Student.location_choices)
+    postal_code = forms.IntegerField(required=True)
     subjects_required = forms.ModelMultipleChoiceField(queryset=Subject.objects.all())
 
     class Meta:
@@ -70,7 +182,8 @@ class StudentRegistrationForm(forms.ModelForm):
             'password',
             'mobile_number',
             'subjects_required',
-            'profile_picture'
+            'profile_picture',
+            'postal_code'
         ]
 
 
@@ -136,6 +249,7 @@ def register_student(request, student_registration_form):
     new_student.save()
 
     return HttpResponseRedirect(reverse("login_function"))
+
 
 
 def register_tutor(request, tutor_registration_form):
@@ -230,7 +344,6 @@ def load_subjects(request):
     else:
         return None
         # Throw an error, but I have no time to complete this yet
-
 
 @login_required()
 def apply(request, student_username):

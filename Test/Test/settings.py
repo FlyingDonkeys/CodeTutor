@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 
 import os
+import stripe
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +26,19 @@ MEDIA_URL = '/media/'
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-gf2)a)g-4ti)y*vao8#-5jla_(4r!cgep98!f2q-ouzj5_yb_*'
+#Google  Maps API Key
+GOOGLE_API_KEY = 'AIzaSyC128zZlCt6WN8ygaNo0DtpDi0DL8s0SIM'
 
+#Set up for stripe payment
+REDIRECT_DOMAIN = 'https://codetutor-8b10e0a442a4.herokuapp.com'
+
+STRIPE_PUBLIC_KEY_TEST='pk_test_51PREktEZACuDQbJWfonjzkgOmzjX3TS0BmakykrOmeVNbeEpXwVS6O0bX5ZljyWYiGr868iWPZLJCk9LXXx7vmI400i2iA0god'
+STRIPE_SECRET_KEY_TEST='sk_test_51PREktEZACuDQbJWu6Jha3n8xccKkaiaHz3JnEuNBtCFvy1LI8HaxadDLnsxeaGM1kb3kY5TtnIG5GtVDhomFEaO008ouzEKwa'
+STRIPE_WEBHOOK_SECRET_TEST='whsec_Z0qc7KQvUHU8WyZwEbrc1xc9OlMBOdMZ'
+
+stripe.api_key = STRIPE_SECRET_KEY_TEST 
+#test product generated 
+PRODUCT_PRICE= 'price_1PRXbREZACuDQbJWYJgnPbPY'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 

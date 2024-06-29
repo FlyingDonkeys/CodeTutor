@@ -18,5 +18,16 @@ urlpatterns = [
     # API endpoint to retrieve list of subjects
     path("load_subjects", views.load_subjects, name="load_subjects"),
     # Path for tutor to apply to tutor a particular student
-    path("apply/<str:student_username>", views.apply, name="apply")
+    path("apply/<str:student_username>", views.apply, name="apply"),
+    #Product page for STRIPE
+    path("product_page", views.product_page, name="product_page"),
+    #redirect to successful after payment
+    path("payment_successful", views.payment_successful, name="payment_successful"),
+    #redirect to cancelled if payment is cancelled
+    path("payment_cancelled", views.payment_cancelled, name="payment_cancelled"),
+    #for STRIPEAPI to call do not modify
+    path('stripe_webhook', views.stripe_webhook, name='stripe_webhook'),
+    #API endpoint to retrive current user's profile information
+    path('profile', views.profile,name = "profile"),
+    path('load_user_profile', views.load_user_profile,name = "load_user_profile"),
 ]

@@ -46,6 +46,10 @@ class Student(CommonUser):
         "C": "Central"
     }
     location = models.CharField(choices=location_choices, max_length=64)
+    postal_code = models.IntegerField(default= 738090, validators=[
+            MaxValueValidator(999999),
+            MinValueValidator(100000)
+        ])
     subjects_required = models.ManyToManyField(Subject, related_name="students")
     is_finding_tutor = models.BooleanField(default=True)
 
@@ -65,7 +69,9 @@ class Student(CommonUser):
             "location": self.location,
             "subjects_required": [subject.subject_name for subject in self.subjects_required.all()],
             "is_finding_tutor": self.is_finding_tutor,
-            "profile_picture_url": profile_picture_url
+            "profile_picture_url": profile_picture_url,
+            "postal_code":self.postal_code
+
         }
 
 
@@ -97,3 +103,10 @@ class Application(models.Model):
 
     def __str__(self):
         return f"{self.tutor.username} applied for {self.subject.subject_name} with {self.student.username}"
+
+#Payment recording 
+class UserPayment(models.Model):
+    app_user = models.ForeignKey(Tutor, on_delete=models.CASCADE)
+    payment_bool = models.BooleanField(default=False)
+    stripe_checkout_id = models.CharField(max_length=500)
+

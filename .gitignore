@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Django
 *.log
 *.pot
@@ -62,4 +63,6 @@ dist/
 /frontend/node_modules/
 
 # Vercel
+=======
+>>>>>>> d60f5670053666b9dfeb40835ef1d339c7549ebb
 .vercel
