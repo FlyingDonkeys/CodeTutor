@@ -1,0 +1,159 @@
+.search-filter-page {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #0044cc;
+    color: white;
+  }
+  
+  .logo img {
+    height: 50px;
+  }
+  /*
+  .navbar {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+  }
+  */
+  .navbar ul {
+    list-style-type: none;
+    display: flex;
+    gap: 20px;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .navbar ul li {
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+  
+  .navbar ul li:hover {
+    color: #ffcc00;
+  }
+  
+  .user-info {
+    display: flex;
+    align-items: center;
+  }
+  
+  .user-info p {
+    margin-right: 20px;
+  }
+  
+  .logout-button {
+    padding: 10px 20px;
+    background-color: #cc0000;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .main-content {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  .search-bar {
+    display: flex;
+    margin-bottom: 20px;
+  }
+  
+  .search-bar input {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .search-button {
+    padding: 10px 20px;
+    background-color: #0044cc;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-left: 10px;
+    transition: background-color 0.3s;
+  }
+  
+  .search-button:hover {
+    background-color: #003399;
+  }
+  
+  .filters {
+    display: flex;
+    margin-bottom: 20px;
+  }
+  
+  .filter-button {
+    padding: 10px 20px;
+    background-color: #0044cc;
+    color: white;
+    border: none;
+    margin-right: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+  
+  .filter-button:hover {
+    background-color: #003399;
+  }
+  
+  .tutor-results {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .tutor-card {
+    display: flex;
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin: 10px;
+    width: calc(100% - 40px);
+    max-width: 900px;
+    border-radius: 5px;
+    background-color: white;
+    transition: box-shadow 0.3s;
+  }
+  
+  .tutor-card:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .tutor-card img {
+    height: 100px;
+    width: 100px;
+    margin-right: 20px;
+    border-radius: 50%;
+  }
+  
+  .tutor-info {
+    flex-grow: 1;
+  }
+  
+  .tutor-info p {
+    margin: 5px 0;
+  }
+  
+  .request-button {
+    padding: 10px 20px;
+    background-color: #0044cc;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0
+  }

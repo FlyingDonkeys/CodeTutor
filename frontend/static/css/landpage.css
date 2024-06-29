@@ -1,0 +1,117 @@
+.landing-page {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  /*
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #0044cc;
+    color: white;
+  }*/
+
+  
+  .user-info {
+    display: flex;
+    align-items: center;
+  }
+  
+  .user-info p {
+    margin-right: 20px;
+  }
+  
+  .logout-button {
+    padding: 10px 20px;
+    background-color: #cc0000;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .main-content {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .timetable {
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 900px;
+    background-color: beige;
+  }
+  
+  .timetable h2 {
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  
+  .timetable img {
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .buttons {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    max-width: 900px;
+  }
+  
+  .find-tutor-button,
+  .my-requests-button {
+    padding: 20px;
+    background-color: #0044cc;
+    color: white;
+    border: none;
+    cursor: pointer;
+    width: 45%;
+    text-align: center;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+  
+  .find-tutor-button:hover,
+  .my-requests-button:hover {
+    background-color: #003399;
+  }
+  
+  .button-card {
+    display: inline-block;
+    width: 200px;
+    padding: 20px;
+    margin: 10px;
+    text-align: center;
+    border-radius: 12px;
+    border: 3px solid #333;
+    background-color: transparent;
+    text-decoration: none;
+    color: #333;
+    font-family: Arial, sans-serif;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.button-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.button-card i {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.button-card span {
+    display: block;
+    font-size: 16px;
+    font-weight: bold;
+}
