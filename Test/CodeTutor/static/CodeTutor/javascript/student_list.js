@@ -5,6 +5,7 @@ console.log("student list page is loaded!")
 let loading_all_profiles = true
 let subject_to_be_loaded = ""
 
+
 window.onscroll = () => {
     // If user scrolls to the end, load more profiles
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
@@ -17,17 +18,24 @@ window.onscroll = () => {
 }
 
 // Start with first profile
-let counter = 1;
+let counter = 0;
 
 // Load 10 profiles at a time
 const quantity = 10;
 
 // When DOM loads, render the first 10 profiles
 document.addEventListener('DOMContentLoaded', function () {
+
     load()
     // Other eventlisteners such as change of profile display upon hover etc
     load_subjects()
 
+    // Attach logic to process clicking of filter form submit button
+    document.querySelector("#submit").onclick = () => load_profiles_by_rate(document.querySelector("#lowest_rate").value,
+                                                                                     document.querySelector("#highest_rate").value)
+
+    // Have some logic to give errors if user types in invalid input
+    const alertPlaceholder = document.getElementById('liveAlertPlaceholder')
 });
 
 // Load next set of posts
@@ -46,6 +54,7 @@ function load() {
     fetch(`/load_student_profiles?start=${start}&end=${end}`)
         .then(response => response.json()) // We have a Json object here of 10 students
         .then(students => {
+            console.log("adding students")
             console.log(students); // Verify that the students json objects have been passed in
             students.forEach(student => {
                 if (student.is_finding_tutor) { // Only display students actively finding tutors
@@ -64,7 +73,7 @@ function load() {
 
 // Used to implement filter function
 
-function load_specific_profiles(subject) {
+function load_specific_profiles(subject, min, max) {
 
     // User may choose to load all profiles again
     if (subject === "All") {
@@ -151,6 +160,14 @@ function add_student(student) {
                                         </div>
                                     </div>
                                     <div class="row mb-1">
+                                        <div class="col-3">
+                                            <h4>Offered Rate <h4>
+                                        </div>
+                                        <div class="col-3">
+                                            $${student.offered_rate}/hr
+                                        </div>
+                                    </div>
+                                    <div class="row mb-1">
                                         <div class="col-4"><!-- To centralise --></div>
                                         <div class="col-2">
                                             <!-- Logic to apply for tuition job not done -->
@@ -200,11 +217,82 @@ function add_subject(subject){
         counter = 0 // Reset counter
         document.querySelector("#the_actual_list").innerHTML = `` // Remove previously loaded profiles
         document.querySelector("#button_text").innerHTML = subject // Aesthetic stuff
-        load_specific_profiles(subject)
+        load_specific_profiles(subject, -1, -1)
     }
     the_subject.innerHTML = `<a class="dropdown-item" href="#">${subject}</a>`
 
     // Add option to dropdown
     document.querySelector('#subject_list').append(the_subject)
+}
+
+
+function load_profiles_by_rate(min, max) {
+    console.log(`Filtering by rates, minimum = ${min}, maximum = ${max}`)
+
+    // Javascript logic to show warning upon invalid input
+    const appendAlert = (message, type) => {
+    const wrapper = document.createElement('div')
+    wrapper.innerHTML = [
+        `<div class="alert alert-${type} alert-dismissible" role="alert">`,
+        `   <div>${message}</div>`,
+        '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+        '</div>'
+    ].join('')
+
+    alertPlaceholder.append(wrapper)
+    }
+
+    const alertTrigger = document.getElementById('liveAlertBtn')
+    if (alertTrigger) {
+        alertTrigger.addEventListener('click', () => {
+        appendAlert('Nice, you triggered this alert message!', 'danger')
+        })
+    }
+
+    // Handle invalid operations
+    if (min === '' || max === '') {
+        appendAlert("Please fill in both minimum and maximum rates!", 'danger')
+    } else if (min > max) {
+        appendAlert('Minimum rate must not be higher than maximum!', 'danger')
+    } else if (min <= 0 || max <= 0) {
+        appendAlert("Entered rates must both be positive values!", 'danger')
+    } else if (min > 1000 || max > 1000) {
+        appendAlert("Your entered rates are too high!", 'danger')
+    } else {
+            // Check if load is being called
+            console.log(`Loading student profiles whose offered rates are between ${min} and ${max}`)
+
+            // Ensure that we are loading specific profiles only
+            loading_all_profiles = false
+            counter = 0 // Reset counter
+            document.querySelector("#the_actual_list").innerHTML = `` // Remove previously loaded profiles
+
+            // Note that the start should be reset
+            const start = counter;
+            const end = start + quantity - 1;
+            // Get new posts and add posts
+            fetch(`/load_student_profiles?start=${start}&end=${end}`)
+                .then(response => response.json()) // We have a Json object here of 10 students
+                .then(students => {
+                    console.log(students);
+                    return students.filter(student => student.offered_rate >= min && student.offered_rate <= max);
+                })
+                .then(students => {
+                    console.log("middle")
+                    console.log(students); // Verify that the students json objects have been passed in
+                    students.forEach(student => {
+                        // For filter feature, we have to take profiles requiring specific subjects
+                        if (student.is_finding_tutor) {
+                            add_student(student)
+                        }
+                    });
+                    // Update counter to load the next 10 posts
+                    counter+=quantity;
+                })
+                .finally(() => {
+                    console.log(`Students offering rates between ${min} and ${max} loaded`)
+                    document.querySelector("#student_list").style.display = "block"
+                });
+    }
 }
 
