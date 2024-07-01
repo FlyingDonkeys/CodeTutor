@@ -24,14 +24,20 @@ function load_profile() {
             if(user.is_student){
                 generate_map(user);
             }
+            if(!user.is_student){
+                alert("hiding the button!");
+                hideButton();
+            }
         });
 
+}
+function hideButton(){
+    document.querySelector('#showButton').style.display = 'none';
 }
 let counter = 0;
 function showMap() {
     document.querySelector('#map').style.display = counter%2== 0? 'block': 'none';
     counter ++;
-    alert("show function activated")
 }
 
 function generate_profile(user){
@@ -71,7 +77,9 @@ if (user.is_student) {
                         <b class="fs-6">Hello I am,  ${user.user.username}</b>
                         <h1 class="fw-bold mb-4 fs-1">Tutor</h1>
                         <p> ${user.user.description}</p>
-                        <button class="btn btn-outline-primary fw-bolder fs-7 px-4 py-2 mt-3 rounded-pill">Download Resume</button>
+                        <a href = "/product_page">
+                        <button class="btn btn-outline-primary fw-bolder fs-7 px-4 py-2 mt-3 rounded-pill">Subsribe</button>
+                        </a>
                     </div>
                </div>
             </div>`;

@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-gf2)a)g-4ti)y*vao8#-5jla_(4r!cgep98!f2q-ouzj5_yb_*
 GOOGLE_API_KEY = 'AIzaSyC128zZlCt6WN8ygaNo0DtpDi0DL8s0SIM'
 
 #Set up for stripe payment
-REDIRECT_DOMAIN = 'https://codetutor-8b10e0a442a4.herokuapp.com'
+REDIRECT_DOMAIN = 'https://code-tutor-7d77c272e8ff.herokuapp.com'
 
 STRIPE_PUBLIC_KEY_TEST='pk_test_51PREktEZACuDQbJWfonjzkgOmzjX3TS0BmakykrOmeVNbeEpXwVS6O0bX5ZljyWYiGr868iWPZLJCk9LXXx7vmI400i2iA0god'
 STRIPE_SECRET_KEY_TEST='sk_test_51PREktEZACuDQbJWu6Jha3n8xccKkaiaHz3JnEuNBtCFvy1LI8HaxadDLnsxeaGM1kb3kY5TtnIG5GtVDhomFEaO008ouzEKwa'
@@ -43,7 +43,7 @@ PRODUCT_PRICE= 'price_1PRXbREZACuDQbJWYJgnPbPY'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'codetutors-19a3f32152ae.herokuapp.com',
+    'https://code-tutor-7d77c272e8ff.herokuapp.com',
     '127.0.0.1'
 ]
 
@@ -140,10 +140,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+
 
 # This line should be added to define where static files will be collected
+
+STATIC_URL = '/CodeTutor/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'CodeTutor/static/CodeTutor/images/'),
+    os.path.join(BASE_DIR, 'CodeTutor/static/CodeTutor/javascript/')
+]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 

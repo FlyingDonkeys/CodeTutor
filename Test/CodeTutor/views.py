@@ -31,7 +31,7 @@ def load_user_profile(request):
             print(f"user profile picture is {user.profile_picture.url}")
             context = {
                 'google_api_key': settings.GOOGLE_API_KEY,
-                'is_student': is_student,
+                'is_student': True,
                 'user': {
                     'username': user.username,
                     'id': user.id,
@@ -48,7 +48,7 @@ def load_user_profile(request):
 
         context = {
             'google_api_key': settings.GOOGLE_API_KEY,
-            'is_student': is_student,
+            'is_student': False,
             'user': {
                 'username': user.username,
                 'id': user.id,

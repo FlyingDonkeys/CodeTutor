@@ -149,46 +149,48 @@ function add_tutor(tutor) {
                             <div class="row">
                                 <div class="col-3">
                                     <!-- Profile picture functionality in Django to be implemented -->
-                                    <img style='height: 100%; width: 100%; object-fit: contain;' src="${url}" alt="No Image">
+                                    <div class="imgcover mb-4">
+                                    <img src="${url}" style="width:250px; height:250px; object-fit: cover;"alt="No Image" class="rounded-pill bg-white p-2 shadow">
+                                </div>
                                 </div>
                                 <div class="col-9">
                                     <div class="row mb-1">
-                                        <div class="col-3">
-                                            <h4>Username: <h4>
-                                        </div>
-                                        <div class="col-3">
-                                            ${tutor.username}
-                                        </div>
+                                    <div class="col-md-3 py-1">
+                                    <h5 class="fw-bold">Name:</h5>
+                                </div>
+                                    <div class="col-md-3 py-1">
+                                    ${tutor.username}
+                                    </div>
                                     </div>
                                     <div class="row mb-1">
-                                        <div class="col-3">
-                                            <h4>Subjects Taught: <h4>
-                                        </div>
-                                        <div class="col-3">
-                                            ${subjects_taught}
-                                        </div>
+                                    <div class="col-md-3 py-1">
+                                    <h5 class="fw-bold">Subjects:</h5>
+                                    </div>
+                                    <div class="col-md-3 py-1">  
+                                    ${subjects_taught}
+                                    </div>
                                     </div>
                                     <div class="row mb-1">
-                                        <div class="col-3">
-                                            <h4>Tutor Description: <h4>
-                                        </div>
-                                        <div class="col-3">
-                                            ${tutor.tutor_description}
-                                        </div>
+                                    <div class="col-md-3 py-1">
+                                    <h5 class="fw-bold">Description:</h5>
+                                    </div>
+                                    <div class="col-md-3 py-1">
+                                        ${tutor.tutor_description}
+                                    </div>
                                     </div>
                                     <div class="row mb-1">
-                                        <div class="col-3">
-                                            <h4>TutorScore: </h4>
-                                        </div>
+                                    <div class="col-md-3 py-1">
+                                    <h5 class="fw-bold">Tutor Score:</h5>
+                                    </div>
                                         ${tutorscorehtml}
                                     </div>
                                     <div class="row mb-1">
-                                        <div class="col-3">
-                                            <h4>Students Taught: <h4>
-                                        </div>
-                                        <div class="col-3">
-                                            ${tutor.students_taught}
-                                        </div>
+                                    <div class="col-md-3 py-1">
+                                    <h5 class="fw-bold">Students taught:</h5>
+                                    </div>
+                                    <div class="col-md-3 py-1">
+                                        ${tutor.students_taught}
+                                    </div>
                                     </div>
                                     <div class="row mb-1">
                                         <div class="col-4"><!-- To centralise --></div>
@@ -197,7 +199,9 @@ function add_tutor(tutor) {
                                             <!-- May mimic the form tutors use to apply for a student -->
                                             <!-- Note that the url provided here doesnt actually exist -->
                                             <!-- Maybe you could help with it -->
-                                            <a class="btn btn-primary" href="apply_tutor/${tutor.username}" role="button">Hire this Tutor</a>
+                                            <a href="apply_tutor/${tutor.username}" role="button">
+                                            <button class="btn btn-outline-primary fw-bolder fs-7 px-4 py-1 mt-3 rounded-pill">Hire this Tutor</button>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>

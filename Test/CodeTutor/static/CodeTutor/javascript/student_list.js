@@ -132,46 +132,51 @@ function add_student(student) {
                             <div class="row">
                                 <div class="col-3">
                                     <!-- Profile picture functionality in Django to be implemented -->
-                                    <img style='height: 100%; width: 100%; object-fit: contain;' src="${url}" alt="No Image">
+                                    <div class="imgcover mb-4">
+                                    <img src="${url}" style="width:250px; height:250px; object-fit: cover;"alt="No Image" class="rounded-pill bg-white p-2 shadow">
+                                </div>
                                 </div>
                                 <div class="col-9">
+
                                     <div class="row mb-1">
-                                        <div class="col-3">
-                                            <h4>Username: <h4>
-                                        </div>
-                                        <div class="col-3">
+                                    <div class="col-md-3 py-1">
+                                        <h5 class="fw-bold">Name:</h5>
+                                    </div>
+                                        <div class="col-md-3 py-1">
                                             ${student.username}
                                         </div>
                                     </div>
                                     <div class="row mb-1">
-                                        <div class="col-3">
-                                            <h4>Location: <h4>
-                                        </div>
-                                        <div class="col-3">
-                                            ${student.location}
-                                        </div>
+                                    <div class="col-md-3 py-1">
+                                    <h5 class="fw-bold">Location:</h5>
+                                </div>
+                                    <div class="col-md-3 py-1">
+                                        ${student.location}
+                                    </div>
                                     </div>
                                     <div class="row mb-1">
-                                        <div class="col-3">
-                                            <h4>Subjects Required: <h4>
-                                        </div>
-                                        <div class="col-3">
-                                            ${subjects_required}
-                                        </div>
+                                    <div class="col-md-3 py-1">
+                                    <h5 class="fw-bold">Subjects:</h5>
+                                </div>
+                                    <div class="col-md-3 py-1">
+                                        ${subjects_required}
+                                    </div>
                                     </div>
                                     <div class="row mb-1">
-                                        <div class="col-3">
-                                            <h4>Offered Rate <h4>
-                                        </div>
-                                        <div class="col-3">
-                                            $${student.offered_rate}/hr
-                                        </div>
+                                    <div class="col-md-3 py-1">
+                                    <h5 class="fw-bold">Offered Rate:</h5>
+                                </div>
+                                    <div class="col-md-3 py-1">
+                                        $${student.offered_rate}
+                                    </div>
                                     </div>
                                     <div class="row mb-1">
                                         <div class="col-4"><!-- To centralise --></div>
                                         <div class="col-2">
                                             <!-- Logic to apply for tuition job not done -->
-                                            <a class="btn btn-primary" href="apply/${student.username}" role="button">Apply as Tutor</a>
+                                            <a href="apply/${student.username}" role="button">
+                                            <button class="btn btn-outline-primary fw-bolder fs-7 px-4 py-2 mt-3 rounded-pill">Apply as Tutor</button>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
