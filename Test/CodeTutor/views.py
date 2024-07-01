@@ -28,6 +28,7 @@ def load_user_profile(request):
             is_student = True
             user = query_set.first()
             print(f"currently searching student db {query_set}")
+            print(f"user profile picture is {user.profile_picture.url}")
             context = {
                 'google_api_key': settings.GOOGLE_API_KEY,
                 'is_student': is_student,
