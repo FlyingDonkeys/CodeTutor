@@ -339,6 +339,7 @@ def load_student_profiles(request):
         time.sleep(1)
         return JsonResponse(data, safe=False)
 
+
 @login_required
 def load_tutor_profiles(request):
     if (request.method == "GET"):
