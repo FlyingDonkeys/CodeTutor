@@ -10,9 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
-from pathlib import Path
+
 
 import os
+
+from pathlib import Path
 import stripe
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -143,7 +145,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 # This line should be added to define where static files will be collected
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
