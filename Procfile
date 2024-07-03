@@ -1,1 +1,1 @@
-web: gunicorn Test.wsgi:CodeTutor
+web: gunicorn Test.wsgi:application
