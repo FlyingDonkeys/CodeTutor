@@ -15,115 +15,117 @@ import time
 
 @login_required
 def profile(request):
-     return render(request, "CodeTutor/profile.html")
+    return render(request, "CodeTutor/profile.html")
+
 
 @login_required
 def load_user_profile(request):
-     if request.method == "GET":
+    if request.method == "GET":
         is_student = False
         user = None
-        query_set = Student.objects.all().filter(username = request.user.username)
-        if query_set.exists():   
+        query_set = Student.objects.all().filter(username=request.user.username)
+        if query_set.exists():
             is_student = True
             user = query_set.first()
             print(f"currently searching student db {query_set}")
             context = {
-            'google_api_key': settings.GOOGLE_API_KEY,
-            'is_student':is_student,
-            'user': {
-            'username': user.username,
-            'id': user.id,
-            'location':user.location,
-            'postal_code':user.postal_code,
-            'profile_picture_url':user.profile_picture.url
+                'google_api_key': settings.GOOGLE_API_KEY,
+                'is_student': is_student,
+                'user': {
+                    'username': user.username,
+                    'id': user.id,
+                    'location': user.location,
+                    'postal_code': user.postal_code,
+                    'profile_picture_url': user.profile_picture.url
+                }
             }
-	        }
             return JsonResponse(context, safe=False)
         else:
-            query_set = Tutor.objects.all().filter(username = request.user.username)
+            query_set = Tutor.objects.all().filter(username=request.user.username)
             user = query_set[0]
             print(f"currently searching tutor db {user}")
-    
+
         context = {
-        'google_api_key': settings.GOOGLE_API_KEY,
-        'is_student':is_student,
-        'user': {
-            'username': user.username,
-            'id': user.id,
-            'description':user.tutor_description,
-            'profile_picture_url':user.profile_picture.url
+            'google_api_key': settings.GOOGLE_API_KEY,
+            'is_student': is_student,
+            'user': {
+                'username': user.username,
+                'id': user.id,
+                'description': user.tutor_description,
+                'profile_picture_url': user.profile_picture.url
             }
-	    }
+        }
         return JsonResponse(context, safe=False)
-     
 
 
-#STRIPE API 
+# STRIPE API
 @login_required(login_url='login')
 def product_page(request):
-	stripe.api_key = settings.STRIPE_SECRET_KEY_TEST
-	if request.method == 'POST':
-		checkout_session = stripe.checkout.Session.create(
-			payment_method_types = ['card'],
-			line_items = [
-				{
-					'price': settings.PRODUCT_PRICE,
-					'quantity': 1,
-				},
-			],
-			mode = 'payment',
-			customer_creation = 'always',
-			success_url = settings.REDIRECT_DOMAIN + '/payment_successful?session_id={CHECKOUT_SESSION_ID}',
-			cancel_url = settings.REDIRECT_DOMAIN + '/payment_cancelled',
-		)
-		return redirect(checkout_session.url, code=303)
-	return render(request, 'CodeTutor/product_page.html')
+    stripe.api_key = settings.STRIPE_SECRET_KEY_TEST
+    if request.method == 'POST':
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[
+                {
+                    'price': settings.PRODUCT_PRICE,
+                    'quantity': 1,
+                },
+            ],
+            mode='payment',
+            customer_creation='always',
+            success_url=settings.REDIRECT_DOMAIN + '/payment_successful?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url=settings.REDIRECT_DOMAIN + '/payment_cancelled',
+        )
+        return redirect(checkout_session.url, code=303)
+    return render(request, 'CodeTutor/product_page.html')
 
-#Goes here if successful,works only with real web address  
+
+# Goes here if successful,works only with real web address
 ## use Stripe dummy card: 4242 4242 4242 4242
 def payment_successful(request):
-	stripe.api_key = settings.STRIPE_SECRET_KEY_TEST
-	checkout_session_id = request.GET.get('session_id', None)
-	session = stripe.checkout.Session.retrieve(checkout_session_id)
-	customer = stripe.Customer.retrieve(session.customer)
-	user_id = request.user.id
-	user_payment = UserPayment.objects.get(app_user=user_id)
-	user_payment.stripe_checkout_id = checkout_session_id
-	user_payment.save()
-	return render(request, 'CodeTutor/payment_successful.html', {'customer': customer})
+    stripe.api_key = settings.STRIPE_SECRET_KEY_TEST
+    checkout_session_id = request.GET.get('session_id', None)
+    session = stripe.checkout.Session.retrieve(checkout_session_id)
+    customer = stripe.Customer.retrieve(session.customer)
+    user_id = request.user.id
+    user_payment = UserPayment.objects.get(app_user=user_id)
+    user_payment.stripe_checkout_id = checkout_session_id
+    user_payment.save()
+    return render(request, 'CodeTutor/payment_successful.html', {'customer': customer})
 
 
 def payment_cancelled(request):
-	stripe.api_key = settings.STRIPE_SECRET_KEY_TEST
-	return render(request, 'CodeTutor/payment_cancelled.html')
+    stripe.api_key = settings.STRIPE_SECRET_KEY_TEST
+    return render(request, 'CodeTutor/payment_cancelled.html')
 
-#This is to be called by stripeAPI do not try to access the url 
+
+# This is to be called by stripeAPI do not try to access the url
 @csrf_exempt
 def stripe_webhook(request):
-	stripe.api_key = settings.STRIPE_SECRET_KEY_TEST
-	time.sleep(10)
-	payload = request.body
-	signature_header = request.META['HTTP_STRIPE_SIGNATURE']
-	event = None
-	try:
-		event = stripe.Webhook.construct_event(
-			payload, signature_header, settings.STRIPE_WEBHOOK_SECRET_TEST
-		)
-	except ValueError as e:
-		return HttpResponse(status=400)
-	except stripe.error.SignatureVerificationError as e:
-		return HttpResponse(status=400)
-	if event['type'] == 'checkout.session.completed':
-		session = event['data']['object']
-		session_id = session.get('id', None)
-		time.sleep(15)
-		user_payment = UserPayment.objects.get(stripe_checkout_id=session_id)
-		user_payment.payment_bool = True
-		user_payment.save()
-	return HttpResponse(status=200)
+    stripe.api_key = settings.STRIPE_SECRET_KEY_TEST
+    time.sleep(10)
+    payload = request.body
+    signature_header = request.META['HTTP_STRIPE_SIGNATURE']
+    event = None
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, signature_header, settings.STRIPE_WEBHOOK_SECRET_TEST
+        )
+    except ValueError as e:
+        return HttpResponse(status=400)
+    except stripe.error.SignatureVerificationError as e:
+        return HttpResponse(status=400)
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+        session_id = session.get('id', None)
+        time.sleep(15)
+        user_payment = UserPayment.objects.get(stripe_checkout_id=session_id)
+        user_payment.payment_bool = True
+        user_payment.save()
+    return HttpResponse(status=200)
+
 
 class TutorRegistrationForm(forms.ModelForm):
-
     # Stuff from AbstractUser
     username = forms.CharField(max_length=64)
     first_name = forms.CharField(max_length=64)
@@ -137,7 +139,7 @@ class TutorRegistrationForm(forms.ModelForm):
     subjects_taught = forms.ModelMultipleChoiceField(queryset=Subject.objects.all())
     tutor_qualification = forms.ModelChoiceField(queryset=Qualification.objects.all())
     hourly_rate = forms.IntegerField(min_value=0, max_value=1000)
-    tutor_description = forms.CharField(required=False, widget=forms.Textarea(attrs={'rows':18, 'cols':36}))
+    tutor_description = forms.CharField(required=False, widget=forms.Textarea(attrs={'rows': 18, 'cols': 36}))
 
     class Meta:
         model = Tutor  # Ensures Django knows which model this form is associated with
@@ -157,7 +159,6 @@ class TutorRegistrationForm(forms.ModelForm):
 
 
 class StudentRegistrationForm(forms.ModelForm):
-
     # Stuff from AbstractUser
     username = forms.CharField(max_length=64)
     first_name = forms.CharField(max_length=64)
@@ -171,6 +172,7 @@ class StudentRegistrationForm(forms.ModelForm):
     location = forms.ChoiceField(choices=Student.location_choices)
     postal_code = forms.IntegerField(required=True)
     subjects_required = forms.ModelMultipleChoiceField(queryset=Subject.objects.all())
+    offered_rate = forms.IntegerField(min_value=0, max_value=1000)
 
     class Meta:
         model = Student
@@ -183,7 +185,8 @@ class StudentRegistrationForm(forms.ModelForm):
             'mobile_number',
             'subjects_required',
             'profile_picture',
-            'postal_code'
+            'postal_code',
+            'offered_rate'
         ]
 
 
@@ -198,7 +201,7 @@ def entry(request):
     # Not well coded sorry...
     elif (request.method == 'GET' and request.user.is_authenticated):
         if (Tutor.objects.filter(username=request.user.username)):
-            return render(request, "CodeTutor/job_postings.html")
+            return render(request, "CodeTutor/student_list.html")
         else:
             # Yet to implement
             return render(request, "CodeTutor/work_in_progress.html")
@@ -238,7 +241,8 @@ def register_student(request, student_registration_form):
         email=student_registration_form.cleaned_data['email'],
         mobile_number=student_registration_form.cleaned_data['mobile_number'],
         location=student_registration_form.cleaned_data['location'],
-        profile_picture=student_registration_form.cleaned_data['profile_picture']
+        profile_picture=student_registration_form.cleaned_data['profile_picture'],
+        offered_rate = student_registration_form.cleaned_data['offered_rate']
     )
 
     password = student_registration_form.cleaned_data['password']
@@ -249,7 +253,6 @@ def register_student(request, student_registration_form):
     new_student.save()
 
     return HttpResponseRedirect(reverse("login_function"))
-
 
 
 def register_tutor(request, tutor_registration_form):
@@ -272,10 +275,7 @@ def register_tutor(request, tutor_registration_form):
     new_tutor.set_password(password)
     new_tutor.save()
 
-    # Use Django messages framework to pass context to the html
-    messages.success(request, "You have successfully registered your tutor profile. Please proceed to login.")
-
-    return HttpResponseRedirect(reverse("success"))
+    return HttpResponseRedirect(reverse("login_function"))
 
 
 def login_function(request):
@@ -295,12 +295,12 @@ def login_function(request):
             login(request, user)
             # If the user with this username is a tutor, bring him to the student list view
             if (Tutor.objects.filter(username=username)):
-                return HttpResponseRedirect(reverse("job_postings"))
+                return HttpResponseRedirect(reverse("student_list"))
             elif (Student.objects.filter(username=username)):
                 # Should go student_main page but yet to implement
-                return HttpResponseRedirect(reverse("work_in_progress"))
+                return HttpResponseRedirect(reverse("tutor_list"))
 
-            # Otherwise, bring to tutor list view (tbc)
+            # Otherwise, the user is an admin, but we dont care abt this
             return HttpResponseRedirect(reverse("work_in_progress"))
         else:
             return render(request, "CodeTutor/index.html", {
@@ -309,9 +309,14 @@ def login_function(request):
 
 
 @login_required
-def job_postings(request):
+def student_list(request):
     if (request.method == "GET"):
-        return render(request, "CodeTutor/job_postings.html")
+        return render(request, "CodeTutor/student_list.html")
+
+
+def tutor_list(request):
+    if (request.method == "GET"):
+        return render(request, "CodeTutor/tutor_list.html")
 
 
 @login_required
@@ -335,6 +340,27 @@ def load_student_profiles(request):
         return JsonResponse(data, safe=False)
 
 
+@login_required
+def load_tutor_profiles(request):
+    if (request.method == "GET"):
+        # Get start and end profiles
+        start = int(request.GET.get('start') or 0)
+        end = int(request.GET.get('end') or (start + 9))
+
+        # Generate list of profiles
+        data = []
+        for i in range(start, end + 1):
+            try:
+                # Try to get 10 profiles at a time
+                data.append(Tutor.objects.all()[i].serialize())
+            except:
+                # If not possible to get 10 profiles, break
+                break
+        # Artificially delay speed of response
+        time.sleep(1)
+        return JsonResponse(data, safe=False)
+
+
 def load_subjects(request):
     if (request.method == "GET"):
         subjects = []
@@ -345,12 +371,13 @@ def load_subjects(request):
         return None
         # Throw an error, but I have no time to complete this yet
 
+
 @login_required()
 def apply(request, student_username):
     if (request.method == "GET"):
         return render(request, 'CodeTutor/apply.html', context=
-            {'student': Student.objects.get(username=student_username)}
-        )
+        {'student': Student.objects.get(username=student_username)}
+                      )
     # After receiving the form. we have to send the tutor's application to the student
     # I guess it is timely to include a new model to meet this requirement
     # Each Student may be related to several Applications
@@ -388,5 +415,3 @@ def work_in_progress(request):
 @login_required
 def success(request):
     return render(request, 'CodeTutor/success.html')
-
-
