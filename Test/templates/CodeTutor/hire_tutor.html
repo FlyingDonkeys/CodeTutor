@@ -1,0 +1,58 @@
+{% extends "CodeTutor/layout.html" %}
+{% load static %}
+
+{% block nav %}
+  <li class="nav-item">
+    <a class="btn btn-primary me-2" href="{% url 'tutor_list' %}" role="button">Back</a>
+  </li>
+{% endblock %}
+
+{% block body %}
+    <div class="container" id="hiring_form" style="background: white">
+        <div class="row">
+            <div class="row mb-3">
+                <div class="row">
+                    <div class="col-3">
+                        <!-- To centralise -->
+                    </div>
+                    <div class="col-6">
+                        <h4 style="color: green">You are currently applying to hire {{ tutor.username }}</h4>
+                    </div>
+                </div>
+            </div>
+            <form method="post" action="{% url 'hire_tutor' tutor.username %}">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-3">
+                        <!-- To centralise -->
+                    </div>
+                    <div class="col-6">
+                        <!-- For student to choose which subjects he would like to apply for -->
+                        <h3 class="mb-3" id="subject_heading">Select Subject</h3>
+                        <select name="selected_subject" class="form-select mb-3" aria-label="Default select example" required>
+                          {% for subject in tutor.subjects_taught.all %}
+                              <option id="{{ subject }}">{{ subject }}</option>
+                          {% endfor %}
+                        </select>
+
+                        <!-- For student to quote his rates -->
+                        <h3 class="mb-1">What are the rates that you are offering? (Hourly)</h3>
+                        <div class="input-group mb-3">
+                          <span class="input-group-text">$</span>
+                          <input name="offered_rates" type="number" class="form-control" aria-label="Amount (to the nearest dollar)" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-5">
+                        <!-- To centralise button -->
+                    </div>
+                    <div class="col-3 mb-3">
+                        <!-- To submit form -->
+                        <input type="submit" class="btn btn-dark">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

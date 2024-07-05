@@ -92,6 +92,9 @@ class Tutor(CommonUser):
     tutor_score = models.DecimalField(max_digits=4, decimal_places=2, default=10.00)
     students_taught = models.IntegerField(default=0)
 
+    # A tutor can have many students, just like how a student can have many tutors
+    students = models.ManyToManyField(Student, related_name="tutors")
+
     class Meta:
         verbose_name = "Tutor"
 
@@ -110,10 +113,12 @@ class Tutor(CommonUser):
             "profile_picture_url": profile_picture_url,
             "tutor_description": self.tutor_description,
             "tutor_score": self.tutor_score,
-            "students_taught": self.students_taught
+            "students_taught": self.students_taught,
+            "students": [student.username for student in self.students.all()]
         }
 
 
+# Django model to represent an Application by a Tutor to teach a Student
 class Application(models.Model):
     # Stuff in application form
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
@@ -127,6 +132,19 @@ class Application(models.Model):
 
     def __str__(self):
         return f"{self.tutor.username} applied for {self.subject.subject_name} with {self.student.username}"
+
+
+# Django model to represent a HiringApplication by a Student to hire a Tutor
+class HiringApplication(models.Model):
+    # Stuff collected in application form
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    offered_rates = models.IntegerField(default=0)
+
+    # Other stuff to identify Student who wants to hire, and target Tutor
+    tutor = models.ForeignKey(Tutor, on_delete=models.CASCADE, related_name="received_applications") # Tutor is related to his received applications
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="sent_applications") # Student related to sent hiring ones
+    application_date = models.DateTimeField(auto_now_add=True)
+
 
 #Payment recording 
 class UserPayment(models.Model):

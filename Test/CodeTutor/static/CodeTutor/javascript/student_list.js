@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelector("#submit").onclick = () => load_profiles_by_rate(document.querySelector("#lowest_rate").value,
                                                                                      document.querySelector("#highest_rate").value)
 
+
     // Have some logic to give errors if user types in invalid input
     const alertPlaceholder = document.getElementById('liveAlertPlaceholder')
 });

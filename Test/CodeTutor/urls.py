@@ -9,7 +9,7 @@ urlpatterns = [
     path("login", views.login_function, name="login_function"),
     path("logout", views.logout_function, name="logout_function"),
     path("work_in_progress", views.work_in_progress, name="work_in_progress"),
-    path("success", views.success, name="success"),
+    path("success/<str:user_type>", views.success, name="success"),
 
     # Loads the tutor page
     path("student_list", views.student_list, name="student_list"),
@@ -23,6 +23,13 @@ urlpatterns = [
     path("load_subjects", views.load_subjects, name="load_subjects"),
     # Path for tutor to apply to tutor a particular student
     path("apply/<str:student_username>", views.apply, name="apply"),
+    # Path for student to apply to hire a particular tutor
+    path("hire_tutor/<str:tutor_username>", views.hire_tutor, name="hire_tutor"),
+
+    # Path for tutor to view the hiring requests he received from students
+    path("received_hiring_requests", views.received_hiring_requests, name="received_hiring_requests"),
+    # API endpoint to accept a hiring/application request
+    path("accept/<str:type_of_application>/<int:application_id>", views.accept, name="accept"),
 
     #Product page for STRIPE
     path("product_page", views.product_page, name="product_page"),

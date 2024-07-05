@@ -198,13 +198,21 @@ function add_tutor(tutor) {
                                         </div>
                                     </div>
                                     <div class="row mb-1">
+                                        <div class="col-3">
+                                            <h4>Hourly Rate: <h4>
+                                        </div>
+                                        <div class="col-3">
+                                            $${tutor.hourly_rate}/hr
+                                        </div>
+                                    </div>
+                                    <div class="row mb-1">
                                         <div class="col-4"><!-- To centralise --></div>
                                         <div class="col-2">
                                             <!-- Logic for student to apply for this tutor not done -->
                                             <!-- May mimic the form tutors use to apply for a student -->
                                             <!-- Note that the url provided here doesnt actually exist -->
                                             <!-- Maybe you could help with it -->
-                                            <a class="btn btn-primary" href="apply_tutor/${tutor.username}" role="button">Hire this Tutor</a>
+                                            <a class="btn btn-primary" href="hire_tutor/${tutor.username}" role="button">Hire this Tutor</a>
                                         </div>
                                     </div>
                                 </div>

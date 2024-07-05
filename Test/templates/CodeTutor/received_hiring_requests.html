@@ -1,0 +1,41 @@
+{% extends "CodeTutor/layout.html" %}
+{% load static %}
+
+{% block script %}
+{% endblock %}
+
+
+<!-- Since tutors receive hiring requests, "back" must bring them to list of students -->
+{% block nav %}
+  <li class="nav-item">
+    <a class="btn btn-primary me-2" href="{% url 'received_hiring_requests' %}" role="button">
+        Received Hiring Requests
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="btn btn-primary me-2" href="{% url 'student_list' %}" role="button">Back</a>
+  </li>
+{% endblock %}
+
+{% block body %}
+    <div class="container" id="student_list" style="background: white; padding-top: 20px;">
+        <
+        <div class="row mb-3" style="padding-left: 59px">
+            {% for request in requests %}
+                <div class="card m-2" style="width: 24rem;">
+                  <img src="{{ request.student.profile_picture.url }}" class="card-img-top" alt='https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'>
+                  <div class="card-body">
+                    <h5 class="card-title">{{ request.student.username }}</h5>
+                    <p class="card-text">Subject Required: {{ request.subject.subject_name }}</p>
+                    <p class="card-text">Offered Rate: ${{ request.offered_rates }}/hr</p>
+                    <p class="card-text">Date Received: {{ request.application_date }}</p>
+                      <div class="row mb-3">
+                          <a href="{% url "accept" type_of_application="hiring_application" application_id=request.id %}" class="btn btn-success">Accept</a>
+                          <a href="#" class="btn btn-danger">Reject</a>
+                      </div>
+                  </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

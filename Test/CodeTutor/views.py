@@ -308,10 +308,14 @@ def login_function(request):
             })
 
 
+# Note that only tutors should be able to view this page
 @login_required
 def student_list(request):
     if (request.method == "GET"):
-        return render(request, "CodeTutor/student_list.html")
+        tutor = Tutor.objects.get(username=request.user.username)
+        return render(request, "CodeTutor/student_list.html", context={
+            "unhandled_requests": tutor.received_applications.count()
+        })
 
 
 def tutor_list(request):
@@ -372,11 +376,11 @@ def load_subjects(request):
         # Throw an error, but I have no time to complete this yet
 
 
-@login_required()
+@login_required
 def apply(request, student_username):
     if (request.method == "GET"):
         return render(request, 'CodeTutor/apply.html', context=
-        {'student': Student.objects.get(username=student_username)}
+            {'student': Student.objects.get(username=student_username)}
                       )
     # After receiving the form. we have to send the tutor's application to the student
     # I guess it is timely to include a new model to meet this requirement
@@ -399,10 +403,35 @@ def apply(request, student_username):
         application.save()
 
         messages.success(request, "Your application has been received successfully.")
-        return HttpResponseRedirect(reverse('success'))
+        return HttpResponseRedirect(reverse('success', args=['tutor']))
 
 
-@login_required()
+@login_required
+def hire_tutor(request, tutor_username):
+    if (request.method == "GET"):
+        return render(request, 'CodeTutor/hire_tutor.html', context={
+            'tutor': Tutor.objects.get(username=tutor_username)
+        })
+    elif (request.method == "POST"):
+        # Get information from the form
+        information = request.POST
+
+        selected_subject = information.get('selected_subject')
+        offered_rates = information.get('offered_rates')
+
+        hiring_application = HiringApplication(subject=Subject.objects.get(subject_name=selected_subject),
+                                               offered_rates=offered_rates,
+                                               tutor=Tutor.objects.get(username=tutor_username),
+                                               student=Student.objects.get(username=request.user.username)
+                                               )
+
+        hiring_application.save()
+
+        messages.success(request, "Your application has been received successfully.")
+        return HttpResponseRedirect(reverse('success', args=['student']))
+
+
+@login_required
 def logout_function(request):
     logout(request)
     return HttpResponseRedirect(reverse("entry"))
@@ -413,5 +442,48 @@ def work_in_progress(request):
 
 
 @login_required
-def success(request):
-    return render(request, 'CodeTutor/success.html')
+def success(request, user_type):
+    # Note that the success page is shared between tutor and student
+    # Hence, the back button should make the correct redirect
+    # is_tutor is context
+    is_tutor = False
+    if (user_type == 'tutor'):
+        is_tutor = True
+    elif (user_type == 'student'):
+        is_tutor = False
+
+    print(is_tutor)
+    return render(request, 'CodeTutor/success.html', context={
+        "is_tutor": is_tutor
+    })
+
+
+@login_required
+def received_hiring_requests(request):
+    if (request.method == 'GET'):
+        tutor = Tutor.objects.get(username=request.user.username)
+        hiring_requests = tutor.received_applications.all() # These are the HiringApplication objects
+        return render(request, "CodeTutor/received_hiring_requests.html", context={
+            "requests": hiring_requests
+        })
+
+
+# If a request is accepted, handle it appropriately
+@login_required
+def accept(request, type_of_application, application_id):
+    if (request.method == 'GET'):
+        if (type_of_application == "hiring_application"):
+            this_application = HiringApplication.objects.get(id=application_id)
+
+            # If Tutor accepts Student's application, add Student to the list of Students this Tutor has
+            this_application.tutor.students.add(this_application.student)
+            print(this_application.tutor.students.all())
+
+            # Get rid of this application
+            this_application.delete()
+
+            messages.success(request, "Please check your profile tab to view more information about your new student!")
+            return HttpResponseRedirect(reverse('success', args=['tutor']))
+
+
+

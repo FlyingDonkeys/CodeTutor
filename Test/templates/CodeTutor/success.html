@@ -12,12 +12,17 @@
     </style>
 {% endblock %}
 
-<!-- Currently hard coded to redirect to job postings, as we are assuming every user who -->
-<!-- sees this success page is a tutor. -->
+
 {% block nav %}
-  <li class="nav-item">
-    <a class="btn btn-primary me-2" href="{% url 'student_list' %}" role="button">Back</a>
-  </li>
+    {% if is_tutor %}
+      <li class="nav-item">
+        <a class="btn btn-primary me-2" href="{% url 'student_list' %}" role="button">Back</a>
+      </li>
+    {% elif not is_tutor %}
+      <li class="nav-item">
+        <a class="btn btn-primary me-2" href="{% url 'tutor_list' %}" role="button">Back</a>
+      </li>
+    {% endif %}
 {% endblock %}
 
 {% block body %}
@@ -25,7 +30,7 @@
         <div class="row mb-3">
             <!-- Add spacing vertically -->
         </div>
-        <div class="row">
+        <div class="row mb-3">
             <div class="col-3">
                 <!-- To centralize -->
             </div>
@@ -37,5 +42,17 @@
                 {% endif %}
             </div>
         </div>
+    <div class="row">
+        <div class="col-5">
+            <!-- To centralise -->
+        </div>
+        <div class="col-6">
+            {% if is_tutor %}
+                <a class="btn btn-primary me-2" href="{% url 'student_list' %}" role="button">Browse more Job Postings</a>
+            {% elif not is_tutor %}
+                <a class="btn btn-primary me-2" href="{% url 'tutor_list' %}" role="button">Browse more Tutor profiles</a>
+            {% endif %}
+        </div>
+    </div>
     </div>
 {% endblock %}
