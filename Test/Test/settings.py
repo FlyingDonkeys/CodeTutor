@@ -38,7 +38,9 @@ STRIPE_WEBHOOK_SECRET_TEST='whsec_Z0qc7KQvUHU8WyZwEbrc1xc9OlMBOdMZ'
 
 stripe.api_key = STRIPE_SECRET_KEY_TEST 
 #test product generated 
-PRODUCT_PRICE= 'price_1PRXbREZACuDQbJWYJgnPbPY'
+PRODUCT_WEEKLY = 'price_1PZT2dEZACuDQbJWOj8wWPR1'
+PRODUCT_MONTHLY = 'price_1PZT36EZACuDQbJWR0d2C5Zx'
+PRODUCT_YEARLY = 'price_1PZT3fEZACuDQbJWOGybDXvy'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 

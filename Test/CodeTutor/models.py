@@ -2,7 +2,8 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core import serializers
-
+from django.utils import timezone
+import time
 # Create your models here.
 
 
@@ -133,4 +134,6 @@ class UserPayment(models.Model):
     app_user = models.ForeignKey(Tutor, on_delete=models.CASCADE)
     payment_bool = models.BooleanField(default=False)
     stripe_checkout_id = models.CharField(max_length=500)
+    #Set the date to lock the user out 
+    count_down = models.DateTimeField(default=timezone.now)
 

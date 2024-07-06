@@ -54,7 +54,7 @@ const profile = document.createElement('div');
 if (user.is_student) {
     profile.innerHTML += `
     <div class="profile-head"  id="User${user.user.id}">
-               <div class="row vh-35">
+               <div class="row vh-40">
                    <div class="col-xl-6 text-center mx-auto align-self-center ">
                         <div class="imgcover mb-4">
                             <img src="${url}" style="width:250px; height:250px; object-fit: cover;"alt="No Image" class="rounded-pill bg-white p-2 shadow">
@@ -63,9 +63,10 @@ if (user.is_student) {
                         <h1 class="fw-bold mb-4 fs-1">Student</h1>
                         <p> Location: ${user.user.location}</p>
                         <p> Postal Code: ${user.user.postal_code}</p> 
+                        <p> Finding Tutor: ${user.user.finding_tutor}</p> 
                     </div>
                </div>
-            </div>`;
+            </div>`;    
 } else {
     profile.innerHTML += `
     <div class="profile-head"  id="User ${user.user.id}">
@@ -76,8 +77,8 @@ if (user.is_student) {
                         </div>
                         <b class="fs-6">Hello I am,  ${user.user.username}</b>
                         <h1 class="fw-bold mb-4 fs-1">Tutor</h1>
-                        <p> ${user.user.description}</p>
-                        <a href = "/product_page">
+                        <p> ${user.user.description}</p>    
+                        <a href = "subscribe"
                         <button class="btn btn-outline-primary fw-bolder fs-7 px-4 py-2 mt-3 rounded-pill">Subsribe</button>
                         </a>
                     </div>

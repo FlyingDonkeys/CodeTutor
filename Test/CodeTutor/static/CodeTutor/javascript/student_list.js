@@ -70,6 +70,58 @@ function load() {
         });
 }
 
+//determine whether to display the map or not     
+let count = 0;
+function generate_map(code){
+    //may have included GoogleMaps API multiple times 
+    $.getScript( "https://maps.googleapis.com/maps/api/js?key=" + 'AIzaSyC128zZlCt6WN8ygaNo0DtpDi0DL8s0SIM'+ "&libraries=places") 
+    .done(function() {
+        count+=1;
+        //convert postal code to actual address that gets fed into google maps
+        var geocoder = new google.maps.Geocoder();
+        
+        geocoder.geocode({
+            'address': code.toString(),
+            componentRestrictions: {
+                country: 'SG'
+            }
+            }
+        ,  
+        function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+            lat = results[0].geometry.location.lat();
+            lng = results[0].geometry.location.lng();
+            //options to feed into the map 
+            var options = {
+                zoom: 15,
+                center: new google.maps.LatLng(lat, lng),
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            //Create the new map at div on html
+            map = new google.maps.Map(document.getElementById("map"), options);
+            //logic to determine whether to show map or not
+            
+            if(count%2 == 1){
+                document.getElementById("map").style.display = "block";
+                document.getElementById("map").style.height = "250px";
+        
+            }else{
+                document.getElementById("map").style.display = "None";
+                document.getElementById("map").style.height = "0px";
+            }
+            //Make the marker
+            new google.maps.Marker({
+                position:new google.maps.LatLng(lat,lng),
+                map:map
+            });
+            
+        }else {
+            alert("Geocode was not successful for the following reason: " + status);
+        }
+    });
+    });
+    }
+
 
 // Used to implement filter function
 
@@ -114,8 +166,10 @@ function load_specific_profiles(subject, min, max) {
 
 
 function add_student(student) {
-    // Create new student profile object for viewing
-    const profile = document.createElement('div');
+    //Create new student profile object for viewing
+    //only if student is finding tutor
+    if(student.is_finding_tutor){
+        const profile = document.createElement('div');
 
     // Note that each student may have multiple subjects required
     let subjects_required = "";
@@ -145,7 +199,7 @@ function add_student(student) {
                                         <div class="col-md-3 py-1">
                                             ${student.username}
                                         </div>
-                                    </div>
+                                    </div>  
                                     <div class="row mb-1">
                                     <div class="col-md-3 py-1">
                                     <h5 class="fw-bold">Location:</h5>
@@ -171,13 +225,18 @@ function add_student(student) {
                                     </div>
                                     </div>
                                     <div class="row mb-1">
-                                        <div class="col-4"><!-- To centralise --></div>
+                          
                                         <div class="col-2">
                                             <!-- Logic to apply for tuition job not done -->
                                             <a href="apply/${student.username}" role="button">
                                             <button class="btn btn-outline-primary fw-bolder fs-7 px-4 py-2 mt-3 rounded-pill">Apply as Tutor</button>
                                             </a>
                                         </div>
+
+                                    <div class="col-2">
+                                        <!-- Logic to show google map -->
+                                        <button class="btn btn-outline-primary fw-bolder fs-7 px-4 py-2 mt-3 rounded-pill" onclick="generate_map(${student.postal_code})">Show Location</button>
+                                    </div>
                                     </div>
                                 </div>
                             </div>
@@ -186,6 +245,7 @@ function add_student(student) {
 
     // Add post to DOM
     document.querySelector('#the_actual_list').append(profile);
+ }
 }
 
 
