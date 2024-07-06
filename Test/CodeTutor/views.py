@@ -410,7 +410,9 @@ def apply(request, student_username):
 def hire_tutor(request, tutor_username):
     if (request.method == "GET"):
         return render(request, 'CodeTutor/hire_tutor.html', context={
-            'tutor': Tutor.objects.get(username=tutor_username)
+            'tutor': Tutor.objects.get(username=tutor_username),
+            # I would use the HiringApplication modelForm but unfortunately the required subjects field is specific for each tutor
+            # i.e: That field should only display subjects that the Tutor teaches, hence cannot use a generic modelForm.
         })
     elif (request.method == "POST"):
         # Get information from the form
@@ -429,6 +431,22 @@ def hire_tutor(request, tutor_username):
 
         messages.success(request, "Your application has been received successfully.")
         return HttpResponseRedirect(reverse('success', args=['student']))
+
+
+@login_required
+def my_tutors(request):
+    if (request.method == "GET"):
+        # Want to get the list of Tutors related to this Student
+        tutors = Student.objects.get(username=request.user.username).tutors.all()
+        return render(request, 'CodeTutor/my_tutors.html', context={
+            "tutors": tutors
+        })
+
+
+@login_required
+def evaluate(request, tutor_username):
+    if (request.method == "GET"):
+        return None
 
 
 @login_required
@@ -452,7 +470,6 @@ def success(request, user_type):
     elif (user_type == 'student'):
         is_tutor = False
 
-    print(is_tutor)
     return render(request, 'CodeTutor/success.html', context={
         "is_tutor": is_tutor
     })
@@ -477,13 +494,34 @@ def accept(request, type_of_application, application_id):
 
             # If Tutor accepts Student's application, add Student to the list of Students this Tutor has
             this_application.tutor.students.add(this_application.student)
-            print(this_application.tutor.students.all())
+            this_application.tutor.students_taught += 1
 
             # Get rid of this application
             this_application.delete()
 
-            messages.success(request, "Please check your profile tab to view more information about your new student!")
+            messages.success(request, "Please check your Profile to view more information about your new student!")
             return HttpResponseRedirect(reverse('success', args=['tutor']))
+
+
+# If a request is rejected, handle it appropriately
+@login_required
+def reject(request, type_of_application, application_id):
+    if (request.method == 'GET'):
+        if (type_of_application == "hiring_application"):
+            this_application = HiringApplication.objects.get(id=application_id)
+
+            # Since Tutor has rejected this Student's application, nothing to be done but delete application
+            # Get rid of this application
+            this_application.delete()
+
+            messages.success(request, "This request has been successfully rejected.")
+            return HttpResponseRedirect(reverse('success', args=['tutor']))
+
+
+
+
+
+
 
 
 

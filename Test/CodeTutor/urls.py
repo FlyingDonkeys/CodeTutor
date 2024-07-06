@@ -15,6 +15,10 @@ urlpatterns = [
     path("student_list", views.student_list, name="student_list"),
     # Loads the student page
     path("tutor_list", views.tutor_list, name="tutor_list"),
+    # Loads the page for Students to view their Tutors (for evaluation)
+    path("my_tutors", views.my_tutors, name="my_tutors"),
+    # Loads the evaluation form for Students to evaluate a particular Tutor
+    path("evaluate/<str:tutor_username>", views.evaluate, name="evaluate"),
     # API endpoint to retrieve student profiles dynamically on tutor main page
     path("load_student_profiles", views.load_student_profiles, name="load_student_profiles"),
     # API endpoint to retrieve tutor profiles dynamically on tutor main page
@@ -30,6 +34,8 @@ urlpatterns = [
     path("received_hiring_requests", views.received_hiring_requests, name="received_hiring_requests"),
     # API endpoint to accept a hiring/application request
     path("accept/<str:type_of_application>/<int:application_id>", views.accept, name="accept"),
+    # API endpoint to reject a hiring/application request
+    path("reject/<str:type_of_application>/<int:application_id>", views.reject, name="reject"),
 
     #Product page for STRIPE
     path("product_page", views.product_page, name="product_page"),

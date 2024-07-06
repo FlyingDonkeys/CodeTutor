@@ -138,7 +138,7 @@ class Application(models.Model):
 class HiringApplication(models.Model):
     # Stuff collected in application form
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    offered_rates = models.IntegerField(default=0)
+    offered_rates = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(1000)])
 
     # Other stuff to identify Student who wants to hire, and target Tutor
     tutor = models.ForeignKey(Tutor, on_delete=models.CASCADE, related_name="received_applications") # Tutor is related to his received applications
