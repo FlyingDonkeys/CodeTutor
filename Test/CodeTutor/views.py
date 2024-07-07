@@ -1,6 +1,7 @@
 import time
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.forms import NumberInput, TextInput
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
@@ -443,10 +444,41 @@ def my_tutors(request):
         })
 
 
+# Called when a Student evaluates a Tutor
 @login_required
 def evaluate(request, tutor_username):
     if (request.method == "GET"):
-        return None
+        return render(request, 'CodeTutor/evaluate.html', context={
+            "username": tutor_username,
+        })
+    elif (request.method == "POST"):
+        received_information = request.POST
+        tutor = Tutor.objects.get(username=tutor_username)
+        student = Student.objects.get(username=request.user.username)
+        if (student not in tutor.evaluators.all()):
+            # Want to get the values of the ratings the student submitted
+            q1_rating = int(received_information.get('q1'))
+            q2_rating = int(received_information.get('q2'))
+            q3_rating = int(received_information.get('q3'))
+            q4_rating = int(received_information.get('q4'))
+            q5_rating = int(received_information.get('q5'))
+
+            # Compute the aggregated tutor_score
+            aggregate_score = round((q1_rating + q2_rating + q3_rating + q4_rating + q5_rating) / 5, 2)
+
+            # Update the tutor_score based on student's ratings
+            Tutor.objects.filter(username=tutor_username).update(tutor_score=round((float(tutor.tutor_score) + aggregate_score) / 2, 2))
+
+            # Update the list of evaluators (students) that the Tutor has received (prevent repeated evaluations)
+            tutor.evaluators.add(student)
+
+            messages.success(request, "Your evaluation form has been successfully received.")
+            return HttpResponseRedirect(reverse('success', args=['student']))
+
+        # Meaning, this student has already evaluated this tutor at least once
+        else:
+            messages.success(request, "You have already evaluated this Tutor once.")
+            return HttpResponseRedirect(reverse('success', args=['student']))
 
 
 @login_required

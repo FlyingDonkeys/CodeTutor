@@ -95,6 +95,9 @@ class Tutor(CommonUser):
     # A tutor can have many students, just like how a student can have many tutors
     students = models.ManyToManyField(Student, related_name="tutors")
 
+    # A tutor can also receive evaluations from many students (like how a student can evaluate many tutors)
+    evaluators = models.ManyToManyField(Student, related_name="evaluated_tutors")
+
     class Meta:
         verbose_name = "Tutor"
 
