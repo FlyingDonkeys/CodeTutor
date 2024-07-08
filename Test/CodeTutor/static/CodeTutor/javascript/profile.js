@@ -27,6 +27,7 @@ function load_profile() {
             if(!user.is_student){
                 alert("hiding the button!");
                 hideButton();
+                document.querySelector('#state_button').style.display = 'none';
             }
         });
 
@@ -70,7 +71,7 @@ if (user.is_student) {
 } else {
     profile.innerHTML += `
     <div class="profile-head"  id="User ${user.user.id}">
-               <div class="row vh-35">
+               <div class="row vh-40">
                    <div class="col-xl-6 text-center mx-auto align-self-center ">
                         <div class="imgcover mb-4">
                             <img src="${url}" style="width:250px; height:250px; object-fit: cover;"alt="No Image" class="rounded-pill bg-white p-2 shadow">
