@@ -1,6 +1,7 @@
 import time
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.forms import NumberInput, TextInput
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
@@ -309,10 +310,14 @@ def login_function(request):
             })
 
 
+# Note that only tutors should be able to view this page
 @login_required
 def student_list(request):
     if (request.method == "GET"):
-        return render(request, "CodeTutor/student_list.html")
+        tutor = Tutor.objects.get(username=request.user.username)
+        return render(request, "CodeTutor/student_list.html", context={
+            "unhandled_requests": tutor.received_applications.count()
+        })
 
 
 def tutor_list(request):
@@ -339,6 +344,7 @@ def load_student_profiles(request):
         # Artificially delay speed of response
         time.sleep(1)
         return JsonResponse(data, safe=False)
+
 
 @login_required
 def load_tutor_profiles(request):
@@ -372,11 +378,11 @@ def load_subjects(request):
         # Throw an error, but I have no time to complete this yet
 
 
-@login_required()
+@login_required
 def apply(request, student_username):
     if (request.method == "GET"):
         return render(request, 'CodeTutor/apply.html', context=
-        {'student': Student.objects.get(username=student_username)}
+            {'student': Student.objects.get(username=student_username)}
                       )
     # After receiving the form. we have to send the tutor's application to the student
     # I guess it is timely to include a new model to meet this requirement
@@ -399,10 +405,84 @@ def apply(request, student_username):
         application.save()
 
         messages.success(request, "Your application has been received successfully.")
-        return HttpResponseRedirect(reverse('success'))
+        return HttpResponseRedirect(reverse('success', args=['tutor']))
 
 
-@login_required()
+@login_required
+def hire_tutor(request, tutor_username):
+    if (request.method == "GET"):
+        return render(request, 'CodeTutor/hire_tutor.html', context={
+            'tutor': Tutor.objects.get(username=tutor_username),
+            # I would use the HiringApplication modelForm but unfortunately the required subjects field is specific for each tutor
+            # i.e: That field should only display subjects that the Tutor teaches, hence cannot use a generic modelForm.
+        })
+    elif (request.method == "POST"):
+        # Get information from the form
+        information = request.POST
+
+        selected_subject = information.get('selected_subject')
+        offered_rates = information.get('offered_rates')
+
+        hiring_application = HiringApplication(subject=Subject.objects.get(subject_name=selected_subject),
+                                               offered_rates=offered_rates,
+                                               tutor=Tutor.objects.get(username=tutor_username),
+                                               student=Student.objects.get(username=request.user.username)
+                                               )
+
+        hiring_application.save()
+
+        messages.success(request, "Your application has been received successfully.")
+        return HttpResponseRedirect(reverse('success', args=['student']))
+
+
+@login_required
+def my_tutors(request):
+    if (request.method == "GET"):
+        # Want to get the list of Tutors related to this Student
+        tutors = Student.objects.get(username=request.user.username).tutors.all()
+        return render(request, 'CodeTutor/my_tutors.html', context={
+            "tutors": tutors
+        })
+
+
+# Called when a Student evaluates a Tutor
+@login_required
+def evaluate(request, tutor_username):
+    if (request.method == "GET"):
+        return render(request, 'CodeTutor/evaluate.html', context={
+            "username": tutor_username,
+        })
+    elif (request.method == "POST"):
+        received_information = request.POST
+        tutor = Tutor.objects.get(username=tutor_username)
+        student = Student.objects.get(username=request.user.username)
+        if (student not in tutor.evaluators.all()):
+            # Want to get the values of the ratings the student submitted
+            q1_rating = int(received_information.get('q1'))
+            q2_rating = int(received_information.get('q2'))
+            q3_rating = int(received_information.get('q3'))
+            q4_rating = int(received_information.get('q4'))
+            q5_rating = int(received_information.get('q5'))
+
+            # Compute the aggregated tutor_score
+            aggregate_score = round((q1_rating + q2_rating + q3_rating + q4_rating + q5_rating) / 5, 2)
+
+            # Update the tutor_score based on student's ratings
+            Tutor.objects.filter(username=tutor_username).update(tutor_score=round((float(tutor.tutor_score) + aggregate_score) / 2, 2))
+
+            # Update the list of evaluators (students) that the Tutor has received (prevent repeated evaluations)
+            tutor.evaluators.add(student)
+
+            messages.success(request, "Your evaluation form has been successfully received.")
+            return HttpResponseRedirect(reverse('success', args=['student']))
+
+        # Meaning, this student has already evaluated this tutor at least once
+        else:
+            messages.success(request, "You have already evaluated this Tutor once.")
+            return HttpResponseRedirect(reverse('success', args=['student']))
+
+
+@login_required
 def logout_function(request):
     logout(request)
     return HttpResponseRedirect(reverse("entry"))
@@ -413,5 +493,68 @@ def work_in_progress(request):
 
 
 @login_required
-def success(request):
-    return render(request, 'CodeTutor/success.html')
+def success(request, user_type):
+    # Note that the success page is shared between tutor and student
+    # Hence, the back button should make the correct redirect
+    # is_tutor is context
+    is_tutor = False
+    if (user_type == 'tutor'):
+        is_tutor = True
+    elif (user_type == 'student'):
+        is_tutor = False
+
+    return render(request, 'CodeTutor/success.html', context={
+        "is_tutor": is_tutor
+    })
+
+
+@login_required
+def received_hiring_requests(request):
+    if (request.method == 'GET'):
+        tutor = Tutor.objects.get(username=request.user.username)
+        hiring_requests = tutor.received_applications.all() # These are the HiringApplication objects
+        return render(request, "CodeTutor/received_hiring_requests.html", context={
+            "requests": hiring_requests
+        })
+
+
+# If a request is accepted, handle it appropriately
+@login_required
+def accept(request, type_of_application, application_id):
+    if (request.method == 'GET'):
+        if (type_of_application == "hiring_application"):
+            this_application = HiringApplication.objects.get(id=application_id)
+
+            # If Tutor accepts Student's application, add Student to the list of Students this Tutor has
+            this_application.tutor.students.add(this_application.student)
+            this_application.tutor.students_taught += 1
+
+            # Get rid of this application
+            this_application.delete()
+
+            messages.success(request, "Please check your Profile to view more information about your new student!")
+            return HttpResponseRedirect(reverse('success', args=['tutor']))
+
+
+# If a request is rejected, handle it appropriately
+@login_required
+def reject(request, type_of_application, application_id):
+    if (request.method == 'GET'):
+        if (type_of_application == "hiring_application"):
+            this_application = HiringApplication.objects.get(id=application_id)
+
+            # Since Tutor has rejected this Student's application, nothing to be done but delete application
+            # Get rid of this application
+            this_application.delete()
+
+            messages.success(request, "This request has been successfully rejected.")
+            return HttpResponseRedirect(reverse('success', args=['tutor']))
+
+
+
+
+
+
+
+
+
