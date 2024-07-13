@@ -1,1 +1,1 @@
-web: gunicorn Test/wsgi.py
+web: gunicorn Test.wsgi.application
