@@ -14,7 +14,6 @@ import stripe
 import time
 import datetime
 from datetime import date
-from dateutil.relativedelta import relativedelta
 
 
 @login_required
