@@ -37,8 +37,13 @@ urlpatterns = [
     # API endpoint to reject a hiring/application request
     path("reject/<str:type_of_application>/<int:application_id>", views.reject, name="reject"),
 
+    #change the active state of students
+    path("change_active_state",views.change_active_state, name="change_active_state"),
+
     #Product page for STRIPE
-    path("product_page", views.product_page, name="product_page"),
+    path("product_page/<str:kwarg>/", views.product_page, name="product_page"),
+    #Path to product page
+    path("subscribe", views.subsribe, name="subscribe"),
     #redirect to successful after payment
     path("payment_successful", views.payment_successful, name="payment_successful"),
     #redirect to cancelled if payment is cancelled

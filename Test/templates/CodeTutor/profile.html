@@ -14,7 +14,15 @@
 <div  class="container" id="student_list" >
     
 </div>
-<button id="showButton" class="btn btn-outline-primary fw-bolder fs-7 px-4 py-2 mt-3 rounded-pill" >View Location</button>
+<div style="display:flex; flex-direction: row; justify-content: center;">
+<!-- Logic to toggle whether to continue actively finding tutor -->
+<form action="change_active_state" method="post">
+{% csrf_token %}
+<button type="submit" id="state_button" class="btn btn-outline-primary fw-bolder fs-7 px-4 py-2 mt-3 rounded-pill"> Change Active State </button>
+</form>
+<button id="showButton" class="btn btn-outline-primary fw-bolder fs-7 px-4 py-2 mt-3 rounded-pill" >View Location</button>  
+</div>
 <div id="map" style="height: 500px; width: 100%; display:none;"></div>
+
 </div>
 {% endblock%}

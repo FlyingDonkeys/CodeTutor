@@ -12,6 +12,9 @@ from django.contrib import messages
 from django.conf import settings
 import stripe
 import time
+import datetime
+from datetime import date
+from dateutil.relativedelta import relativedelta
 
 
 @login_required
@@ -22,64 +25,92 @@ def profile(request):
 @login_required
 def load_user_profile(request):
     if request.method == "GET":
-        is_student = False
         user = None
         query_set = Student.objects.all().filter(username=request.user.username)
         if query_set.exists():
-            is_student = True
             user = query_set.first()
-            print(f"currently searching student db {query_set}")
-            print(f"user profile picture is {user.profile_picture.url}")
+            picture = 'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'
+            print(user.profile_picture)
+            try:
+                picture = user.profile_picture.url
+            except:
+                pass
             context = {
                 'google_api_key': settings.GOOGLE_API_KEY,
-                'is_student': is_student,
+                'is_student': True,
                 'user': {
                     'username': user.username,
                     'id': user.id,
                     'location': user.location,
                     'postal_code': user.postal_code,
-                    'profile_picture_url': user.profile_picture.url
+                    'finding_tutor':user.is_finding_tutor,
+                    'profile_picture_url': picture
                 }
             }
             return JsonResponse(context, safe=False)
         else:
             query_set = Tutor.objects.all().filter(username=request.user.username)
             user = query_set[0]
-            print(f"currently searching tutor db {user}")
+            picture = 'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'
+            try:
+                picture = user.profile_picture.url
+            except:
+                pass
 
         context = {
             'google_api_key': settings.GOOGLE_API_KEY,
-            'is_student': is_student,
+            'is_student': False,
             'user': {
                 'username': user.username,
                 'id': user.id,
                 'description': user.tutor_description,
-                'profile_picture_url': user.profile_picture.url
+                'profile_picture_url': picture
             }
         }
         return JsonResponse(context, safe=False)
 
 
 # STRIPE API
+
+#Enter the page 
 @login_required(login_url='login')
-def product_page(request):
+def subsribe(request):
+    if request.method == "POST":
+        return render(request, 'CodeTutor/product_page.html')
+    return render(request, 'CodeTutor/product_page.html')
+
+@login_required(login_url='login')
+def product_page(request, kwarg):
     stripe.api_key = settings.STRIPE_SECRET_KEY_TEST
     if request.method == 'POST':
+        print(kwarg)
+        PRODUCT_PRICE = None
+        #Assign a product according to option chosen
+        if kwarg == '0':
+            print("case0")
+            PRODUCT_PRICE = settings.PRODUCT_WEEKLY
+        elif kwarg == '1':
+            print("case1")
+            PRODUCT_PRICE = settings.PRODUCT_MONTHLY
+        else:   
+            print("case2")
+            PRODUCT_PRICE = settings.PRODUCT_YEARLY
+
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             line_items=[
                 {
-                    'price': settings.PRODUCT_PRICE,
+                    'price': PRODUCT_PRICE, 
                     'quantity': 1,
                 },
             ],
             mode='payment',
             customer_creation='always',
-            success_url=settings.REDIRECT_DOMAIN + '/payment_successful?session_id={CHECKOUT_SESSION_ID}',
+            success_url=settings.REDIRECT_DOMAIN + '/payment_successful?session_id={CHECKOUT_SESSION_ID}&kwarg={kwarg}',
             cancel_url=settings.REDIRECT_DOMAIN + '/payment_cancelled',
         )
         return redirect(checkout_session.url, code=303)
-    return render(request, 'CodeTutor/product_page.html')
+    return reverse('subscribe')
 
 
 # Goes here if successful,works only with real web address
@@ -87,11 +118,20 @@ def product_page(request):
 def payment_successful(request):
     stripe.api_key = settings.STRIPE_SECRET_KEY_TEST
     checkout_session_id = request.GET.get('session_id', None)
+    kwarg = request.GET.get('kwarg',None)
+    Timer = date.today()
+    if kwarg == 0:
+        Timer += relativedelta(weeks=+1)
+    elif kwarg == 1:
+        Timer += relativedelta(months=+1)
+    else:
+        Timer +=  relativedelta(months=+12)
     session = stripe.checkout.Session.retrieve(checkout_session_id)
     customer = stripe.Customer.retrieve(session.customer)
     user_id = request.user.id
     user_payment = UserPayment.objects.get(app_user=user_id)
     user_payment.stripe_checkout_id = checkout_session_id
+    user_payment.count_down = Timer
     user_payment.save()
     return render(request, 'CodeTutor/payment_successful.html', {'customer': customer})
 
@@ -134,15 +174,12 @@ class TutorRegistrationForm(forms.ModelForm):
     last_name = forms.CharField(max_length=64)
     email = forms.EmailField()
     password = forms.CharField(widget=forms.PasswordInput())
-
     mobile_number = forms.CharField(min_length=8, max_length=8)
     profile_picture = forms.ImageField(required=False)
-
     subjects_taught = forms.ModelMultipleChoiceField(queryset=Subject.objects.all())
     tutor_qualification = forms.ModelChoiceField(queryset=Qualification.objects.all())
     hourly_rate = forms.IntegerField(min_value=0, max_value=1000)
     tutor_description = forms.CharField(required=False, widget=forms.Textarea(attrs={'rows': 18, 'cols': 36}))
-
     class Meta:
         model = Tutor  # Ensures Django knows which model this form is associated with
         fields = [
@@ -167,15 +204,12 @@ class StudentRegistrationForm(forms.ModelForm):
     last_name = forms.CharField(max_length=64)
     email = forms.EmailField()
     password = forms.CharField(widget=forms.PasswordInput())
-
     mobile_number = forms.CharField(min_length=8, max_length=8)
     profile_picture = forms.ImageField(required=False)
-
     location = forms.ChoiceField(choices=Student.location_choices)
     postal_code = forms.IntegerField(required=True)
     subjects_required = forms.ModelMultipleChoiceField(queryset=Subject.objects.all())
     offered_rate = forms.IntegerField(min_value=0, max_value=1000)
-
     class Meta:
         model = Student
         fields = [
@@ -254,7 +288,9 @@ def register_student(request, student_registration_form):
     new_student.set_password(password)
     new_student.save()
 
-    return HttpResponseRedirect(reverse("login_function"))
+    # Use Django messages framework to pass context to the html
+    messages.success(request, "You have successfully registered your student profile. Please proceed to login.")
+    return HttpResponseRedirect(reverse("entry"))
 
 
 def register_tutor(request, tutor_registration_form):
@@ -277,7 +313,9 @@ def register_tutor(request, tutor_registration_form):
     new_tutor.set_password(password)
     new_tutor.save()
 
-    return HttpResponseRedirect(reverse("login_function"))
+    # Use Django messages framework to pass context to the html
+    messages.success(request, "You have successfully registered your tutor profile. Please proceed to login.")
+    return HttpResponseRedirect(reverse("entry"))
 
 
 def login_function(request):
@@ -296,8 +334,17 @@ def login_function(request):
         if user is not None:
             login(request, user)
             # If the user with this username is a tutor, bring him to the student list view
-            if (Tutor.objects.filter(username=username)):
-                return HttpResponseRedirect(reverse("student_list"))
+            querySet = Tutor.objects.filter(username=username)
+            if (querySet.exists()):
+                #if subscription has 0 days left, redirect to product page 
+                current_tutor = querySet.first()
+                user = UserPayment.objects.filter(app_user=current_tutor)
+                if(user.exists()):
+                    #Only redirect to student page if count down is larger than 0 
+                    if user.first().count_down > timezone.now:
+                        return HttpResponseRedirect(reverse("student_list"))
+                #redirect to product page 
+                return HttpResponseRedirect(reverse("subscribe"))
             elif (Student.objects.filter(username=username)):
                 # Should go student_main page but yet to implement
                 return HttpResponseRedirect(reverse("tutor_list"))
@@ -309,15 +356,36 @@ def login_function(request):
                 "message": "Invalid username and/or password."
             })
 
+def change_active_state(request):
+    if (request.method == "POST"):
+        #find student first
+        queryset = Student.objects.filter(username = request.user.username)
+        student = queryset.first()
+        print(student.is_finding_tutor)
+        if(student.is_finding_tutor):
+            student.is_finding_tutor= False
+            student.save()
+        else:
+            student.is_finding_tutor = True
+            student.save()
+        return HttpResponseRedirect(reverse("profile"))
 
 # Note that only tutors should be able to view this page
 @login_required
 def student_list(request):
     if (request.method == "GET"):
-        tutor = Tutor.objects.get(username=request.user.username)
-        return render(request, "CodeTutor/student_list.html", context={
-            "unhandled_requests": tutor.received_applications.count()
-        })
+
+        #if subscription has 0 days left, redirect to product page 
+        #print(request.user.username)
+        tutor = Tutor.objects.filter(username=request.user.username)
+        user = UserPayment.objects.filter(app_user=tutor.first())
+        print(user.first())
+        if(user.exists()):
+            #Only redirect to student page if count down is larger than 0 
+            if user.first().count_down > timezone.now:
+                return render(request, "CodeTutor/student_list.html")
+                #redirect to product page 
+        return HttpResponseRedirect(reverse("subscribe"))
 
 
 def tutor_list(request):

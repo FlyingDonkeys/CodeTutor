@@ -1,1 +1,69 @@
+<<<<<<< HEAD
 /Test/CodeTutor/migrations/
+=======
+# Django
+*.log
+*.pot
+*.pyc
+__pycache__/
+db.sqlite3
+media
+staticfiles
+.env
+
+# Environments
+.env
+.venv/
+env/
+ENV/
+venv/
+ENV.bak/
+venv.bak/
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+.pnp
+.pnp.js
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Coverage directories
+coverage/
+
+# IDEs and editors
+.vscode/
+.idea/
+.DS_Store
+
+# Specific files
+/package-lock.json
+/yarn.lock
+
+# Build and deploy
+build/
+dist/
+
+# Miscellaneous
+*.swp
+*.swo
+*.bak
+*.tmp
+*.DS_Store
+*.vscode
+*.idea
+
+# Ignore the frontend/node_modules directory
+/frontend/node_modules/
+
+# Vercel
+.vercel
+>>>>>>> master
