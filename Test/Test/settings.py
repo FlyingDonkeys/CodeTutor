@@ -141,7 +141,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'staticfiles/'
+STATIC_URL = '/CodeTutor/static/'
 
 # This line should be added to define where static files will be collected
 STATIC_ROOT = BASE_DIR / 'staticfiles'
