@@ -10,9 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
-from pathlib import Path
+
 
 import os
+
+from pathlib import Path
 import stripe
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -64,7 +66,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -142,16 +143,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-
+STATIC_URL = '/CodeTutor/static/'
 
 # This line should be added to define where static files will be collected
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-STATIC_URL = '/CodeTutor/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'CodeTutor/static/CodeTutor/images/'),
-    os.path.join(BASE_DIR, 'CodeTutor/static/CodeTutor/javascript/')
-]
 
 
 # Default primary key field type

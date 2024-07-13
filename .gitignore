@@ -1,3 +1,6 @@
+<<<<<<< HEAD
+/Test/CodeTutor/migrations/
+=======
 # Django
 *.log
 *.pot
@@ -63,3 +66,4 @@ dist/
 
 # Vercel
 .vercel
+>>>>>>> master

@@ -11,6 +11,15 @@
 
 
 {% block nav %}
+  <li class="nav-item position-relative me-4">
+    <a class="btn btn-primary me-2" href="{% url 'received_hiring_requests' %}" role="button">
+        Received Hiring Requests
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+          {{ unhandled_requests }}
+          <span class="visually-hidden">unhandled hiring requests</span>
+        </span>
+    </a>
+  </li>
   <li class="nav-item">
     <a class="btn btn-primary me-2" href="{% url 'student_list' %}" role="button">Back</a>
   </li>

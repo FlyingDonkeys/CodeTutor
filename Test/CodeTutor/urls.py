@@ -9,14 +9,16 @@ urlpatterns = [
     path("login", views.login_function, name="login_function"),
     path("logout", views.logout_function, name="logout_function"),
     path("work_in_progress", views.work_in_progress, name="work_in_progress"),
-    path("success", views.success, name="success"),
-    path("work_in_progress", views.work_in_progress, name="work_in_progress"),
-    path("success", views.success, name="success"),
+    path("success/<str:user_type>", views.success, name="success"),
 
     # Loads the tutor page
     path("student_list", views.student_list, name="student_list"),
     # Loads the student page
     path("tutor_list", views.tutor_list, name="tutor_list"),
+    # Loads the page for Students to view their Tutors (for evaluation)
+    path("my_tutors", views.my_tutors, name="my_tutors"),
+    # Loads the evaluation form for Students to evaluate a particular Tutor
+    path("evaluate/<str:tutor_username>", views.evaluate, name="evaluate"),
     # API endpoint to retrieve student profiles dynamically on tutor main page
     path("load_student_profiles", views.load_student_profiles, name="load_student_profiles"),
     # API endpoint to retrieve tutor profiles dynamically on tutor main page
@@ -25,6 +27,15 @@ urlpatterns = [
     path("load_subjects", views.load_subjects, name="load_subjects"),
     # Path for tutor to apply to tutor a particular student
     path("apply/<str:student_username>", views.apply, name="apply"),
+    # Path for student to apply to hire a particular tutor
+    path("hire_tutor/<str:tutor_username>", views.hire_tutor, name="hire_tutor"),
+
+    # Path for tutor to view the hiring requests he received from students
+    path("received_hiring_requests", views.received_hiring_requests, name="received_hiring_requests"),
+    # API endpoint to accept a hiring/application request
+    path("accept/<str:type_of_application>/<int:application_id>", views.accept, name="accept"),
+    # API endpoint to reject a hiring/application request
+    path("reject/<str:type_of_application>/<int:application_id>", views.reject, name="reject"),
 
     #change the active state of students
     path("change_active_state",views.change_active_state, name="change_active_state"),
