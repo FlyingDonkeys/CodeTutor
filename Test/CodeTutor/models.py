@@ -2,7 +2,8 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core import serializers
-
+from django.utils import timezone
+import time
 # Create your models here.
 
 
@@ -11,6 +12,11 @@ class Subject(models.Model):
 
     def __str__(self):
         return f"{self.subject_name}"
+
+    def serialize(self):
+        return {
+            "subject_name": self.subject_name
+        }
 
 
 class Qualification(models.Model):
@@ -41,7 +47,16 @@ class Student(CommonUser):
         "C": "Central"
     }
     location = models.CharField(choices=location_choices, max_length=64)
+    postal_code = models.IntegerField(default= 738090, validators=[
+            MaxValueValidator(999999),
+            MinValueValidator(100000)
+        ])
     subjects_required = models.ManyToManyField(Subject, related_name="students")
+    # Student will have a rate that they are willing to pay as well
+    offered_rate = models.IntegerField(
+        validators=[MinValueValidator(0), MaxValueValidator(1000)],
+        default=0
+    )
     is_finding_tutor = models.BooleanField(default=True)
 
     class Meta:
@@ -59,8 +74,11 @@ class Student(CommonUser):
             "date_joined": self.date_joined,
             "location": self.location,
             "subjects_required": [subject.subject_name for subject in self.subjects_required.all()],
+            "offered_rate": self.offered_rate,
             "is_finding_tutor": self.is_finding_tutor,
-            "profile_picture_url": profile_picture_url
+            "profile_picture_url": profile_picture_url,
+            "postal_code":self.postal_code
+
         }
 
 
@@ -72,11 +90,29 @@ class Tutor(CommonUser):
     )
     # You could choose not to put a description ig
     tutor_description = models.TextField(blank=True)
-    tutor_score = models.IntegerField(default=0)
+    tutor_score = models.DecimalField(max_digits=4, decimal_places=2, default=10.00)
     students_taught = models.IntegerField(default=0)
 
     class Meta:
         verbose_name = "Tutor"
+
+    def serialize(self):
+        # Note that ImageFields cannot be serialised, so we pass the url to the Javascript to be converted to image there
+        profile_picture_url = self.profile_picture.url if self.profile_picture else None
+        return {
+            "id": self.id,
+            "username": self.username,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "email": self.email,
+            "date_joined": self.date_joined,
+            "subjects_taught": [subject.subject_name for subject in self.subjects_taught.all()],
+            "hourly_rate": self.hourly_rate,
+            "profile_picture_url": profile_picture_url,
+            "tutor_description": self.tutor_description,
+            "tutor_score": self.tutor_score,
+            "students_taught": self.students_taught
+        }
 
 
 class Application(models.Model):
@@ -92,3 +128,12 @@ class Application(models.Model):
 
     def __str__(self):
         return f"{self.tutor.username} applied for {self.subject.subject_name} with {self.student.username}"
+
+#Payment recording 
+class UserPayment(models.Model):
+    app_user = models.ForeignKey(Tutor, on_delete=models.CASCADE)
+    payment_bool = models.BooleanField(default=False)
+    stripe_checkout_id = models.CharField(max_length=500)
+    #Set the date to lock the user out 
+    count_down = models.DateTimeField(default=timezone.now)
+

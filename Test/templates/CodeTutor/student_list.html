@@ -1,0 +1,67 @@
+{% extends "CodeTutor/layout.html" %}
+{% load static %}
+
+{% block script %}
+    <!-- Javascript logic for client side login and registration features -->
+    <!-- In fact, the "main page" for tutors is this page! -->
+    <!-- Uses entry.js -->
+    <script src="{% static "CodeTutor/javascript/student_list.js" %}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% endblock %}
+
+
+{% block nav %}
+  <li class="nav-item">
+    <a class="btn btn-primary me-2" href="{% url 'student_list' %}" role="button">Back</a>
+  </li>
+{% endblock %}
+
+{% block body %}
+    <div class="container" id="student_list" style="background: white; display: none; padding-top: 20px;height: 100vh;overflow: auto; ">
+        <div class="row">
+            <div class="col-3">
+                <h2>Active Job Postings</h2>
+            </div>
+            <div class="col-5">
+                <!-- Spacing -->
+            </div>
+            <div class="col-2">
+                <div class="dropdown">
+                  <button class="btn btn-outline-primary fw-bolder fs-7 px-4 py-2 mt-3 rounded-pill dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Filter by Rates
+                  </button>
+                  <ul class="dropdown-menu">
+                    <form id="filter_by_rate_form">
+                      <div class="m-3">
+                          <label for="lowest_rate">Input Minimum Rate</label>
+                          <input type="number" class="form-control" id="lowest_rate" aria-describedby="emailHelp" placeholder="Minimum Rate">
+                      </div>
+                      <div class="m-3">
+                          <label for="highest_rate">Input Maximum Rate</label>
+                          <input type="number" class="form-control" id="highest_rate" placeholder="Maximum Rate">
+                      </div>
+                      <div class="m-3">
+                          <button type="button" class="btn btn-outline-primary fw-bolder fs-7 px-4 py-2 mt-3 rounded-pill" id="submit">Filter</button>
+                      </div>
+                    </form>
+                  </ul>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="dropdown">
+                  <button class="btn btn-outline-primary fw-bolder fs-7 py-2 mt-3 rounded-pill dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="button_text">
+                    Filter by Subjects
+                  </button>
+                  <ul class="dropdown-menu" id="subject_list">
+                  </ul>
+                </div>
+            </div>
+        </div>
+        <div id="alertPlaceholder"></div>
+        <hr>
+        <div class = "row" id="map" style="position:-webkit-sticky; top: 0px;"></div>
+        <div class="row" id="the_actual_list">
+        </div>
+        
+    </div>
+{% endblock %}

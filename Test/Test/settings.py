@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 
 import os
+import stripe
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,12 +26,26 @@ MEDIA_URL = '/media/'
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-gf2)a)g-4ti)y*vao8#-5jla_(4r!cgep98!f2q-ouzj5_yb_*'
+#Google  Maps API Key
+GOOGLE_API_KEY = 'AIzaSyC128zZlCt6WN8ygaNo0DtpDi0DL8s0SIM'
 
+#Set up for stripe payment
+REDIRECT_DOMAIN = 'https://code-tutor-7d77c272e8ff.herokuapp.com'
+
+STRIPE_PUBLIC_KEY_TEST='pk_test_51PREktEZACuDQbJWfonjzkgOmzjX3TS0BmakykrOmeVNbeEpXwVS6O0bX5ZljyWYiGr868iWPZLJCk9LXXx7vmI400i2iA0god'
+STRIPE_SECRET_KEY_TEST='sk_test_51PREktEZACuDQbJWu6Jha3n8xccKkaiaHz3JnEuNBtCFvy1LI8HaxadDLnsxeaGM1kb3kY5TtnIG5GtVDhomFEaO008ouzEKwa'
+STRIPE_WEBHOOK_SECRET_TEST='whsec_Z0qc7KQvUHU8WyZwEbrc1xc9OlMBOdMZ'
+
+stripe.api_key = STRIPE_SECRET_KEY_TEST 
+#test product generated 
+PRODUCT_WEEKLY = 'price_1PZT2dEZACuDQbJWOj8wWPR1'
+PRODUCT_MONTHLY = 'price_1PZT36EZACuDQbJWR0d2C5Zx'
+PRODUCT_YEARLY = 'price_1PZT3fEZACuDQbJWOGybDXvy'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'codetutors-19a3f32152ae.herokuapp.com',
+    'https://code-tutor-7d77c272e8ff.herokuapp.com',
     '127.0.0.1'
 ]
 
@@ -127,11 +142,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+
 
 # This line should be added to define where static files will be collected
+
+STATIC_URL = '/CodeTutor/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'CodeTutor/static/CodeTutor/images/'),
+    os.path.join(BASE_DIR, 'CodeTutor/static/CodeTutor/javascript/')
+]
 
 
 # Default primary key field type
