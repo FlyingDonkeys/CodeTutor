@@ -617,6 +617,8 @@ def reject(request, type_of_application, application_id):
             messages.success(request, "This request has been successfully rejected.")
             return HttpResponseRedirect(reverse('success', args=['tutor']))
 
+# google is great
+
 
 
 
