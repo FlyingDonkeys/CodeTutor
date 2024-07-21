@@ -1,10 +1,13 @@
 {% extends "CodeTutor/layout.html" %}
 {% load static %}
 
+{% load socialaccount %}
+
 {% block script %}
     <!-- Javascript logic for client side login and registration features -->
     <!-- Uses entry.js -->
     <script src="{% static "CodeTutor/javascript/entry.js" %}"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
 {% endblock %}
 
 {% block body %}
@@ -39,14 +42,22 @@
                     </div>
                 </div>
                 <!-- Submit Button -->
-                <div class="row mb-3">
-                    <div class="col-5">
+                <div class="row">
+                    <div class="col-4">
                         <!-- To centralise -->
                     </div>
-                    <div class="col-4">
-                            <input type="submit" name="login">
+                    <div class="col-1 mb-3">
+                        <input class="btn btn-primary" type="submit" name="login">
+                    </div>
+                    <!-- Log in with Google -->
+                    <div class="col-3 mb-3">
+                        <!-- Login as Tutor Button -->
+                        <a class="btn btn-success" href="{% provider_login_url 'google' %}?next=/?role=tutor">Sign In as Tutor</a>
+                        <!-- Login as Student Button -->
+                        <a class="btn btn-danger" href="{% provider_login_url 'google' %}?next=/?role=student">Sign In as Student</a>
                     </div>
                 </div>
+                <!-- Log in with Google -->
             </form>
         </div>
     </div>
@@ -138,7 +149,7 @@
                         <!-- To centralise -->
                     </div>
                     <div class="col-1">
-                        <input type="submit" name="tutor">
+                        <div class="g-signin2" data-onsuccess="onSignIn">Google Sign In</div>
                     </div>
                 </div>
             </form>

@@ -16,8 +16,14 @@
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="react-dom" level="application" />
     <orderEntry type="library" name="@popperjs/core" level="application" />
+    <orderEntry type="library" name="react" level="application" />
     <orderEntry type="library" name="bootstrap" level="application" />
+    <orderEntry type="library" name="@babel/standalone" level="application" />
+    <orderEntry type="library" name="platform" level="application" />
+    <orderEntry type="library" name="bootstrap" level="application" />
+    <orderEntry type="library" name="@popperjs/core" level="application" />
     <orderEntry type="library" name="react" level="application" />
     <orderEntry type="library" name="react-dom" level="application" />
     <orderEntry type="library" name="@babel/standalone" level="application" />

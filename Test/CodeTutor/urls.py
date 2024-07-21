@@ -53,4 +53,7 @@ urlpatterns = [
     #API endpoint to retrive current user's profile information
     path('profile', views.profile,name = "profile"),
     path('load_user_profile', views.load_user_profile,name = "load_user_profile"),
+
+    # Google login urls
+
 ]

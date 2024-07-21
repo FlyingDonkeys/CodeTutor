@@ -345,7 +345,6 @@ def login_function(request):
                 #redirect to product page 
                 return HttpResponseRedirect(reverse("subscribe"))
             elif (Student.objects.filter(username=username)):
-                # Should go student_main page but yet to implement
                 return HttpResponseRedirect(reverse("tutor_list"))
 
             # Otherwise, the user is an admin, but we dont care abt this
