@@ -10,6 +10,7 @@ urlpatterns = [
     path("logout", views.logout_function, name="logout_function"),
     path("work_in_progress", views.work_in_progress, name="work_in_progress"),
     path("success/<str:user_type>", views.success, name="success"),
+    path("create_profile", views.create_profile, name="create_profile"),
 
     # Loads the tutor page
     path("student_list", views.student_list, name="student_list"),
