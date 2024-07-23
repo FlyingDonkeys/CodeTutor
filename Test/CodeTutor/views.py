@@ -232,14 +232,29 @@ def entry(request):
             "student_registration_form": StudentRegistrationForm()
         })
 
-    # IF somehow the tutor/student goes to the entry page when he is not supposed to, redirect him to the student list page
-    # Not well coded sorry...
     elif (request.method == 'GET' and request.user.is_authenticated):
+        # First 2 conditionals mainly handle users who sign up using classic Django
         if (Tutor.objects.filter(username=request.user.username)):
-            return render(request, "CodeTutor/student_list.html")
-        else:
-            # Yet to implement
-            return render(request, "CodeTutor/work_in_progress.html")
+            return HttpResponseRedirect(reverse("student_list"))
+        elif (Student.objects.filter(username=request.user.username)):
+            return HttpResponseRedirect(reverse("tutor_list"))
+
+        # Only applicable for Google related accounts, when there is a related CommonUser (Google creates CommonUser
+        # instead of a Tutor or Student profile by default)
+        elif (CommonUser.objects.get(username=request.user.username)):
+            current_user = CommonUser.objects.get(username=request.user.username)
+            if (current_user.related_tutor.count() == 1):
+                logout(request)
+                login(request, current_user.related_tutor.first(), backend="django.contrib.auth.backends.ModelBackend")
+                return HttpResponseRedirect(reverse("student_list"))
+            elif (current_user.related_student.count() == 1):
+                logout(request)
+                login(request, current_user.related_student.first(), backend="django.contrib.auth.backends.ModelBackend")
+                return HttpResponseRedirect(reverse("tutor_list"))
+            else:
+                # When Google does sign in, default User is created, have to either create Tutor or Student account afterwards
+                # This will only run if there is no existing account associated with this user id.
+                return HttpResponseRedirect(reverse("create_profile"))
 
     if (request.method == 'POST'):
         if ("student" in request.POST):
@@ -268,6 +283,56 @@ def entry(request):
             return login_function(request)
 
 
+def create_profile(request):
+    if (request.method == "GET"):
+
+        # Want to pre-populate fields using Google provided info
+        initial_data = {
+            'first_name': request.user.first_name,
+            'last_name': request.user.last_name,
+            'email': request.user.email
+        }
+
+        # Instantiate forms with initial data
+        tutor_form = TutorRegistrationForm(initial=initial_data)
+        student_form = StudentRegistrationForm(initial=initial_data)
+
+        # Disable fields
+        for field in ['first_name', 'last_name', 'email']:
+            tutor_form.fields[field].widget.attrs['readonly'] = True
+            student_form.fields[field].widget.attrs['readonly'] = True
+
+        return render(request, "CodeTutor/create_profile.html", context={
+            "tutor_registration_form": tutor_form,
+            "student_registration_form": student_form
+        })
+
+    # Need delete existing User and replace with correct user class
+    elif (request.method == 'POST'):
+        if ("student" in request.POST):
+            student_registration_form = StudentRegistrationForm(request.POST, request.FILES)
+            if (student_registration_form.is_valid()):
+                return register_student_google(request, student_registration_form)
+            else:
+                return render(request, 'CodeTutor/create_profile.html', {
+                    "student_registration_form": student_registration_form,
+                    "tutor_registration_form": TutorRegistrationForm,
+                    "student_error": True,
+                    "tutor_error": False
+                })
+        elif ("tutor" in request.POST):
+            tutor_registration_form = TutorRegistrationForm(request.POST, request.FILES)
+            if (tutor_registration_form.is_valid()):
+                return register_tutor_google(request, tutor_registration_form)
+            else:
+                return render(request, 'CodeTutor/create_profile.html', {
+                    "tutor_registration_form": tutor_registration_form,
+                    "student_registration_form": StudentRegistrationForm,
+                    "tutor_error": True,
+                    "student_error": False
+                })
+
+
 def register_student(request, student_registration_form):
     new_student = Student.objects.create(
         username=student_registration_form.cleaned_data['username'],
@@ -277,7 +342,33 @@ def register_student(request, student_registration_form):
         mobile_number=student_registration_form.cleaned_data['mobile_number'],
         location=student_registration_form.cleaned_data['location'],
         profile_picture=student_registration_form.cleaned_data['profile_picture'],
-        offered_rate = student_registration_form.cleaned_data['offered_rate']
+        offered_rate = student_registration_form.cleaned_data['offered_rate'],
+        related_user=None
+    )
+
+    password = student_registration_form.cleaned_data['password']
+    subjects_required = student_registration_form.cleaned_data['subjects_required']
+    # Assign the many-to-many field after making the student object
+    new_student.subjects_required.set(subjects_required)
+    new_student.set_password(password)
+    new_student.save()
+
+    # Use Django messages framework to pass context to the html
+    messages.success(request, "You have successfully registered your student profile. Please proceed to login.")
+    return HttpResponseRedirect(reverse("entry"))
+
+
+def register_student_google(request, student_registration_form):
+    new_student = Student.objects.create(
+        username=student_registration_form.cleaned_data['username'],
+        first_name=student_registration_form.cleaned_data['first_name'],
+        last_name=student_registration_form.cleaned_data['last_name'],
+        email=student_registration_form.cleaned_data['email'],
+        mobile_number=student_registration_form.cleaned_data['mobile_number'],
+        location=student_registration_form.cleaned_data['location'],
+        profile_picture=student_registration_form.cleaned_data['profile_picture'],
+        offered_rate = student_registration_form.cleaned_data['offered_rate'],
+        related_user = CommonUser.objects.get(username=request.user.username)
     )
 
     password = student_registration_form.cleaned_data['password']
@@ -302,7 +393,8 @@ def register_tutor(request, tutor_registration_form):
         tutor_qualification=tutor_registration_form.cleaned_data['tutor_qualification'],
         hourly_rate=tutor_registration_form.cleaned_data['hourly_rate'],
         tutor_description=tutor_registration_form.cleaned_data['tutor_description'],
-        profile_picture=tutor_registration_form.cleaned_data['profile_picture']
+        profile_picture=tutor_registration_form.cleaned_data['profile_picture'],
+        related_user=None
     )
 
     password = tutor_registration_form.cleaned_data['password']
@@ -312,9 +404,34 @@ def register_tutor(request, tutor_registration_form):
     new_tutor.set_password(password)
     new_tutor.save()
 
-    # Use Django messages framework to pass context to the html
-    messages.success(request, "You have successfully registered your tutor profile. Please proceed to login.")
     return HttpResponseRedirect(reverse("entry"))
+
+
+def register_tutor_google(request, tutor_registration_form):
+    print("in register tutor view")
+    new_tutor = Tutor.objects.create(
+        username=tutor_registration_form.cleaned_data['username'],
+        first_name=tutor_registration_form.cleaned_data['first_name'],
+        last_name=tutor_registration_form.cleaned_data['last_name'],
+        email=tutor_registration_form.cleaned_data['email'],
+        mobile_number=tutor_registration_form.cleaned_data['mobile_number'],
+        tutor_qualification=tutor_registration_form.cleaned_data['tutor_qualification'],
+        hourly_rate=tutor_registration_form.cleaned_data['hourly_rate'],
+        tutor_description=tutor_registration_form.cleaned_data['tutor_description'],
+        profile_picture=tutor_registration_form.cleaned_data['profile_picture'],
+        related_user=CommonUser.objects.get(username=request.user.username)
+    )
+
+    password = tutor_registration_form.cleaned_data['password']
+    subjects_taught = tutor_registration_form.cleaned_data['subjects_taught']
+    # Assign the many-to-many field after making the tutor object
+    new_tutor.subjects_taught.set(subjects_taught)
+    new_tutor.set_password(password)
+    new_tutor.save()
+
+    return HttpResponseRedirect(reverse("entry"))
+
+
 
 
 def login_function(request):
@@ -345,7 +462,6 @@ def login_function(request):
                 #redirect to product page 
                 return HttpResponseRedirect(reverse("subscribe"))
             elif (Student.objects.filter(username=username)):
-                # Should go student_main page but yet to implement
                 return HttpResponseRedirect(reverse("tutor_list"))
 
             # Otherwise, the user is an admin, but we dont care abt this

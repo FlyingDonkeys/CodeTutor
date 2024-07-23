@@ -10,6 +10,7 @@ urlpatterns = [
     path("logout", views.logout_function, name="logout_function"),
     path("work_in_progress", views.work_in_progress, name="work_in_progress"),
     path("success/<str:user_type>", views.success, name="success"),
+    path("create_profile", views.create_profile, name="create_profile"),
 
     # Loads the tutor page
     path("student_list", views.student_list, name="student_list"),
@@ -53,4 +54,7 @@ urlpatterns = [
     #API endpoint to retrive current user's profile information
     path('profile', views.profile,name = "profile"),
     path('load_user_profile', views.load_user_profile,name = "load_user_profile"),
+
+    # Google login urls
+
 ]

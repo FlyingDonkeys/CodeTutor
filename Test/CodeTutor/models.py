@@ -33,6 +33,8 @@ class CommonUser(AbstractUser):
     profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
 
 
+
+
 class Student(CommonUser):
     # Minimum requirement without use of Google Maps
     location_choices = {
@@ -58,6 +60,9 @@ class Student(CommonUser):
         default=0
     )
     is_finding_tutor = models.BooleanField(default=True)
+
+    # Google logs in a User object, we have to relate it to a Student/tutor
+    related_user = models.ForeignKey(CommonUser, on_delete=models.CASCADE, related_name="related_student",default=None, null=True, blank=True)
 
     class Meta:
         verbose_name = "Student"
@@ -98,6 +103,9 @@ class Tutor(CommonUser):
 
     # A tutor can also receive evaluations from many students (like how a student can evaluate many tutors)
     evaluators = models.ManyToManyField(Student, related_name="evaluated_tutors")
+
+    # Google logs in a User object, we have to relate it to a Student/tutor
+    related_user = models.ForeignKey(CommonUser, on_delete=models.CASCADE, related_name="related_tutor", default=None, null=True, blank=True)
 
     class Meta:
         verbose_name = "Tutor"
