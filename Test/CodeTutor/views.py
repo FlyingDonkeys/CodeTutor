@@ -343,7 +343,8 @@ def register_student(request, student_registration_form):
         location=student_registration_form.cleaned_data['location'],
         profile_picture=student_registration_form.cleaned_data['profile_picture'],
         offered_rate = student_registration_form.cleaned_data['offered_rate'],
-        related_user=None
+        related_user=None,
+        postal_code=student_registration_form.cleaned_data['postal_code']
     )
 
     password = student_registration_form.cleaned_data['password']
@@ -368,7 +369,8 @@ def register_student_google(request, student_registration_form):
         location=student_registration_form.cleaned_data['location'],
         profile_picture=student_registration_form.cleaned_data['profile_picture'],
         offered_rate = student_registration_form.cleaned_data['offered_rate'],
-        related_user = CommonUser.objects.get(username=request.user.username)
+        related_user = CommonUser.objects.get(username=request.user.username),
+        postal_code = student_registration_form.cleaned_data['postal_code']
     )
 
     password = student_registration_form.cleaned_data['password']
