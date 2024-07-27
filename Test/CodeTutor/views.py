@@ -288,7 +288,8 @@ def register_student(request, student_registration_form):
         mobile_number=student_registration_form.cleaned_data['mobile_number'],
         location=student_registration_form.cleaned_data['location'],
         profile_picture=student_registration_form.cleaned_data['profile_picture'],
-        offered_rate = student_registration_form.cleaned_data['offered_rate']
+        offered_rate = student_registration_form.cleaned_data['offered_rate'],
+        postal_code = student_registration_form.cleaned_data['postal_code']
     )
 
     password = student_registration_form.cleaned_data['password']
