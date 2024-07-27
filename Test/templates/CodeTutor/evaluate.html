@@ -1,0 +1,75 @@
+{% extends "CodeTutor/layout.html" %}
+{% load static %}
+
+{% block script %}
+{% endblock %}
+
+
+<!-- Since we are a Student evaluating Tutor, back should bring you to tutor list -->
+{% block nav %}
+  <li class="nav-item">
+    <a class="btn btn-primary me-2" href="{% url 'tutor_list' %}" role="button">Back</a>
+  </li>
+{% endblock %}
+
+
+{% block body %}
+    <div class="container" style="background: white">
+        <div class="row mb-3">
+            <hr>
+            <div class="col-3">
+                <!-- To centralise -->
+            </div>
+            <div class="col-6">
+                <p class="fs-2 fw-semibold">Evaluate a Tutor</p>
+                <p class="text-break" style="color: red">Note: Only fill in this Evaluation form after at least one lesson with this Tutor. However, it is recommended that you evaluate a Tutor only after several lessons with this Tutor.</p>
+                <form action="{% url 'evaluate' tutor_username=username %}" method="post">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                      <label for="tutor_username" class="col-form-label-lg">Tutor to be evaluated</label>
+                      <input type="text" readonly class="form-control" id="tutor_username" value="{{ username }}" disabled>
+                    </div>
+                    <div class="mb-4">
+                        <p class="text-break" style="color: green">Note: Drag to rate the Tutor, with 0 being the worst and 10 being the best.</p>
+                    </div>
+                    <div class="mb-3">
+                        <label for="q1" class="form-label">Question 1: How clear and understandable are the tutor’s explanations?</label>
+                        <input type="range" class="form-range" min="0" max="10" id="q1" name='q1' oninput="this.nextElementSibling.value = this.value">
+                        <output>5</output>
+                    </div>
+                    <div class="mb-3">
+                        <label for="q2" class="form-label">Question 2: How well does the tutor address your questions and concerns?</label>
+                        <input type="range" class="form-range" min="0" max="10" id="q2" name="q2" oninput="this.nextElementSibling.value = this.value">
+                        <output>5</output>
+                    </div>
+                    <div class="mb-3">
+                        <label for="q3" class="form-label">Question 3: How engaging is the tutor?</label>
+                        <input type="range" class="form-range" min="0" max="10" id="q3" name="q3" oninput="this.nextElementSibling.value = this.value">
+                        <output>5</output>
+                    </div>
+                    <div class="mb-3">
+                        <label for="q4" class="form-label">Question 4: How responsive is the tutor to your questions and concerns outside of scheduled sessions?</label>
+                        <input type="range" class="form-range" min="0" max="10" id="q4" name="q4" oninput="this.nextElementSibling.value = this.value">
+                        <output>5</output>
+                    </div>
+                    <div class="mb-4">
+                        <label for="q5" class="form-label">Question 5: How likely are you to recommend this tutor to your friends and family?</label>
+                        <input type="range" class="form-range" min="0" max="10" id="q5" name="q5" oninput="this.nextElementSibling.value = this.value">
+                        <output>5</output>
+                    </div>
+                    <div class="mb-4">
+                        <p class="text-break" style="color: red">Note: You may only fill this evaluation form ONCE. The submission is irreversible.</p>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-5">
+                            <!-- Spacing -->
+                        </div>
+                        <div class="col-3">
+                            <button type="submit" class="btn btn-dark">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

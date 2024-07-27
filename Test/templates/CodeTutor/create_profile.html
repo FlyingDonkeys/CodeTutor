@@ -1,0 +1,130 @@
+{% extends "CodeTutor/layout.html" %}
+{% load static %}
+
+{% block script %}
+    <script src="{% static 'CodeTutor/javascript/create_profile.js' %}"></script>
+{% endblock %}
+
+
+{% block body %}
+    <div class="container" style="background: lightgray" id="initial_view">
+        <div class="row mb-3">
+            <div class="col-2">
+                <!-- to centralise -->
+            </div>
+            <div class="col-8">
+                <div class="h4 mt-2 text-break">
+                    Welcome to CodeTutors! It seems that you are logging in for the first time! Would you like to
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-4">
+                <!-- to centralise -->
+            </div>
+            <div class="col-2">
+                <button type="button" class="btn btn-light mb-3" id="tutor">Register as a Tutor</button>
+            </div>
+            <div class="col-2">
+                <button type="button" class="btn btn-dark" id="student">Register as a Student</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="register_student_view">
+        <div class="container" style="background: white">
+            <div class="row">
+                <div class="col-2">
+                    <!-- To centralise -->
+                </div>
+                <h3>Register as a Student</h3>
+                <h5 class="fw-semibold" style="color: red">Note: Pre-filled data from Google cannot be edited.</h5>
+            </div>
+            <form enctype="multipart/form-data" action="{% url 'create_profile' %}" method="post" id="student_form" novalidate>
+                {% csrf_token %}
+                <input type="hidden" id="student_form_has_errors" value={{ student_error }}>
+                {% for field in student_registration_form.visible_fields %}
+                    <div class="row mb-3">
+                        <div class="col-4">
+                            <!-- To centralise -->
+                        </div>
+                        <div class="col-4">
+                            <div class="fieldWrapper">
+                                <div class="row mb-3">
+                                    {% if field.errors %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {{ field.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="row mb-3">
+                                    {{ field.label_tag }}
+                                </div>
+                                <div class="row mb-3">
+                                    {{ field }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="row mb-3">
+                    <div class="col-5">
+                        <!-- To centralise -->
+                    </div>
+                    <div class="col-4">
+                        <input type="submit" name="student">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="container" id="register_tutor_view">
+        <div class="container" style="background: white">
+            <div class="row">
+                <div class="col-2">
+                    <!-- To centralise -->
+                </div>
+                <h3>Register as a Tutor</h3>
+                <h5 class="fw-semibold" style="color: red">Note: Pre-filled data from Google cannot be edited.</h5>
+            </div>
+            <form enctype="multipart/form-data" action="{% url 'create_profile' %}" method="post" id="tutor_form" novalidate>
+                {% csrf_token %}
+                <input type="hidden" id="tutor_form_has_errors" value={{ tutor_error }}>
+                {% for field in tutor_registration_form.visible_fields %}
+                    <div class="row mb-3">
+                        <div class="col-4">
+                            <!-- To centralise -->
+                        </div>
+                        <div class="col-4">
+                            <div class="fieldWrapper">
+                                <div class="row mb-3">
+                                    {% if field.errors %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {{ field.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="row mb-3">
+                                    {{ field.label_tag }}
+                                </div>
+                                <div class="row mb-3">
+                                    {{ field }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="row mb-3">
+                    <div class="col-5">
+                        <!-- To centralise -->
+                    </div>
+                    <div class="col-4">
+                        <input type="submit" name="tutor">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

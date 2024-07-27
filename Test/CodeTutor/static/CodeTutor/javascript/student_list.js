@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelector("#submit").onclick = () => load_profiles_by_rate(document.querySelector("#lowest_rate").value,
                                                                                      document.querySelector("#highest_rate").value)
 
+
     // Have some logic to give errors if user types in invalid input
     const alertPlaceholder = document.getElementById('liveAlertPlaceholder')
 });
@@ -296,15 +297,15 @@ function load_profiles_by_rate(min, max) {
 
     // Javascript logic to show warning upon invalid input
     const appendAlert = (message, type) => {
-    const wrapper = document.createElement('div')
-    wrapper.innerHTML = [
-        `<div class="alert alert-${type} alert-dismissible" role="alert">`,
-        `   <div>${message}</div>`,
-        '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
-        '</div>'
-    ].join('')
+        const wrapper = document.createElement('div')
+        wrapper.innerHTML = [
+            `<div class="alert alert-${type} alert-dismissible" role="alert">`,
+            `   <div>${message}</div>`,
+            '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+            '</div>'
+        ].join('')
 
-    alertPlaceholder.append(wrapper)
+        alertPlaceholder.append(wrapper)
     }
 
     const alertTrigger = document.getElementById('liveAlertBtn')
@@ -314,11 +315,15 @@ function load_profiles_by_rate(min, max) {
         })
     }
 
+    // Convert min and max to numbers
+    min = parseFloat(min);
+    max = parseFloat(max);
+
     // Handle invalid operations
-    if (min === '' || max === '') {
-        appendAlert("Please fill in both minimum and maximum rates!", 'danger')
+    if (isNaN(min) || isNaN(max)) {
+        appendAlert('Please fill in both minimum and maximum value fields!', 'danger')
     } else if (min > max) {
-        appendAlert('Minimum rate must not be higher than maximum!', 'danger')
+        appendAlert('Minimum rate must not be higher than maximum!', 'danger');
     } else if (min <= 0 || max <= 0) {
         appendAlert("Entered rates must both be positive values!", 'danger')
     } else if (min > 1000 || max > 1000) {
