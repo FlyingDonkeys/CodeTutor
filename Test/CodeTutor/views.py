@@ -117,6 +117,7 @@ def product_page(request, kwarg):
 def payment_successful(request):
     stripe.api_key = settings.STRIPE_SECRET_KEY_TEST
     checkout_session_id = request.GET.get('session_id', None)
+    print(checkout_session_id)
     kwarg = request.GET.get('kwarg',None)
     Timer = date.today()
     if kwarg == 0:
@@ -125,14 +126,24 @@ def payment_successful(request):
         Timer += relativedelta(months=+1)
     else:
         Timer +=  relativedelta(months=+12)
-    session = stripe.checkout.Session.retrieve(checkout_session_id)
-    customer = stripe.Customer.retrieve(session.customer)
+    #session = stripe.checkout.Session.retrieve(checkout_session_id)
+    #customer = stripe.Customer.retrieve(session.customer)
     user_id = request.user.id
-    user_payment = UserPayment.objects.get(app_user=user_id)
+    print(f"user_id {user_id}")
+    user = Tutor.objects.get(id = user_id)
+    #ClassModel.(object_id)
+    print(f"user {user}")
+    set = UserPayment.objects.filter(app_user=user)
+    user_payment = None
+    if not set.exists():
+        user_payment =  UserPayment.objects.create(app_user = user)
+    else:
+        user_payment = set[0]
+    print(f"user_payment {user_payment}")
     user_payment.stripe_checkout_id = checkout_session_id
     user_payment.count_down = Timer
     user_payment.save()
-    return render(request, 'CodeTutor/payment_successful.html', {'customer': customer})
+    return HttpResponseRedirect(reverse("student_list"))
 
 
 def payment_cancelled(request):
@@ -343,6 +354,7 @@ def register_student(request, student_registration_form):
         location=student_registration_form.cleaned_data['location'],
         profile_picture=student_registration_form.cleaned_data['profile_picture'],
         offered_rate = student_registration_form.cleaned_data['offered_rate'],
+        postal_code=student_registration_form.cleaned_data['postal_code'],
         related_user=None
     )
 
@@ -368,7 +380,8 @@ def register_student_google(request, student_registration_form):
         location=student_registration_form.cleaned_data['location'],
         profile_picture=student_registration_form.cleaned_data['profile_picture'],
         offered_rate = student_registration_form.cleaned_data['offered_rate'],
-        related_user = CommonUser.objects.get(username=request.user.username)
+        related_user = CommonUser.objects.get(username=request.user.username),
+        postal_code = student_registration_form.cleaned_data['postal_code']
     )
 
     password = student_registration_form.cleaned_data['password']
@@ -457,7 +470,7 @@ def login_function(request):
                 user = UserPayment.objects.filter(app_user=current_tutor)
                 if(user.exists()):
                     #Only redirect to student page if count down is larger than 0 
-                    if user.first().count_down > timezone.now:
+                    if user.first().count_down > timezone.now():
                         return HttpResponseRedirect(reverse("student_list"))
                 #redirect to product page 
                 return HttpResponseRedirect(reverse("subscribe"))
@@ -497,7 +510,7 @@ def student_list(request):
         print(user.first())
         if(user.exists()):
             #Only redirect to student page if count down is larger than 0 
-            if user.first().count_down > timezone.now:
+            if user.first().count_down > timezone.now():
                 return render(request, "CodeTutor/student_list.html")
                 #redirect to product page 
         return HttpResponseRedirect(reverse("subscribe"))
