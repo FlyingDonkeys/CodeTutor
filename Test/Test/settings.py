@@ -79,9 +79,14 @@ SOCIALACCOUNT_PROVIDERS = {
             "profile",
             "email"
         ],
-        "AUTH_PARAMS": {"access_type": "online"}
+        "AUTH_PARAMS": {"access_type": "online"},
+        "APP": {
+            'client_id': "218533264062-qno72uio40j63at3pe1ad7orq0mretk1.apps.googleusercontent.com",
+            'secret': "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"
+        }
     }
 }
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
