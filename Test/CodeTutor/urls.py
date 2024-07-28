@@ -20,7 +20,7 @@ urlpatterns = [
     # Loads the page for Students to view their Tutors (for evaluation)
     path("my_tutors", views.my_tutors, name="my_tutors"),
     # Student profiles
-    path("my_students", views.my_students, name="my_tutors"),
+    path("my_students", views.my_students, name="my_students"),
     # Loads the evaluation form for Students to evaluate a particular Tutor
     path("evaluate/<str:tutor_username>", views.evaluate, name="evaluate"),
     # API endpoint to retrieve student profiles dynamically on tutor main page

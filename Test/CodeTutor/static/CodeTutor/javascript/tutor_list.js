@@ -200,13 +200,13 @@ function add_tutor(tutor) {
                                     </div>
                                     </div>
                                     <div class="row mb-1">
-                                        <div class="col-3">
-                                            <h4>Hourly Rate: <h4>
-                                        </div>
-                                        <div class="col-3">
-                                            $${tutor.hourly_rate}/hr
-                                        </div>
+                                    <div class="col-md-3 py-1">
+                                    <h5 class="fw-bold">Hourly Rate:</h5>
                                     </div>
+                                    <div class="col-md-3 py-1">
+                                        $${tutor.hourly_rate}/hr
+                                    </div>
+                                    </div>                               
                                     <div class="row mb-1">
                                         <div class="col-4"><!-- To centralise --></div>
                                         <div class="col-2">

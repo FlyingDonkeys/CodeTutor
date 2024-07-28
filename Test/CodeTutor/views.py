@@ -1,4 +1,4 @@
-import time
+from dateutil.relativedelta import relativedelta
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.forms import NumberInput, TextInput
@@ -12,9 +12,7 @@ from django.contrib import messages
 from django.conf import settings
 import stripe
 import time
-import datetime
 from datetime import date
-from dateutil.relativedelta import relativedelta
 import json
 
 @login_required
@@ -126,7 +124,7 @@ def payment_successful(request):
     elif kwarg == 1:
         Timer += relativedelta(months=+1)
     else:
-        Timer +=  relativedelta(months=+12)
+        Timer += relativedelta(months=+12)
     #session = stripe.checkout.Session.retrieve(checkout_session_id)
     #customer = stripe.Customer.retrieve(session.customer)
     user_id = request.user.id
@@ -381,7 +379,7 @@ def register_student_google(request, student_registration_form):
         location=student_registration_form.cleaned_data['location'],
         profile_picture=student_registration_form.cleaned_data['profile_picture'],
         offered_rate = student_registration_form.cleaned_data['offered_rate'],
-        related_user = CommonUser.objects.get(username=request.user.username)
+        related_user = CommonUser.objects.get(username=request.user.username),
         postal_code = student_registration_form.cleaned_data['postal_code']
     )
 
@@ -503,16 +501,18 @@ def change_active_state(request):
 @login_required
 def student_list(request):
     if (request.method == "GET"):
-
         #if subscription has 0 days left, redirect to product page 
         #print(request.user.username)
-        tutor = Tutor.objects.filter(username=request.user.username)
-        user = UserPayment.objects.filter(app_user=tutor.first())
+        tutor = Tutor.objects.get(username=request.user.username)
+        user = UserPayment.objects.filter(app_user=tutor)
         print(user.first())
         if(user.exists()):
             #Only redirect to student page if count down is larger than 0 
             if user.first().count_down > timezone.now():
-                return render(request, "CodeTutor/student_list.html")
+                return render(request, "CodeTutor/student_list.html",
+                              context={
+                                  "unhandled_requests": tutor.received_applications.count()
+                              })
                 #redirect to product page 
         return HttpResponseRedirect(reverse("subscribe"))
 
