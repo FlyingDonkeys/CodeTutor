@@ -371,6 +371,32 @@ def register_student(request, student_registration_form):
     return HttpResponseRedirect(reverse("entry"))
 
 
+def register_student_google(request, student_registration_form):
+    new_student = Student.objects.create(
+        username=student_registration_form.cleaned_data['username'],
+        first_name=student_registration_form.cleaned_data['first_name'],
+        last_name=student_registration_form.cleaned_data['last_name'],
+        email=student_registration_form.cleaned_data['email'],
+        mobile_number=student_registration_form.cleaned_data['mobile_number'],
+        location=student_registration_form.cleaned_data['location'],
+        profile_picture=student_registration_form.cleaned_data['profile_picture'],
+        offered_rate = student_registration_form.cleaned_data['offered_rate'],
+        related_user = CommonUser.objects.get(username=request.user.username)
+        postal_code = student_registration_form.cleaned_data['postal_code']
+    )
+
+    password = student_registration_form.cleaned_data['password']
+    subjects_required = student_registration_form.cleaned_data['subjects_required']
+    # Assign the many-to-many field after making the student object
+    new_student.subjects_required.set(subjects_required)
+    new_student.set_password(password)
+    new_student.save()
+
+    # Use Django messages framework to pass context to the html
+    messages.success(request, "You have successfully registered your student profile. Please proceed to login.")
+    return HttpResponseRedirect(reverse("entry"))
+
+
 def register_tutor(request, tutor_registration_form):
     new_tutor = Tutor.objects.create(
         username=tutor_registration_form.cleaned_data['username'],
