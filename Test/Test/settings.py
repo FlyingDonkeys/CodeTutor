@@ -41,6 +41,7 @@ STRIPE_SECRET_KEY_TEST='sk_test_51PREktEZACuDQbJWu6Jha3n8xccKkaiaHz3JnEuNBtCFvy1
 STRIPE_WEBHOOK_SECRET_TEST='whsec_Z0qc7KQvUHU8WyZwEbrc1xc9OlMBOdMZ'
 
 stripe.api_key = STRIPE_SECRET_KEY_TEST 
+
 #test product generated 
 PRODUCT_WEEKLY = 'price_1PZT2dEZACuDQbJWOj8wWPR1'
 PRODUCT_MONTHLY = 'price_1PZT36EZACuDQbJWR0d2C5Zx'
@@ -72,18 +73,20 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google"
 ]
-
+GOOGLE_CLIENT_ID = '653962709532-t5rpueikf809ak84im7gbqsjs4nb9u15.apps.googleusercontent.com'
+GOOGLE_SECRET_KEY = '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'
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
-        "SCOPE": [
+        "APP": {
+            "client_id": '653962709532-t5rpueikf809ak84im7gbqsjs4nb9u15.apps.googleusercontent.com',
+            "secret": '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',
+            "key": ""
+        },
+       "SCOPE": [
             "profile",
             "email"
         ],
-        "AUTH_PARAMS": {"access_type": "online"},
-        "APP": {
-            'client_id': "218533264062-qno72uio40j63at3pe1ad7orq0mretk1.apps.googleusercontent.com",
-            'secret': "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"
-        }
+       "AUTH_PARAMS": {"access_type": "online"}
     }
 }
 
