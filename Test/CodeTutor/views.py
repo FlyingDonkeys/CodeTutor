@@ -17,7 +17,12 @@ import json
 
 @login_required
 def profile(request):
-    return render(request, "CodeTutor/profile.html")
+    #queryset = None
+    queryset = Tutor.objects.filter(username = request.user.username)
+    if queryset.exists():
+        return render(request, "CodeTutor/profile.html", context = {"is_student":False})
+    else:
+        return render(request, "CodeTutor/profile.html", context = {"is_student":True})
 
 
 @login_required

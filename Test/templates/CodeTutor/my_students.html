@@ -30,10 +30,6 @@
         <div class="row mb-3">
             <p>Location: ${student.postal_code}</p>
         </div>
-        <div class="row mb-3">
-            <p>Subjects_required: ${subjects_required}
-            </p>
-        </div>
       </div>
     </div>
     `
@@ -46,7 +42,7 @@
 <!-- Since Students view their list of Tutors, 'back' button brings them to list of Tutors -->
 {% block nav %}
   <li class="nav-item">
-    <a class="btn btn-primary me-2" href="{% url 'tutor_list' %}" role="button">Back</a>
+    <a class="btn btn-primary me-2" href="{% url 'student_list' %}" role="button">Back</a>
   </li>
 {% endblock %}
 
