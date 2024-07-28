@@ -14,7 +14,8 @@ import stripe
 import time
 import datetime
 from datetime import date
-
+from dateutil.relativedelta import relativedelta
+import json
 
 @login_required
 def profile(request):
@@ -354,7 +355,8 @@ def register_student(request, student_registration_form):
         location=student_registration_form.cleaned_data['location'],
         profile_picture=student_registration_form.cleaned_data['profile_picture'],
         offered_rate = student_registration_form.cleaned_data['offered_rate'],
-        postal_code = student_registration_form.cleaned_data['postal_code']
+        postal_code = student_registration_form.cleaned_data['postal_code'],
+        related_user=None
     )
 
     password = student_registration_form.cleaned_data['password']
@@ -532,6 +534,7 @@ def load_tutor_profiles(request):
                 # If not possible to get 10 profiles, break
                 break
         # Artificially delay speed of response
+        print(Tutor.objects.all()[0].serialize())
         time.sleep(1)
         return JsonResponse(data, safe=False)
 
@@ -613,7 +616,26 @@ def my_tutors(request):
             "tutors": tutors
         })
 
-
+@login_required
+def my_students(request):
+    if (request.method == "GET"):
+        # Want to get the list of Students related to this Student
+        return render(request, 'CodeTutor/my_students.html', context={
+            "students": Student.objects.all()
+        })
+    
+@login_required
+def data(request):
+    if(request.method == "GET"):
+        students = Tutor.objects.get(username=request.user.username).students.all()
+        serialised_data = []
+        for student in students:
+            temp = student.serialize()
+            del temp["date_joined"]
+            serialised_data.append(temp)
+        print(serialised_data)
+        return JsonResponse(serialised_data, safe=False)
+    
 # Called when a Student evaluates a Tutor
 @login_required
 def evaluate(request, tutor_username):
@@ -676,7 +698,15 @@ def success(request, user_type):
         "is_tutor": is_tutor
     })
 
-
+@login_required
+def received_tutor_requests(request):
+    if(request.method == "GET"):
+        student = Student.objects.get(username=request.user.username)
+        tutor_requests = student.received_applications.all()
+        return render(request, "CodeTutor/received_tutor_requests.html", context={
+            "requests": tutor_requests
+        })
+    
 @login_required
 def received_hiring_requests(request):
     if (request.method == 'GET'):
@@ -720,6 +750,56 @@ def reject(request, type_of_application, application_id):
             return HttpResponseRedirect(reverse('success', args=['tutor']))
 
 # google is great
+
+
+# If a request is accepted, handle it appropriately
+@login_required
+def accept(request, type_of_application, application_id):
+    if (request.method == 'GET'):
+        if (type_of_application == "hiring_application"):
+            this_application = HiringApplication.objects.get(id=application_id)
+
+            # If Tutor accepts Student's application, add Student to the list of Students this Tutor has
+            this_application.tutor.students.add(this_application.student)
+            this_application.tutor.students_taught += 1
+
+            # Get rid of this application
+            this_application.delete()
+
+            messages.success(request, "Please check your Profile to view more information about your new student!")
+            return HttpResponseRedirect(reverse('success', args=['tutor']))
+        
+        if(type_of_application == "application"):
+            this_application = Application.objects.get(id = application_id)
+            this_application.student.tutors.add(this_application.tutor)
+            this_application.delete()
+            messages.success(request, "Please check the `My Tutors` page to view more information about your new tutor!")
+            return HttpResponseRedirect(reverse('success', args=['student']))
+
+
+# If a request is rejected, handle it appropriately
+@login_required
+def reject(request, type_of_application, application_id):
+    if (request.method == 'GET'):
+        if (type_of_application == "hiring_application"):
+            this_application = HiringApplication.objects.get(id=application_id)
+
+            # Since Tutor has rejected this Student's application, nothing to be done but delete application
+            # Get rid of this application
+            this_application.delete()
+
+            messages.success(request, "This request has been successfully rejected.")
+            return HttpResponseRedirect(reverse('success', args=['tutor']))
+        
+        if (type_of_application == "application"):
+            this_application = Application.objects.get(id=application_id)
+
+            # Since Tutor has rejected this Student's application, nothing to be done but delete application
+            # Get rid of this application
+            this_application.delete()
+
+            messages.success(request, "This request has been successfully rejected.")
+            return HttpResponseRedirect(reverse('success', args=['student']))
 
 
 

@@ -214,7 +214,7 @@ function add_tutor(tutor) {
                                             <!-- May mimic the form tutors use to apply for a student -->
                                             <!-- Note that the url provided here doesnt actually exist -->
                                             <!-- Maybe you could help with it -->
-                                            <a href="apply_tutor/${tutor.username}" role="button">
+                                            <a href="hire_tutor/${tutor.username}" role="button">
                                             <button class="btn btn-outline-primary fw-bolder fs-7 px-4 py-1 mt-3 rounded-pill">Hire this Tutor</button>
                                             </a>
                                         </div>

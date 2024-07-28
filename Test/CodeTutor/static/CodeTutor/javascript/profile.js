@@ -25,7 +25,7 @@ function load_profile() {
                 generate_map(user);
             }
             if(!user.is_student){
-                alert("hiding the button!");
+                //alert("hiding the button!");
                 hideButton();
                 document.querySelector('#state_button').style.display = 'none';
             }
@@ -78,9 +78,10 @@ if (user.is_student) {
                         </div>
                         <b class="fs-6">Hello I am,  ${user.user.username}</b>
                         <h1 class="fw-bold mb-4 fs-1">Tutor</h1>
-                        <p> ${user.user.description}</p>    
+                        <p> ${user.user.description}</p>  
+                        <a href = "my_students">  <button class="btn btn-outline-primary fw-bolder fs-7 px-4 py-2 mt-3 rounded-pill">My Students </button> </a>  
                         <a href = "subscribe"
-                        <button class="btn btn-outline-primary fw-bolder fs-7 px-4 py-2 mt-3 rounded-pill">Subsribe</button>
+                        <button class="btn btn-outline-primary fw-bolder fs-7 px-4 py-2 mt-3 rounded-pill">Subsribe</button>s
                         </a>
                     </div>
                </div>
