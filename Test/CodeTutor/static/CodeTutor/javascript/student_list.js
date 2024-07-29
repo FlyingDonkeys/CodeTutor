@@ -73,6 +73,13 @@ function load() {
 
 //determine whether to display the map or not     
 let count = 0;
+function map_button(code){
+    //alert("please scroll to the top");
+    if(count%2 == 0){
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    generate_map(code);
+}
 function generate_map(code){
     //may have included GoogleMaps API multiple times 
     $.getScript( "https://maps.googleapis.com/maps/api/js?key=" + 'AIzaSyC128zZlCt6WN8ygaNo0DtpDi0DL8s0SIM'+ "&libraries=places") 
@@ -89,6 +96,7 @@ function generate_map(code){
             }
         ,  
         function(results, status) {
+       
         if (status == google.maps.GeocoderStatus.OK) {
             lat = results[0].geometry.location.lat();
             lng = results[0].geometry.location.lng();
@@ -105,7 +113,8 @@ function generate_map(code){
             if(count%2 == 1){
                 document.getElementById("map").style.display = "block";
                 document.getElementById("map").style.height = "250px";
-        
+                console.log("scroll to top");
+
             }else{
                 document.getElementById("map").style.display = "None";
                 document.getElementById("map").style.height = "0px";
@@ -236,7 +245,7 @@ function add_student(student) {
 
                                     <div class="col-2">
                                         <!-- Logic to show google map -->
-                                        <button class="btn btn-outline-primary fw-bolder fs-7 px-4 py-2 mt-3 rounded-pill" onclick="generate_map(${student.postal_code})">Show Location</button>
+                                        <button class="btn btn-outline-primary fw-bolder fs-7 px-4 py-2 mt-3 rounded-pill" onclick="map_button(${student.postal_code})">Show Location</button>
                                     </div>
                                     </div>
                                 </div>

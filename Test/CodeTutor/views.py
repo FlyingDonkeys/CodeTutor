@@ -189,7 +189,7 @@ class TutorRegistrationForm(forms.ModelForm):
     email = forms.EmailField()
     password = forms.CharField(widget=forms.PasswordInput())
     mobile_number = forms.CharField(min_length=8, max_length=8)
-    profile_picture = forms.ImageField(required=False)
+    profile_picture = forms.ImageField(required=True)
     subjects_taught = forms.ModelMultipleChoiceField(queryset=Subject.objects.all())
     tutor_qualification = forms.ModelChoiceField(queryset=Qualification.objects.all())
     hourly_rate = forms.IntegerField(min_value=0, max_value=1000)
@@ -219,7 +219,7 @@ class StudentRegistrationForm(forms.ModelForm):
     email = forms.EmailField()
     password = forms.CharField(widget=forms.PasswordInput())
     mobile_number = forms.CharField(min_length=8, max_length=8)
-    profile_picture = forms.ImageField(required=False)
+    profile_picture = forms.ImageField(required=True)
     location = forms.ChoiceField(choices=Student.location_choices)
     postal_code = forms.IntegerField(required=True)
     subjects_required = forms.ModelMultipleChoiceField(queryset=Subject.objects.all())
@@ -652,7 +652,7 @@ def my_students(request):
     if (request.method == "GET"):
         # Want to get the list of Students related to this Student
         return render(request, 'CodeTutor/my_students.html', context={
-            "students": Student.objects.all()
+            "students": Tutor.objects.get(username=request.user.username).students.all()
         })
     
 @login_required

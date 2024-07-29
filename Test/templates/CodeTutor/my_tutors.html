@@ -26,6 +26,12 @@
                   <div class="card-body">
                     <h5 class="card-title">{{ tutor.username }}</h5>
                     <div class="row mb-3">
+                      <p>Email: {{tutor.email}}</p>
+                  </div>
+                  <div class="row mb-3">
+                      <p>Phone Number: {{tutor.mobile_number}}</p>
+                  </div>
+                    <div class="row mb-3">
                         <a href="{% url "evaluate" tutor_username=tutor.username %}" class="btn btn-info mb-1">Evaluate Tutor</a>
                     </div>
                   </div>
