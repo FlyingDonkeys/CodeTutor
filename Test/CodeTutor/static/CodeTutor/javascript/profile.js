@@ -65,6 +65,9 @@ if (user.is_student) {
                         <p> Location: ${user.user.location}</p>
                         <p> Postal Code: ${user.user.postal_code}</p> 
                         <p> Finding Tutor: ${user.user.finding_tutor}</p> 
+                        <p>
+                        <a class="btn btn-primary me-2" href="tutor_list" role="button">Back</a>
+                        </p>
                     </div>
                </div>
             </div>`;    
@@ -79,10 +82,16 @@ if (user.is_student) {
                         <b class="fs-6">Hello I am,  ${user.user.username}</b>
                         <h1 class="fw-bold mb-4 fs-1">Tutor</h1>
                         <p> ${user.user.description}</p>  
+                        <p>
+                        <a class="btn btn-primary me-2" href="student_list" role="button">Back</a>
+                        </p>
+                        <p>
                         <a href = "my_students">  <button class="btn btn-outline-primary fw-bolder fs-7 px-4 py-2 mt-3 rounded-pill">My Students </button> </a>  
                         <a href = "subscribe"
-                        <button class="btn btn-outline-primary fw-bolder fs-7 px-4 py-2 mt-3 rounded-pill">Subsribe</button>s
+                        <button class="btn btn-outline-primary fw-bolder fs-7 px-4 py-2 mt-3 rounded-pill">Subsribe</button>
                         </a>
+                        </p>
+  
                     </div>
                </div>
             </div>`;

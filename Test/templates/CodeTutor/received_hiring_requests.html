@@ -15,6 +15,7 @@
 {% block body %}
     <div class="container" id="received_requests" style="background: white; padding-top: 20px;">
         <div class="row mb-3" style="padding-left: 59px">
+          <h1> My Hiring Requests</h1>
             {% for request in requests %}
                 <div class="card m-2" style="width: 24rem;">
                   <img src="{{ request.student.profile_picture.url }}" 

@@ -1,52 +1,10 @@
 {% extends "CodeTutor/layout.html" %}
 {% load static %}
 
-{% block script %}
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        fetch(`data`).then(response => response.json())
-        .then(students => students.forEach(student => load_profile(student)))
-        .finally(() => console.log("finished loading"));
-    });
-    
-    function load_profile(student){
-        const profile = document.createElement('div');
-        let subjects_required = "";
-        student.subjects_required.forEach(subject => {
-            subjects_required += subject + ", ";
-        });
-    
-        // Get the profile pictures urls of the users
-        let url = student.profile_picture_url === null ? 'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'
-                                                                : student.profile_picture_url;
-        profile.innerHTML = `
-    <div class="card m-2" style="width: 24rem;">
-      <img src="${ url }"
-           class="card-img-top" alt='https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'
-           height="400px"
-           width="400px">
-      <div class="card-body">
-        <h5 class="card-title">${student.username }</h5>
-        <div class="row mb-3">
-            <p>Location: ${student.postal_code}</p>
-        </div>
-        <div class="row mb-3">
-            <p>Subjects_required: ${subjects_required}
-            </p>
-        </div>
-      </div>
-    </div>
-    `
-    document.querySelector('#profiles').append(profile);
-    }
-    </script>
-{% endblock %}
-
-
 <!-- Since Students view their list of Tutors, 'back' button brings them to list of Tutors -->
 {% block nav %}
   <li class="nav-item">
-    <a class="btn btn-primary me-2" href="{% url 'tutor_list' %}" role="button">Back</a>
+    <a class="btn btn-primary me-2" href="{% url 'student_list' %}" role="button">Back</a>
   </li>
 {% endblock %}
 
@@ -55,7 +13,24 @@
     <div class="container" id="my_students" style="background: white; padding-top: 20px;" >
         <div class="row mb-3" style="padding-left: 59px" style = "display: flex; flex-direction: row;">
             <p class="fs-2 fw-semibold">My Students</p>
-            <div id = "profiles"></div>
+            {% for student in students %}
+            <div class="card m-2" style="width: 24rem;">
+              <img src="{{ student.profile_picture.url }}"
+                   class="card-img-top" alt='https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'
+                   height="400px"
+                   width="400px">
+              <div class="card-body">
+                <h5 class="card-title">{{ student.username }}</h5>
+                <div class="row mb-3">
+                  <p>Email: {{student.email}}</p>
+              </div>
+              <div class="row mb-3">
+                  <p>Phone Number: {{student.mobile_number}}</p>
+              </div>
+              
+              </div>
+            </div>
+        {% endfor %}
         </div>
     </div>
 {% endblock %}

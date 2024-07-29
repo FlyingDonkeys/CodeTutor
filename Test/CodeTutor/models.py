@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core import serializers
 from django.utils import timezone
+#from models import Tutor
 import time
 # Create your models here.
 
@@ -64,6 +65,7 @@ class Student(CommonUser):
     # Google logs in a User object, we have to relate it to a Student/tutor
     related_user = models.ForeignKey(CommonUser, on_delete=models.CASCADE, related_name="related_student",default=None, null=True, blank=True)
 
+    #tutors = models.ManyToManyField(Tutor, related_name="tutors")
     class Meta:
         verbose_name = "Student"
 
@@ -82,7 +84,8 @@ class Student(CommonUser):
             "offered_rate": self.offered_rate,
             "is_finding_tutor": self.is_finding_tutor,
             "profile_picture_url": profile_picture_url,
-            "postal_code":self.postal_code
+            "postal_code":self.postal_code,
+            "mobile_numer":self.mobile_number
 
         }
 
@@ -126,7 +129,7 @@ class Tutor(CommonUser):
             "tutor_description": self.tutor_description,
             "tutor_score": self.tutor_score,
             "students_taught": self.students_taught,
-            "students": [student.username for student in self.students.all()]
+            #"students": [student.username for student in self.students.all()].index
         }
 
 
