@@ -560,12 +560,14 @@ def load_tutor_profiles(request):
         for i in range(start, end + 1):
             try:
                 # Try to get 10 profiles at a time
-                data.append(Tutor.objects.all()[i].serialize())
+                queryset = UserPayment.objects.filter(app_user=Tutor.objects.all()[i])
+                if queryset.exists():
+                    data.append(Tutor.objects.all()[i].serialize())
             except:
                 # If not possible to get 10 profiles, break
                 break
-        # Artificially delay speed of response
-        print(Tutor.objects.all()[0].serialize())
+                # Artificially delay speed of response
+        print(data)
         time.sleep(1)
         return JsonResponse(data, safe=False)
 
