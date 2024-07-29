@@ -88,7 +88,7 @@ if (user.is_student) {
                         <p>
                         <a href = "my_students">  <button class="btn btn-outline-primary fw-bolder fs-7 px-4 py-2 mt-3 rounded-pill">My Students </button> </a>  
                         <a href = "subscribe"
-                        <button class="btn btn-outline-primary fw-bolder fs-7 px-4 py-2 mt-3 rounded-pill">Subsribe</button>s
+                        <button class="btn btn-outline-primary fw-bolder fs-7 px-4 py-2 mt-3 rounded-pill">Subsribe</button>
                         </a>
                         </p>
   
